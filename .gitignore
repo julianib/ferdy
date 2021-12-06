@@ -1,3 +1,21 @@
+.idea/
+__pycache__/
+
+cert.pem
+key.pem
+/backend/src/top_secret_private_keys.py
+
+/backend/databases/
+/backend/files/
+/backend/logs/
+/backend/src/test/
+
+/frontend/node_modules/
+/frontend/build/
+
+
+
+
 # Logs
 logs
 *.log
