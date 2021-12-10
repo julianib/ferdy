@@ -1,0 +1,22 @@
+{
+  "name": "ferdy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julianib/ferdy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/julianib/ferdy/issues"
+  },
+  "homepage": "https://github.com/julianib/ferdy#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
