@@ -6,7 +6,8 @@ export default function Login() {
     "179923541658-kfl4lp6lgd1nur0pk5vnqsb3d2hg49e6.apps.googleusercontent.com";
   const [user, setUser] = useState(null);
 
-  async function onSuccess(res) {
+  async function onLoginSuccess(res) {
+    console.log("login success", res);
     setUser(res.profileObj);
 
     fetch("http://localhost:1962", {
@@ -16,14 +17,23 @@ export default function Login() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ tokenId: res.tokenId }),
-    });
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((ex) => {
+        console.log(ex);
+      });
+
+    console.log("sent fetch");
   }
 
-  function onFaliure(res) {
+  function onLoginFailure(res) {
     console.log("Login unsuccessful", res);
   }
 
-  function logout() {
+  function onLogoutSuccess() {
+    console.log("Logout success");
     setUser(null);
   }
 
@@ -36,15 +46,15 @@ export default function Login() {
           <GoogleLogout
             clientId={CLIENT_ID}
             buttonText={"Logout"}
-            onLogoutSuccess={logout}
+            onLogoutSuccess={onLogoutSuccess}
           ></GoogleLogout>
         </div>
       ) : (
         <GoogleLogin
           clientId={CLIENT_ID}
           buttonText="Sign In with Google"
-          onSuccess={onSuccess}
-          onFailure={onFaliure}
+          onSuccess={onLoginSuccess}
+          onFailure={onLoginFailure}
           isSignedIn={true}
           cookiePolicy={"single_host_origin"}
         />
