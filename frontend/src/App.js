@@ -1,16 +1,10 @@
-// import { useEffect } from "react";
 import Login from "./components/Login";
+import { useEffect } from "react";
 import { initSocket, sendPacket, socket } from "./connection";
 
-let isConnected = false;
-
 export default function App() {
-  // useEffect(() => {  // multiple connections for
-  //   initSocket();
-  // }, [])
 
-  if (!isConnected) {
-    isConnected = true;
+  useEffect(() => {
     initSocket();
 
     socket.on("connect", () => {
@@ -21,7 +15,7 @@ export default function App() {
     socket.on("testmessage", (packet) => {
       console.log("> packet", packet);
     });
-  }
+  }, [])
 
   return <Login />;
 }
