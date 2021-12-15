@@ -1,21 +1,27 @@
 import { useState } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 
+import { REACT_APP_BACKEND_URL } from "../connection";
+
 export default function Login() {
-  const CLIENT_ID =
-    "179923541658-kfl4lp6lgd1nur0pk5vnqsb3d2hg49e6.apps.googleusercontent.com";
+  const { REACT_APP_CLIENT_ID } = process.env;
   const [user, setUser] = useState(null);
 
   async function onLoginSuccess(res) {
+    // TODO send json token again after socket lost connection for some reason
     console.log("login success", res);
     setUser(res.profileObj);
+    let tokenId = res.tokenId;
 
-    fetch("http://localhost:1962", {
+    fetch(REACT_APP_BACKEND_URL, {
       method: "POST",
-      body: JSON.stringify({ tokenId: res.tokenId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tokenId }),
     })
-      .then(res => res.json())
-      .then(data => console.log(data))
+      .then((res) => res.json())
+      .then((res) => console.log(res))
       .catch((ex) => {
         console.log(ex);
       });
@@ -39,7 +45,7 @@ export default function Login() {
           <h1>Welcome, {user.givenName}</h1>
 
           <GoogleLogout
-            clientId={CLIENT_ID}
+            clientId={REACT_APP_CLIENT_ID}
             buttonText={"Logout"}
             onLogoutSuccess={onLogoutSuccess}
             render={(button) => (
@@ -51,7 +57,7 @@ export default function Login() {
         </div>
       ) : (
         <GoogleLogin
-          clientId={CLIENT_ID}
+          clientId={REACT_APP_CLIENT_ID}
           buttonText="Sign In with Google"
           onSuccess={onLoginSuccess}
           onFailure={onLoginFailure}

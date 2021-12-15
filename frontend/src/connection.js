@@ -1,26 +1,27 @@
 import { io } from "socket.io-client";
 
-let socket = undefined;
+export const { REACT_APP_BACKEND_URL } = process.env;
 
-function initSocket() {
+export let socket = undefined;
+
+export function initSocket() {
   if (socket !== undefined) {
+    console.warn("Failed to init socket: socket already set");
     return;
   }
 
-  console.debug(`Initializing socket, backend url: http://localhost:1962`);
-  socket = io("http://localhost:1962", {
+  console.debug(`Initializing socket, backend url: ${REACT_APP_BACKEND_URL}`);
+  socket = io(REACT_APP_BACKEND_URL, {
     timeout: 1000,
   });
 }
 
-function sendPacket(packet) {
+export function sendPacket(packet) {
   if (socket?.connected) {
     socket.send(packet);
-    console.debug("Sent", packet);
+    console.debug("Sent packet", packet);
     return;
   }
 
-  console.warn("Did not send packet, socket not connected");
+  console.warn("Failed to send packet: socket not connected");
 }
-
-export { initSocket, sendPacket, socket };
