@@ -12,15 +12,10 @@ export default function Login() {
 
     fetch("http://localhost:1962", {
       method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ tokenId: res.tokenId }),
     })
-      .then((res) => {
-        console.log(res);
-      })
+      .then(res => res.json())
+      .then(data => console.log(data))
       .catch((ex) => {
         console.log(ex);
       });
