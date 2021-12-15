@@ -33,14 +33,14 @@ ferdy: Union[Ferdy, None] = None
 
 @flask_app.get("/test")
 def get_test():
-    print("get test")
+    Log.trace("get_test()")
     return {"deez": "nutz"}
 
 
 @flask_app.post("/")
 def post():
     body = request.json
-    print(f"post {body=}")
+    Log.trace(f"post {body=}")
     return {"status": "success"}
 
 
@@ -50,13 +50,13 @@ def post():
 def on_connect():
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    print(f"connect {sid=} {address=}")
+    Log.info(f"connect {sid=} {address=}")
 
 
 @sio.on("disconnect")
 def on_disconnect():
     sid = request.sid
-    print(f"disconnect {sid=}")
+    Log.info(f"disconnect {sid=}")
 
 
 @sio.on("message")
@@ -142,6 +142,7 @@ def main():
 if __name__ == "__main__":
     while True:
         print("\n\n\n\tHey Vsauce, Michael here!\n\n\n")
+        
         try:
             main()
         except Exception as ex:

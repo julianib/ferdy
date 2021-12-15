@@ -11,12 +11,11 @@ colorama.init(autoreset=True)
 
 # define log levels
 TRACE = 0, "trace", ""
-DEBUG = 1, "debug", Fore.CYAN
+DEBUG = 1, "debug", Fore.CYAN + Style.BRIGHT
 INFO = 2, "info", Fore.GREEN + Style.BRIGHT
-WARNING = 3, "warning", Fore.YELLOW
-ERROR = 4, "error", Fore.RED
-CRITICAL = 5, "critical", Fore.RED + Style.BRIGHT
-TEST = 6, "test", Fore.MAGENTA
+WARNING = 3, "warning", Fore.YELLOW + Style.BRIGHT
+ERROR = 4, "error", Fore.RED + Style.BRIGHT
+TEST = 5, "test", Fore.MAGENTA + Style.BRIGHT
 
 
 def get_level_int_from_str(level_str: str):
@@ -24,7 +23,7 @@ def get_level_int_from_str(level_str: str):
     Convert a log level string to its actual level int
     """
 
-    for level in [TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL, TEST]:
+    for level in [TRACE, DEBUG, INFO, WARNING, ERROR, TEST]:
         if level[1] == level_str:
             return level[0]
 
@@ -128,10 +127,6 @@ class Log:
     @staticmethod
     def error(raw_message, **kwargs):
         Log._log(raw_message, ERROR, **kwargs)
-
-    @staticmethod
-    def critical(raw_message, **kwargs):
-        Log._log(raw_message, CRITICAL, **kwargs)
 
     @staticmethod
     def test(raw_message, **kwargs):
