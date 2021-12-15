@@ -37,6 +37,9 @@ export default function Login() {
             clientId={CLIENT_ID}
             buttonText={"Logout"}
             onLogoutSuccess={logout}
+            render={button => (
+              <button onClick={button.onClick} disabled={button.disabled}>Log out</button>
+            )}
           ></GoogleLogout>
         </div>
       ) : (
@@ -47,6 +50,9 @@ export default function Login() {
           onFailure={onFaliure}
           isSignedIn={true}
           cookiePolicy={"single_host_origin"}
+          render={button => (
+            <button onClick={button.onClick} disabled={button.disabled}>Log in</button>
+          )}
         />
       )}
     </>
