@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/julianib/ferdy#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "google-auth-library": "^7.10.3",
     "nodemon": "^2.0.15"

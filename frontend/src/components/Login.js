@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogin, GoogleLogout } from "react-google-login";
 
 export default function Login() {
-
-  const CLIENT_ID = "179923541658-kfl4lp6lgd1nur0pk5vnqsb3d2hg49e6.apps.googleusercontent.com";
+  const CLIENT_ID =
+    "179923541658-kfl4lp6lgd1nur0pk5vnqsb3d2hg49e6.apps.googleusercontent.com";
   const [user, setUser] = useState(null);
 
   async function onSuccess(res) {
     setUser(res.profileObj);
 
-    fetch("http://localhost:3001", {
+    fetch("http://localhost:1962", {
       method: "POST",
       mode: "cors",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ tokenId: res.tokenId })
+      body: JSON.stringify({ tokenId: res.tokenId }),
     });
   }
 
@@ -24,7 +24,7 @@ export default function Login() {
   }
 
   function logout() {
-    setUser(null)
+    setUser(null);
   }
 
   return (
@@ -56,5 +56,5 @@ export default function Login() {
         />
       )}
     </>
-  )
+  );
 }
