@@ -1,7 +1,7 @@
 import eventlet
 eventlet.monkey_patch()  # nopep8
 
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_socketio import SocketIO
 
 from flask_cors import CORS
@@ -30,7 +30,7 @@ def get_test():
 def post():
     body = request.data
     print(f"post {body=}")
-    return jsonify({"status": "success"})
+    return {"status": "success"}
 
 
 @sio.on("connect")
@@ -56,6 +56,7 @@ def on_message(packet):
 if __name__ == "__main__":
     sio.run(
         app=flask_app,
+        host="0.0.0.0",
         port=1962,
         debug=True,  # run in debug mode
         log_output=False  # log incoming conns
