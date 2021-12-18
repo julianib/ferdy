@@ -16,6 +16,7 @@ import time
 import eventlet
 from eventlet.green import subprocess  # greenlet friendly
 from eventlet.green.Queue import Queue
+import google
 
 
 # import secrets.py, contains sensitive data

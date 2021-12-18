@@ -59,15 +59,24 @@ def on_connect():
     set_greenlet_name("sio.conn")
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    print("test1")
-    Log.debug(f"connect {sid=} {address=}")
+    Log.trace(f"Handling connect of {sid=} {address=}")
+    user = ferdy.handle_connect(sid, address)
+    Log.trace(f"{user} connected")
 
 
 @sio.on("disconnect")
 def on_disconnect():
     set_greenlet_name("sio.disc")
     sid = request.sid
-    Log.debug(f"disconnect {sid=}")
+    user = ferdy.get_user_by_sid(sid)
+
+    if not user:
+        Log.error(f"Failed to handle disconnect, no user object found {user=}")
+        return
+
+    Log.trace(f"Handling disconnect of {user}")
+    ferdy.handle_disconnect(user)
+    Log.trace(f"{user} disconnected")
 
 
 @sio.on("message")  # = anything that is not connect or disconnect

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 
-import { fetchBackend, sendPacket } from "../connection";
+import { sendPacket } from "../connection";
 
 export default function Login() {
   const { REACT_APP_CLIENT_ID } = process.env;
@@ -12,7 +12,7 @@ export default function Login() {
     console.debug("google login ok, verifying with backend", res);
     setUser(res.profileObj); // TODO should happen AFTER backend verify
     // fetchBackend("POST", res.tokenId);
-    sendPacket("user.login.verify")
+    sendPacket("user.login.verify");
   }
 
   function onLoginFailure(res) {
