@@ -18,7 +18,7 @@ ERROR = 4, "error", Fore.RED + Style.BRIGHT
 TEST = 5, "test", Fore.MAGENTA + Style.BRIGHT
 
 
-def get_level_int_from_str(level_str: str):
+def get_level_int_from_str(level_str: str) -> int:
     """
     Convert a log level string to its actual level int
     """
@@ -30,31 +30,34 @@ def get_level_int_from_str(level_str: str):
     raise ValueError(f"Unknown log level: {level_str=}")
 
 
-def hide_packet_values(packet: Union[dict, list]) -> Optional[Union[dict, list]]:
+def filter_content(content, abbreviate=True) -> Optional[Union[dict, list]]:
     """
-    Recursively hide values in packet containing sensitive or unimportant data 
-    from being logged
+    Recursively filter values in packet containing sensitive or unimportant data
+    in packet content
     """
 
-    if not packet:
-        return packet
+    if not content:
+        return content
 
-    packet_copy = packet.copy()
-    packet_type = type(packet)
+    content_copy = content.copy()
+    content_type = type(content)
 
-    if packet_type == list:
-        return [hide_packet_values(element) for element in packet_copy]
+    if content_type == list:
+        return [
+            filter_content(element, abbreviate) 
+            for element in content_copy
+        ]
 
-    if packet_type == dict:
-        for key in packet_copy:
-            if key in PACKET_KEYS_TO_HIDE:
-                packet_copy[key] = "<hidden>"
-            elif key in PACKET_KEYS_TO_ABBREVIATE:
-                packet_copy[key] = abbreviate(packet_copy[key])
+    if content_type == dict:
+        for key in content_copy:
+            if key in CONTENT_KEYS_TO_HIDE:
+                content_copy[key] = "<hidden>"
+            elif abbreviate and key in CONTENT_KEYS_TO_ABBREVIATE:
+                content_copy[key] = abbreviate(content_copy[key])
 
-        return packet_copy
+        return content_copy
 
-    raise ValueError(f"Unsupported packet to hide, {packet_type=}")
+    raise ValueError(f"Unsupported packet content to filter, {content_type=}")
 
 
 def abbreviate(number: int) -> str:
@@ -141,8 +144,8 @@ class Log:
         # print an exception and traceback
         ex: Exception = kwargs.pop("ex", None)
 
-        # hide values in packet if present and necessary
-        packet = hide_packet_values(kwargs.pop("packet", None))
+        # hide values in packet content if present and necessary
+        content = filter_content(kwargs.pop("content", None))
 
         # skip cutting off the message if its too long
         cutoff: bool = kwargs.pop("cutoff", True)
@@ -157,11 +160,12 @@ class Log:
         raw_message = str(raw_message)
 
         # if a packet is provided, add it to the outputted message
-        if packet is not None:
-            raw_message += f"\n packet: {packet}"
+        if content is not None:
+            raw_message += f"\n content={content}"
 
         # check if sufficient log level before logging
-        if CONSOLE_LOG_LEVEL and level[0] >= get_level_int_from_str(CONSOLE_LOG_LEVEL):
+        if CONSOLE_LOG_LEVEL and \
+                level[0] >= get_level_int_from_str(CONSOLE_LOG_LEVEL):
 
             excess_message_size = len(raw_message) - CONSOLE_CUTOFF
             if cutoff and excess_message_size > 0:
@@ -170,7 +174,7 @@ class Log:
             else:
                 message = raw_message
 
-            # no need for a lock (https://stackoverflow.com/a/2854703/13216113)
+            # no need for a lock, https://stackoverflow.com/a/2854703/13216113
             color = level[2]
             level_text = level[1].upper()
             now = datetime.now().strftime("%H:%M:%S")
@@ -186,19 +190,22 @@ class Log:
                 )
 
         # write raw message and exception to file if enabled
-        if FILE_LOG_LEVEL and level[0] >= get_level_int_from_str(FILE_LOG_LEVEL):
+        if FILE_LOG_LEVEL and \
+                level[0] >= get_level_int_from_str(FILE_LOG_LEVEL):
+
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             Log.FILE_WRITING_QUEUE.put(
-                (now, level, greenlet_name, raw_message, ex, packet))
+                (now, level, greenlet_name, raw_message, ex, content))
 
         # play sound if adequate level
         if SOUND_LEVEL and not skip_sound and \
                 (level[0] >= SOUND_LEVEL or force_sound):
+
             try:
                 # winsound.MessageBeep(-1)  # TODO implement sounds
                 pass
             except Exception as ex:
-                Log.trace(
+                Log.error(
                     "Unhandled exception on playing sound",
                     ex=ex, skip_sound=True
                 )
@@ -215,18 +222,24 @@ class Log:
 
         Log.WRITE_FILE_LOOP_CALLED = True
         set_greenlet_name("LogWriter")
-        latest_log_abs = f"{LOGS_FOLDER}/.latest.txt"
+        latest_log = f"{LOGS_FOLDER}/.latest.txt"
 
         Log.trace("Log writer loop ready")
 
         while True:
-            now_str, level, thread_name, message, ex, packet = Log.FILE_WRITING_QUEUE.get()
-            if packet is not None:
-                message += f"\n packet: {packet}"
+            now_str, level, thread_name, message, ex, \
+                content = Log.FILE_WRITING_QUEUE.get()
 
-            with open(latest_log_abs, "a", encoding="utf-8") as f:
+            if content is not None:
+                message += f"\n content: {content}"
+
+            with open(latest_log, "a", encoding="utf-8") as f:
                 f.write(
-                    f"[{now_str}][{level[1].upper()}][{thread_name}] {message}\n")
+                    f"[{now_str}][{level[1].upper()}][{thread_name}] "
+                    "{message}\n"
+                )
                 if ex:
                     traceback.print_exception(
-                        type(ex), ex, ex.__traceback__, file=f, limit=TRACEBACK_LIMIT)
+                        type(ex), ex, ex.__traceback__, file=f,
+                        limit=TRACEBACK_LIMIT
+                    )

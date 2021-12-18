@@ -9,12 +9,20 @@ from convenience import *
 from ferdy import Ferdy
 from log import Log
 
+
 set_greenlet_name("Main")
 
 # setup flask
+
 flask_app = Flask(__name__)
-flask_app.config["SECRET_KEY"] = FLASK_SECRET_KEY
 CORS(flask_app)
+
+if SCARY_SECRETS_IMPORTED:
+    flask_app.config["SECRET_KEY"] = FLASK_SECRET_KEY
+else:
+    # random key, cookies will not work
+    flask_app.config["SECRET_KEY"] = secrets.token_hex(32)
+
 
 # setup socketio
 sio = SocketIO(
@@ -48,76 +56,26 @@ def post():
 
 @sio.on("connect")
 def on_connect():
+    set_greenlet_name("sio.conn")
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    Log.info(f"connect {sid=} {address=}")
+    print("test1")
+    Log.debug(f"connect {sid=} {address=}")
 
 
 @sio.on("disconnect")
 def on_disconnect():
+    set_greenlet_name("sio.disc")
     sid = request.sid
-    Log.info(f"disconnect {sid=}")
+    Log.debug(f"disconnect {sid=}")
 
 
-@sio.on("message")
-def on_message(packet):
+@sio.on("message")  # = anything that is not connect or disconnect
+def on_packet(name, content):
+    set_greenlet_name("sio.pack")
     sid = request.sid
-    print(f"message {packet=}")
-    sio.emit("testmessage", {"type": "yeet"}, to=sid)
-
-
-def setup_files_and_folders():
-    """
-    Create and setup (missing) folders and files
-    """
-
-    print("Setting up files and folders")
-
-    # list of folders to create, in specific order
-    create_folders = [
-        DATABASES_FOLDER,
-        FILES_FOLDER,
-        AVATARS_FOLDER,
-        SONGS_FOLDER,
-        LOGS_FOLDER
-    ]
-
-    # create files after folders
-    create_files = [
-        f"{DATABASES_FOLDER}/accounts.json",
-        f"{DATABASES_FOLDER}/songs.json",
-        f"{LOGS_FOLDER}/.latest.txt"
-    ]
-
-    for folder in create_folders:
-        if not os.path.exists(folder):
-            os.mkdir(folder)
-            print(f"Created folder {folder}")
-
-    for file in create_files:
-        if not os.path.exists(file):
-            if file.endswith(".json"):
-                # empty json files contain curly braces
-                with open(file, "w") as f:
-                    f.write("{}")
-
-            else:
-                open(file, "w").close()
-
-            print(f"Created file {file}")
-
-    if FILE_LOG_LEVEL:
-        open(f"{LOGS_FOLDER}/.latest.txt", "w").close()
-        print(f"Emptied latest log")
-
-    removed_songs_trash = 0
-    for filename in os.listdir(SONGS_FOLDER):
-        if not filename.endswith(".mp3"):
-            os.remove(f"{SONGS_FOLDER}/{filename}")
-            removed_songs_trash += 1
-
-    if removed_songs_trash:
-        print(f"Removed {removed_songs_trash} trash file(s) from songs folder")
+    Log.debug(f"Got packet {name=}", content=content)
+    sio.emit("testmessage", {"test": "message"}, to=sid)
 
 
 def main():
@@ -142,13 +100,15 @@ def main():
 if __name__ == "__main__":
     while True:
         print("\n\n\n\tHey Vsauce, Michael here!\n\n\n")
-        
+
         try:
             main()
         except Exception as ex:
-            Log.critical("Unhandled exception on main", ex=ex)
+            Log.error("Unhandled exception on main", ex=ex)
 
-        Log.info(f"Restarting in {CRASH_RESTART_DELAY} s")
+        if CRASH_RESTART_DELAY:
+            Log.info(f"Restarting in {CRASH_RESTART_DELAY} s")
 
         print("\n\n\n\tAnd as always, thanks for watching.\n\n\n")
+
         time.sleep(CRASH_RESTART_DELAY)
