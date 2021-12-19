@@ -17,7 +17,7 @@ export default function Login() {
 
   function onLoginFailure(res) {
     console.debug("google login error", res);
-    sendPacket("user.login.error");
+    sendPacket("user.login.error", res);
   }
 
   function onLogoutSuccess() {

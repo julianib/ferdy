@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 export const { REACT_APP_BACKEND_URL } = process.env;
 
-export let socket = undefined;
+export let socket = null;
 
 export function connectSocket() {
   if (socket) {
@@ -11,10 +11,55 @@ export function connectSocket() {
   }
 
   console.debug(`Connecting socket, url=${REACT_APP_BACKEND_URL}`);
-  
+
   socket = io(REACT_APP_BACKEND_URL, {
     timeout: 1000,
   });
+
+  socket.onAny((data, data2) => {
+    console.debug("> GOT", data, data2);
+  });
+
+  socket.on("connect", (data) => {
+    console.debug("Socket connected", data);
+    sendPacket("yo");
+  });
+
+  socket.on("disconnect", (data) => {
+    console.debug("Socket disconnected:", data);
+  });
+
+  // this built in event is shadowing "error" packets from backend, so skip
+  // socket.on("error", (ex) => {
+  //   console.debug("Socket error", ex);
+  // });
+
+  socket.on("reconnect", (data) => {
+    console.debug("Socket reconnected", data);
+  });
+
+  socket.on("reconnect_attempt", (data) => {
+    console.debug("Socket reconnecting", data);
+  });
+
+  socket.on("reconnect_error", (ex) => {
+    console.debug("Socket reconnect error", ex);
+  });
+}
+
+export function disconnectSocket() {
+  if (!socket.connected) {
+    console.warn("Could not disconnect socket");
+    return;
+  }
+
+  socket.disconnect();
+  // remove all listeners for proper cleanup
+  socket.removeAllListeners();
+  socket = null;
+
+  // TODO not working????????
+  console.debug("Disconnected socket and removed listeners");
 }
 
 export function sendPacket(name, content) {

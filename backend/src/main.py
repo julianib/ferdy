@@ -8,6 +8,8 @@ from flask_socketio import SocketIO
 from convenience import *
 from ferdy import Ferdy
 from log import Log
+from packet_handler import handle_packets_loop
+from packet_sender import send_packets_loop
 
 
 set_greenlet_name("Main")
@@ -41,14 +43,14 @@ ferdy: Union[Ferdy, None] = None
 
 @flask_app.get("/test")
 def get_test():
-    Log.trace("get_test()")
+    Log.debug("get_test()")
     return {"deez": "nutz"}
 
 
 @flask_app.post("/")
 def post():
     body = request.json
-    Log.trace(f"post {body=}")
+    Log.debug(f"post {body=}")
     return {"status": "success"}
 
 
@@ -56,47 +58,67 @@ def post():
 
 @sio.on("connect")
 def on_connect():
-    set_greenlet_name("sio.conn")
+    set_greenlet_name("sio/on_connect")
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    Log.trace(f"Handling connect of {sid=} {address=}")
+    Log.debug(f"Handling connect, {sid=} {address=}")
     user = ferdy.handle_connect(sid, address)
-    Log.trace(f"{user} connected")
+
+    if not user:
+        Log.error("Refusing connect attempt, could not create user object")
+        return False  # refuse the connection
+        pass
+
+    Log.debug(f"{user} connected")
 
 
 @sio.on("disconnect")
 def on_disconnect():
-    set_greenlet_name("sio.disc")
+    set_greenlet_name("sio/on_disconnect")
     sid = request.sid
     user = ferdy.get_user_by_sid(sid)
 
     if not user:
-        Log.error(f"Failed to handle disconnect, no user object found {user=}")
+        Log.error(f"Couldn't handle disconnect: no user object, {sid=}")
         return
 
-    Log.trace(f"Handling disconnect of {user}")
+    Log.debug(f"Handling disconnect of {user}")
     ferdy.handle_disconnect(user)
-    Log.trace(f"{user} disconnected")
+    Log.debug(f"{user} disconnected")
 
 
 @sio.on("message")  # = anything that is not connect or disconnect
 def on_packet(name, content):
-    set_greenlet_name("sio.pack")
+    set_greenlet_name("sio/on_packet")
     sid = request.sid
-    Log.debug(f"Got packet {name=}", content=content)
-    sio.emit("testmessage", {"test": "message"}, to=sid)
+    user = ferdy.get_user_by_sid(sid)
+    if not user:
+        Log.warning(f"Couldn't handle packet: no user object, {sid=}")
+        return
+
+    # TODO check max size of name and content
+
+    packet_id = ferdy.get_next_packet_id()
+    content_type = type(content).__name__
+    Log.debug(f"Got packet #{packet_id} from {user}, {name=}, {content_type=}",
+              content=content)
+    # sio.emit("testmessage", {"test": "message"}, to=sid)
+    ferdy.incoming_packets_queue.put((user, name, content, packet_id))
 
 
 def main():
     setup_files_and_folders()
 
-    global ferdy
-    ferdy = Ferdy(sio)
-
     eventlet.spawn(Log.log_writer_loop)
 
-    Log.info(f"Starting on {PORT=}")
+    global ferdy
+    ferdy = Ferdy(sio)
+    eventlet.spawn(send_packets_loop, ferdy)
+    eventlet.spawn(handle_packets_loop, ferdy)
+
     # TODO start with ssl if -h flag not in argv
+    Log.info(f"Starting on {PORT=}")
+
     sio.run(
         app=flask_app,
         host=HOST,
@@ -115,9 +137,9 @@ if __name__ == "__main__":
         except Exception as ex:
             Log.error("Unhandled exception on main", ex=ex)
 
-        if CRASH_RESTART_DELAY:
-            Log.info(f"Restarting in {CRASH_RESTART_DELAY} s")
+        if not CRASH_RESTART_DELAY:
+            print("\n\n\n\tAnd as always, thanks for watching.\n\n\n")
+            break
 
-        print("\n\n\n\tAnd as always, thanks for watching.\n\n\n")
-
+        Log.info(f"Restarting in {CRASH_RESTART_DELAY} s")
         time.sleep(CRASH_RESTART_DELAY)

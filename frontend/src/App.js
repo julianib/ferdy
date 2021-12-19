@@ -1,19 +1,10 @@
 import Login from "./components/Login";
 import { useEffect } from "react";
-import { connectSocket, sendPacket, socket } from "./connection";
+import { connectSocket, disconnectSocket, socket } from "./connection";
 
 export default function App() {
   useEffect(() => {
     connectSocket();
-
-    socket.on("connect", (data) => {
-      console.debug("> connected", data);
-      sendPacket("yo");
-    });
-
-    socket.on("disconnect", (data) => {
-      console.debug("> disconnected", data);
-    });
 
     socket.on("testmessage", (packet) => {
       console.debug("> RECV", packet);
@@ -22,6 +13,10 @@ export default function App() {
     socket.on("user.verify.ok", (packet) => {
       console.debug("> RECV", packet);
     });
+
+    return () => {
+      disconnectSocket();
+    };
   }, []);
 
   return <Login />;

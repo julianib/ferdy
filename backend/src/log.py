@@ -10,12 +10,11 @@ import traceback
 colorama.init(autoreset=True)
 
 # define log levels
-TRACE = 0, "trace", ""
-DEBUG = 1, "debug", Fore.CYAN + Style.BRIGHT
-INFO = 2, "info", Fore.GREEN + Style.BRIGHT
+TEST = 0, "test", Fore.MAGENTA + Style.BRIGHT
+DEBUG = 1, "debug", ""
+INFO = 2, "info", Fore.BLUE + Style.BRIGHT
 WARNING = 3, "warning", Fore.YELLOW + Style.BRIGHT
 ERROR = 4, "error", Fore.RED + Style.BRIGHT
-TEST = 5, "test", Fore.MAGENTA + Style.BRIGHT
 
 
 def get_level_int_from_str(level_str: str) -> int:
@@ -23,14 +22,14 @@ def get_level_int_from_str(level_str: str) -> int:
     Convert a log level string to its actual level int
     """
 
-    for level in [TRACE, DEBUG, INFO, WARNING, ERROR, TEST]:
+    for level in [TEST, DEBUG, INFO, WARNING, ERROR]:
         if level[1] == level_str:
             return level[0]
 
     raise ValueError(f"Unknown log level: {level_str=}")
 
 
-def filter_content(content, abbreviate=True) -> Optional[Union[dict, list]]:
+def filter_content(content, abbreviate_keys=True) -> Optional[Union[dict, list]]:
     """
     Recursively filter values in packet containing sensitive or unimportant data
     in packet content
@@ -44,7 +43,7 @@ def filter_content(content, abbreviate=True) -> Optional[Union[dict, list]]:
 
     if content_type == list:
         return [
-            filter_content(element, abbreviate) 
+            filter_content(element, abbreviate_keys)
             for element in content_copy
         ]
 
@@ -52,7 +51,7 @@ def filter_content(content, abbreviate=True) -> Optional[Union[dict, list]]:
         for key in content_copy:
             if key in CONTENT_KEYS_TO_HIDE:
                 content_copy[key] = "<hidden>"
-            elif abbreviate and key in CONTENT_KEYS_TO_ABBREVIATE:
+            elif abbreviate_keys and key in CONTENT_KEYS_TO_ABBREVIATE:
                 content_copy[key] = abbreviate(content_copy[key])
 
         return content_copy
@@ -70,7 +69,7 @@ def abbreviate(number: int) -> str:
     try:
         number = int(number)
     except ValueError:
-        Log.warn(f"Failed to abbreviate: {number=}")
+        Log.warning(f"Failed to abbreviate, {number=}")
         return "NaN"
 
     if number == 0:
@@ -112,8 +111,8 @@ class Log:
     WRITE_FILE_LOOP_CALLED = False
 
     @staticmethod
-    def trace(raw_message, **kwargs):
-        Log._log(raw_message, TRACE, **kwargs)
+    def test(raw_message, **kwargs):
+        Log._log(raw_message, TEST, **kwargs)
 
     @staticmethod
     def debug(raw_message, **kwargs):
@@ -130,10 +129,6 @@ class Log:
     @staticmethod
     def error(raw_message, **kwargs):
         Log._log(raw_message, ERROR, **kwargs)
-
-    @staticmethod
-    def test(raw_message, **kwargs):
-        Log._log(raw_message, TEST, **kwargs)
 
     @staticmethod
     def _log(raw_message, level, **kwargs):
@@ -159,7 +154,7 @@ class Log:
 
         raw_message = str(raw_message)
 
-        # if a packet is provided, add it to the outputted message
+        # if a packet is given, add it to the outputted message
         if content is not None:
             raw_message += f"\n content={content}"
 
@@ -177,9 +172,9 @@ class Log:
             # no need for a lock, https://stackoverflow.com/a/2854703/13216113
             color = level[2]
             level_text = level[1].upper()
-            now = datetime.now().strftime("%H:%M:%S")
+            # now = datetime.now().strftime("%H:%M:%S")
             print(
-                f"{color}[{now}][{level_text}][{greenlet_name}] "
+                f"{color}[{level_text}][{greenlet_name}] "
                 f"{Style.RESET_ALL}{message}"
             )
 
@@ -206,7 +201,7 @@ class Log:
                 pass
             except Exception as ex:
                 Log.error(
-                    "Unhandled exception on playing sound",
+                    "Unhandled exception on playing logging sound",
                     ex=ex, skip_sound=True
                 )
 
@@ -224,7 +219,7 @@ class Log:
         set_greenlet_name("LogWriter")
         latest_log = f"{LOGS_FOLDER}/.latest.txt"
 
-        Log.trace("Log writer loop ready")
+        Log.debug("Log writer loop ready")
 
         while True:
             now_str, level, thread_name, message, ex, \
@@ -236,8 +231,9 @@ class Log:
             with open(latest_log, "a", encoding="utf-8") as f:
                 f.write(
                     f"[{now_str}][{level[1].upper()}][{thread_name}] "
-                    "{message}\n"
+                    f"{message}\n"
                 )
+
                 if ex:
                     traceback.print_exception(
                         type(ex), ex, ex.__traceback__, file=f,

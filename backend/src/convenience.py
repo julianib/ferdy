@@ -19,15 +19,6 @@ from eventlet.green.Queue import Queue
 import google
 
 
-# import secrets.py, contains sensitive data
-try:
-    from scary_secrets import *
-    SCARY_SECRETS_IMPORTED = True
-except ImportError:
-    Log.warning("Could not import scary_secrets.py")
-    SCARY_SECRETS_IMPORTED = False
-
-
 # log.Log uses this function, so define it before importing
 def set_greenlet_name(name: str):  # nopep8
     """
@@ -52,7 +43,17 @@ def get_greenlet_name() -> str:  # nopep8
 
 # project modules
 from config import *
+from exceptions import *
 from log import Log
+
+
+# import secrets.py, contains sensitive data
+try:
+    from scary_secrets import *
+    SCARY_SECRETS_IMPORTED = True
+except ImportError:
+    Log.warning("Could not import scary_secrets.py")
+    SCARY_SECRETS_IMPORTED = False
 
 
 def setup_files_and_folders():
@@ -108,3 +109,8 @@ def setup_files_and_folders():
     if removed_songs_trash:
         print(f"Removed {removed_songs_trash} trash file(s) from songs folder")
 
+
+def make_error_packet(code):
+    return "error", {
+        "code": code
+    }
