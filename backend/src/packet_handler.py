@@ -1,7 +1,9 @@
 from convenience import *
+from ferdy import Ferdy
+from user import User
 
 
-def handle_packets_loop(ferdy):
+def handle_packets_loop(ferdy: Ferdy):
     """
     Blocking loop for handling incoming packets
     """
@@ -12,34 +14,47 @@ def handle_packets_loop(ferdy):
     while True:
         user, name, content, packet_id = ferdy.incoming_packets_queue.get()
         set_greenlet_name(f"PacketHandler/#{packet_id}")
-        Log.debug(f"Handling packet, {name=}", content=content)
+        Log.debug(f"Handling packet, {name=}",
+                  content=content or "<no content>")
 
         try:
             instant_response = handle_packet(ferdy, user, name, content)
 
-        except PacketHandlingFailed as ex:
-            code = ex.code
-            Log.debug(f"Packet handling failed, {code=}")
-            instant_response = make_error_packet(code)
+        except NotImplementedError:
+            Log.debug("Handling failed: not implemented")
+            instant_response = error_content("error.notimplemented")
 
         except Exception as ex:
+            # TODO if user has correct roles, give error traceback in packet
             Log.error("Unhandled exception on handle_packet", ex=ex)
-            instant_response = make_error_packet("error.backend")
+            instant_response = error_content("error.backend")
 
         if instant_response:
-            response_name, response_content = instant_response
+
+            # prevent IndexError
+            if type(instant_response) == tuple and len(instant_response) == 2:
+                response_name, response_content = instant_response
+            elif type(instant_response) == str:
+                response_name, response_content = instant_response, None
+            else:
+                Log.error(f"Handled packet but instant response structure is "
+                          f"invalid, skipping, {instant_response=}")
+                continue
+
             response_packet_id = ferdy.get_next_packet_id()
             Log.debug(f"Handled packet, instant response is "
                       f"#{response_packet_id}")
             ferdy.outgoing_packets_queue.put(
-                (user, response_name, response_content, packet_id, None)
+                (user, response_name, response_content, response_packet_id,
+                 None)
             )
 
         else:
             Log.debug("Handled packet, no instant response")
 
 
-def handle_packet(ferdy, user, name: str, content: Union[list, dict]) -> tuple:
+def handle_packet(ferdy: Ferdy, user: User, name: str,
+                  content: Union[dict, list, None]) -> Union[tuple, str, None]:
     """
     Handle a packet and return an optional direct response packet
     """
@@ -55,21 +70,19 @@ def handle_packet(ferdy, user, name: str, content: Union[list, dict]) -> tuple:
         content_type = type(content).__name__
         raise ValueError(f"Invalid packet content type, {content_type=}")
 
-    # only internal frontend/backend errors should be sent to backend
-    if name == "error":
-        Log.error(f"User sent error: {content['code']}")
-        return "error", make_error_packet(content["code"])  # TODO unnecessary?
-
-    # account
-
-    if name == "account.data":
-        raise NotImplementedError  # TODO Implement accounts
-
-    if name == "account.list":
-        raise NotImplementedError
+    # aim is to have as little as possible handlers for frontend to register
+    # and unregister each time components call useEffect
 
     # game packets should be handled by game handler
     # TODO implement games
+
+    # profile
+
+    if name == "profile.data":
+        raise NotImplementedError
+
+    if name == "profile.list":
+        raise NotImplementedError
 
     # room
 
@@ -104,23 +117,59 @@ def handle_packet(ferdy, user, name: str, content: Union[list, dict]) -> tuple:
 
     # user
 
-    if name == "user.log.in":
-        raise NotImplementedError
+    if name == "user.log_in":
+        if user.is_logged_in():
+            return "user.log_in.error", error_content("already_logged_in")
 
-    if name == "user.log.out":
-        raise NotImplementedError
-
-    if name == "user.verify":
         # TODO actually verify???
+        Log.debug("Skipping token verification")
 
-        Log.debug(f"profileObj {content}")
-        token = secrets.token_hex(32)
-        return "user.verify.ok", {"token": token}
+        google_id = int(content["google_id"])
+        name = content["name"]
+
+        # lookup the profile matching the google id
+        Log.debug("Checking if profile exists")
+        profile = ferdy.profiles.match_single(google_id=google_id)
+
+        # if profile does not exist in db, create it
+        if not profile:
+            profile = ferdy.profiles.create_profile(
+                google_id=google_id,
+                name=name,
+            )
+
+        # TODO provide a session token for the user (for POST fetches)
+        user.log_in(profile)
+
+        return "user.log_in.ok", {  # TODO return profile jsonable
+            "avatar_url": "<url>",
+            "email": "<email>",
+            "first_name": "<first_name>",
+            "last_name": "<last_name>",
+            "name": profile["name"],
+        }
+
+    if name == "user.log_in.error":
+        error = content["error"]
+        Log.debug(f"User {user} got log in error, {error=}")
+        return
+
+    if name == "user.log_out":
+        if not user.is_logged_in():
+            return "user.log_out.error", error_content("not_logged_in")
+
+        user.log_out()
+
+        return "user.log_out.ok"
 
     if name == "user.message.send":
-        raise NotImplementedError
+        if not user.is_logged_in():
+            return "user.message.send.error", error_content("not_logged_in")
 
-    if name == "user.register":
-        raise NotImplementedError
+        ferdy.send_packet_to_all("user.message.receive", {
+            "author": user.get_profile()["name"],
+            "text": content["text"],
+        })
+        return
 
-    raise PacketNameUnknown
+    raise NotImplementedError

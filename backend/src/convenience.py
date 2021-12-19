@@ -3,14 +3,16 @@ Convenience file for easy importing
 """
 
 # builtin modules
+from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Dict, Iterable, List, Union, Optional, Tuple, Set
+import json
 import math
 import os
 import random
 import secrets
 import sys
 import time
+from typing import Dict, Iterable, List, Union, Optional, Tuple, Set
 
 # 3rd party modules
 import eventlet
@@ -56,12 +58,12 @@ except ImportError:
     SCARY_SECRETS_IMPORTED = False
 
 
-def setup_files_and_folders():
+def setup_folders():
     """
-    Create and setup (missing) folders and files on startup
+    Create missing folders on startup
     """
 
-    print("Setting up files and folders")
+    Log.debug("Setting up folders")
 
     # list of folders to create, in specific order
     create_folders = [
@@ -72,45 +74,23 @@ def setup_files_and_folders():
         LOGS_FOLDER
     ]
 
-    # create files after folders
-    create_files = [
-        f"{DATABASES_FOLDER}/accounts.json",
-        f"{DATABASES_FOLDER}/songs.json",
-        f"{LOGS_FOLDER}/.latest.txt"
-    ]
-
     for folder in create_folders:
         if not os.path.exists(folder):
             os.mkdir(folder)
-            print(f"Created folder {folder}")
+            Log.debug(f"Created folder {folder}")
 
-    for file in create_files:
-        if not os.path.exists(file):
-            if file.endswith(".json"):
-                # empty json files contain curly braces
-                with open(file, "w") as f:
-                    f.write("{}")
-
-            else:
-                open(file, "w").close()
-
-            print(f"Created file {file}")
-
-    if FILE_LOG_LEVEL:
-        open(f"{LOGS_FOLDER}/.latest.txt", "w").close()
-        print(f"Emptied latest log")
-
-    removed_songs_trash = 0
-    for filename in os.listdir(SONGS_FOLDER):
-        if not filename.endswith(".mp3"):
-            os.remove(f"{SONGS_FOLDER}/{filename}")
-            removed_songs_trash += 1
-
-    if removed_songs_trash:
-        print(f"Removed {removed_songs_trash} trash file(s) from songs folder")
+    # TODO move this to songs db initialization
+    # removed_songs_trash = 0
+    # for filename in os.listdir(SONGS_FOLDER):
+    #     if not filename.endswith(".mp3"):
+    #         os.remove(f"{SONGS_FOLDER}/{filename}")
+    #         removed_songs_trash += 1
+    #
+    # if removed_songs_trash:
+    #     print(f"Removed {removed_songs_trash} file(s) from songs folder")
 
 
-def make_error_packet(code):
-    return "error", {
-        "code": code
+def error_content(error: str):
+    return {
+        "error": error
     }

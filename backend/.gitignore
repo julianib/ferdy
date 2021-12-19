@@ -1,6 +1,6 @@
-/databases/
-/files/
-/logs/
-/test/
+databases/
+files/
+logs/
+test/
 
 /src/scary_secrets.py

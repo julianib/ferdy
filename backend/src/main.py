@@ -32,7 +32,7 @@ sio = SocketIO(
     async_mode="eventlet",
     cors_allowed_origins='*',
     logger=LOG_SOCKETIO,  # socketio logger
-    engineio_logger=LOG_ENGINEIO  # engione logger
+    engineio_logger=LOG_ENGINEIO  # engineio logger
 )
 
 # setup ferdy
@@ -44,7 +44,7 @@ ferdy: Union[Ferdy, None] = None
 @flask_app.get("/test")
 def get_test():
     Log.debug("get_test()")
-    return {"deez": "nutz"}
+    return {"deez": ""}
 
 
 @flask_app.post("/")
@@ -61,15 +61,14 @@ def on_connect():
     set_greenlet_name("sio/on_connect")
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    Log.debug(f"Handling connect, {sid=} {address=}")
+    Log.debug(f"Handling connect, {sid[:4]=} {address=}")
     user = ferdy.handle_connect(sid, address)
 
     if not user:
         Log.error("Refusing connect attempt, could not create user object")
         return False  # refuse the connection
-        pass
 
-    Log.debug(f"{user} connected")
+    Log.info(f"{user} connected")
 
 
 @sio.on("disconnect")
@@ -79,12 +78,12 @@ def on_disconnect():
     user = ferdy.get_user_by_sid(sid)
 
     if not user:
-        Log.error(f"Couldn't handle disconnect: no user object, {sid=}")
+        Log.error(f"Couldn't handle disconnect: no user object, {sid[:4]=}")
         return
 
     Log.debug(f"Handling disconnect of {user}")
     ferdy.handle_disconnect(user)
-    Log.debug(f"{user} disconnected")
+    Log.info(f"{user} disconnected")
 
 
 @sio.on("message")  # = anything that is not connect or disconnect
@@ -93,23 +92,21 @@ def on_packet(name, content):
     sid = request.sid
     user = ferdy.get_user_by_sid(sid)
     if not user:
-        Log.warning(f"Couldn't handle packet: no user object, {sid=}")
+        Log.warning(f"Couldn't handle packet: no user object, {sid[:4]=}")
         return
 
     # TODO check max size of name and content
 
     packet_id = ferdy.get_next_packet_id()
-    content_type = type(content).__name__
-    Log.info(f"Got packet #{packet_id} from {user}, {name=}, {content_type=}",
-              content=content)
-    # sio.emit("testmessage", {"test": "message"}, to=sid)
+    Log.info(f"Received packet #{packet_id} from {user}, {name=}")
     ferdy.incoming_packets_queue.put((user, name, content, packet_id))
 
 
 def main():
-    setup_files_and_folders()
+    setup_folders()  # TODO fix cwd problem that causes extra files
 
-    eventlet.spawn(Log.log_writer_loop)
+    if FILE_LOG_LEVEL:
+        eventlet.spawn(Log.log_writer_loop)
 
     global ferdy
     ferdy = Ferdy(sio)
@@ -123,7 +120,7 @@ def main():
         app=flask_app,
         host=HOST,
         port=PORT,
-        debug=DEBUG,
+        debug=DEBUG_FLASK,
         log_output=LOG_CONNECTIONS
     )
 
@@ -131,6 +128,12 @@ def main():
 if __name__ == "__main__":
     while True:
         print("\n\n\n\tHey Vsauce, Michael here!\n\n\n")
+
+        Log.test("test")
+        Log.debug("debug")
+        Log.info("info")
+        Log.warning("warning")
+        Log.error("error")
 
         try:
             main()

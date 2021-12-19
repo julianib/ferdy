@@ -5,13 +5,9 @@ All custom exceptions used
 
 # packet handling errors
 
-class PacketHandlingFailed(Exception):
-    code = "error.packet.unknown"
+# ...
 
+# db errors
 
-class PacketNameUnknown(PacketHandlingFailed):
-    code = "error.packet.name.unknown"
-
-
-# class ContentMissing(PacketHandlingError):
-#     code = "error.content.missing"
+class NoEntriesMatch(Exception):
+    pass

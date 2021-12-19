@@ -1,26 +1,25 @@
 import Login from "./components/Login";
-import { SocketContext } from "./SocketContext";
 import { useEffect, useContext } from "react";
-import { connectSocket, disconnectSocket } from "./connection";
+import { getSocket, disconnectSocket } from "./connection";
+import { UserContext } from "./contexts/UserContext";
+import MessageBox from "./components/MessageBox";
 
 export default function App() {
-  const { socket, setSocket } = useContext(SocketContext);
-
-  // setInterval(() => {
-  //   console.debug("socket currently", socket);
-  // }, 1000);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    let newSocket = connectSocket()
-    setSocket(newSocket)
-    
-
-    console.debug("App() useEffect", socket);
+    getSocket();
 
     return () => {
       disconnectSocket();
     };
-  }, [socket, setSocket]);
+  }, []);
 
-  return socket?.connected ? <Login /> : null;
+  return (
+    <>
+      {user ? <h1>{user.first_name}</h1> : <h1>Not logged in</h1>}
+      <Login />
+      <MessageBox />
+    </>
+  );
 }

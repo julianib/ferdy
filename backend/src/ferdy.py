@@ -1,5 +1,6 @@
 from convenience import *
 from user import User
+from user_profiles import Profiles
 
 
 class Ferdy:
@@ -11,8 +12,10 @@ class Ferdy:
         self._last_packet_id = 0
         self._users = set()
 
+        self.profiles = Profiles()
+
     def create_user_from_sid(self, sid):
-        if sid in [user.sid for user in self.get_all_users()]:
+        if sid in [user.sid for user in self.get_users()]:
             raise ValueError(f"Given sid is taken by user, {sid=}")
 
         user = User(sid)
@@ -28,13 +31,15 @@ class Ferdy:
         if not user:
             raise ValueError("No user object given")
 
-        self.send_packet_to(user, "user.connected.you", {
-            "users_logged_in": [user.sid for user in self.get_all_users()],
+        self.send_packet_to(user, "user.connected", {
+            "you": True,
+            "users": [user.sid for user in self.get_users()],
             "user_count": self.get_user_count(),
         })
 
-        self.send_packet_to_all("user.connected.other", {
-            "users_logged_in": [user.sid for user in self.get_all_users()],
+        self.send_packet_to_all("user.connected", {
+            "you": False,
+            "users": [user.sid for user in self.get_users()],
             "user_count": self.get_user_count(),
         }, skip=user)
 
@@ -45,11 +50,11 @@ class Ferdy:
 
         self.send_packet_to_all("user.disconnected", {
             "sid": user.sid,
-            "users_logged_in": [user.sid for user in self.get_all_users()],
+            "users": [user.sid for user in self.get_users()],
             "user_count": self.get_user_count(),
         })
 
-    def get_all_users(self):
+    def get_users(self):
         return self._users.copy()
 
     def get_next_packet_id(self):
@@ -57,19 +62,19 @@ class Ferdy:
         return self._last_packet_id
 
     def get_user_by_sid(self, sid):
-        for user in self.get_all_users():
+        for user in self.get_users():
             if user.sid == sid:
                 return user
 
         raise ValueError(f"Could not get user by sid, {sid=}")
 
     def get_user_count(self):
-        return len(self.get_all_users())
+        return len(self.get_users())
 
     def send_packet_to(self, users, name, content, skip=None):
         self.outgoing_packets_queue.put((users, name, content,
                                          self.get_next_packet_id(), skip))
 
     def send_packet_to_all(self, name, content, skip=None):
-        self.outgoing_packets_queue.put((self.get_all_users(), name, content,
+        self.outgoing_packets_queue.put((self.get_users(), name, content,
                                          self.get_next_packet_id(), skip))

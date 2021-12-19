@@ -9,13 +9,6 @@ import traceback
 # init colorama
 colorama.init(autoreset=True)
 
-# define log levels
-TEST = 0, "test", Fore.MAGENTA + Style.BRIGHT
-DEBUG = 1, "debug", ""
-INFO = 2, "info", Fore.BLUE + Style.BRIGHT
-WARNING = 3, "warning", Fore.YELLOW + Style.BRIGHT
-ERROR = 4, "error", Fore.RED + Style.BRIGHT
-
 
 def get_level_int_from_str(level_str: str) -> int:
     """
@@ -31,8 +24,7 @@ def get_level_int_from_str(level_str: str) -> int:
 
 def filter_content(content, abbreviate_keys=True) -> Optional[Union[dict, list]]:
     """
-    Recursively filter values in packet containing sensitive or unimportant data
-    in packet content
+    Recursively abbreviate values in packets
     """
 
     if not content:
@@ -49,14 +41,13 @@ def filter_content(content, abbreviate_keys=True) -> Optional[Union[dict, list]]
 
     if content_type == dict:
         for key in content_copy:
-            if key in CONTENT_KEYS_TO_HIDE:
-                content_copy[key] = "<hidden>"
-            elif abbreviate_keys and key in CONTENT_KEYS_TO_ABBREVIATE:
+            if abbreviate_keys and key in CONTENT_KEYS_TO_ABBREVIATE:
                 content_copy[key] = abbreviate(content_copy[key])
 
         return content_copy
 
-    raise ValueError(f"Unsupported packet content to filter, {content_type=}")
+    raise ValueError(f"Unsupported packet content to abbreviate, "
+                     f"{content_type=}")
 
 
 def abbreviate(number: int) -> str:
@@ -140,7 +131,9 @@ class Log:
         ex: Exception = kwargs.pop("ex", None)
 
         # hide values in packet content if present and necessary
-        content = filter_content(kwargs.pop("content", None))
+        content = kwargs.pop("content", None)
+        if content and content != "<no content>":
+            content = filter_content(content)
 
         # skip cutting off the message if its too long
         cutoff: bool = kwargs.pop("cutoff", True)
@@ -163,7 +156,7 @@ class Log:
                 level[0] >= get_level_int_from_str(CONSOLE_LOG_LEVEL):
 
             excess_message_size = len(raw_message) - CONSOLE_CUTOFF
-            if cutoff and excess_message_size > 0:
+            if CONSOLE_CUTOFF and cutoff and excess_message_size > 0:
                 message = raw_message[:CONSOLE_CUTOFF] + \
                     f"... (+ {excess_message_size})"
             else:
@@ -211,13 +204,21 @@ class Log:
         Blocking loop to write messages and exceptions to file from the queue
         """
 
+        set_greenlet_name("LogWriter")
+
+        if not FILE_LOG_LEVEL:
+            Log.debug("File logging disabled")
+
         if Log.WRITE_FILE_LOOP_CALLED:
             Log.warning("write_file_loop() was already called, ignoring")
             return
 
         Log.WRITE_FILE_LOOP_CALLED = True
-        set_greenlet_name("LogWriter")
+
+        # set and clear the latest log
         latest_log = f"{LOGS_FOLDER}/.latest.txt"
+        open(latest_log, "w").close()
+        Log.debug(f"Emptied latest log")
 
         Log.debug("Log writer loop ready")
 

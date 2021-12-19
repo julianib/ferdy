@@ -1,13 +1,15 @@
 import { io } from "socket.io-client";
 
-export const { REACT_APP_BACKEND_URL } = process.env;
+const { REACT_APP_BACKEND_URL } = process.env;
 
+// this object gets returned by getSocket()
 let socket = null;
 
-export function connectSocket() {
+export function getSocket() {
   if (socket) {
-    console.warn("initSocket() ignored: socket already set");
-    return;
+    // socket is already was already initialized by another component, so just
+    // return the already-initialized socket instance to use
+    return socket;
   }
 
   console.debug(`Connecting socket, url=${REACT_APP_BACKEND_URL}`);
@@ -16,8 +18,8 @@ export function connectSocket() {
     timeout: 1000,
   });
 
-  socket.onAny((data, data2) => {
-    console.debug("> GOT", data, data2);
+  socket.prependAny((data, data2) => {
+    console.debug("=> RECEIVED:", data, data2);
   });
 
   socket.on("connect", () => {
@@ -57,7 +59,7 @@ export function disconnectSocket() {
 
   socket.disconnect();
   // remove all listeners for proper cleanup
-  socket.removeAllListeners();
+  socket.offAny();
   socket = null;
 
   // TODO not working????????
@@ -67,7 +69,7 @@ export function disconnectSocket() {
 export function sendPacket(name, content) {
   if (socket?.connected) {
     socket.send(name, content);
-    console.debug("< SENT", name, content);
+    console.debug("<= SENT:", name, content);
     return;
   }
 

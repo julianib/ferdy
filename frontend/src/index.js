@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import { SocketContextProvider } from "./SocketContext";
+import { AllContextProviders } from "./contexts/AllContexts";
 
 ReactDOM.render(
   <React.StrictMode>
-    <SocketContextProvider>
+    <AllContextProviders>
       <App />
-    </SocketContextProvider>
+    </AllContextProviders>
   </React.StrictMode>,
   document.getElementById("root")
 );
