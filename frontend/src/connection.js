@@ -49,7 +49,7 @@ export function connectSocket() {
 
 export function disconnectSocket() {
   if (!socket.connected) {
-    console.warn("Could not disconnect socket");
+    console.warn("Could not disconnect socket: not connected");
     return;
   }
 
