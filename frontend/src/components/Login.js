@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 
 import { sendPacket } from "../connection";
+import { SocketContext } from "../SocketContext";
 
 export default function Login() {
   const { REACT_APP_CLIENT_ID } = process.env;
+  // const [socket] = useContext(SocketContext);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    console.debug("Login() useEffect");
+  }, []);
 
   async function onLoginSuccess(res) {
     // TODO send json token again after socket lost connection
     console.debug("google login ok, verifying with backend", res);
-    setUser(res.profileObj); // TODO should happen AFTER backend verify
+    // setUser(res.profileObj); // TODO should happen AFTER backend verify
     // fetchBackend("POST", res.tokenId);
-    sendPacket("user.login.verify");
+    sendPacket("user.login.verify", res.profileObj);
   }
 
   function onLoginFailure(res) {
@@ -30,7 +37,7 @@ export default function Login() {
     <>
       {user ? (
         <div>
-          <h1>AAAA, {user.givenName}</h1>
+          <h1>AAAA, {user.firstName}</h1>
 
           <GoogleLogout
             clientId={REACT_APP_CLIENT_ID}
@@ -49,7 +56,7 @@ export default function Login() {
           onFailure={onLoginFailure}
           isSignedIn
         >
-          Log in
+          Log in {token}
         </GoogleLogin>
       )}
     </>

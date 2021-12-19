@@ -1,0 +1,586 @@
+[2021-12-19 12:05:21][INFO][Main] Starting on PORT=1962
+[2021-12-19 12:05:21][DEBUG][LogWriter] Log writer loop ready
+[2021-12-19 12:05:21][DEBUG][PacketSender] Send packets loop ready
+[2021-12-19 12:05:21][DEBUG][PacketHandler] Handle packets loop ready
+[2021-12-19 12:05:21][DEBUG][sio/on_connect] Handling connect, sid='U4iB7Ji2hCDzdtqxAAAB' address='127.0.0.1'
+[2021-12-19 12:05:21][DEBUG][sio/on_connect] <User sid='U4iB7Ji2hCDzdtqxAAAB'> connected
+[2021-12-19 12:05:21][DEBUG][PacketSender/#1] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['U4iB7Ji2hCDzdtqxAAAB'], 'user_count': 1}
+ content: {'users_logged_in': ['U4iB7Ji2hCDzdtqxAAAB'], 'user_count': 1}
+[2021-12-19 12:05:21][DEBUG][PacketSender/#1] Sent packet to 1 user(s)
+[2021-12-19 12:05:21][DEBUG][PacketSender/#2] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['U4iB7Ji2hCDzdtqxAAAB'], 'user_count': 1}
+ content: {'users_logged_in': ['U4iB7Ji2hCDzdtqxAAAB'], 'user_count': 1}
+[2021-12-19 12:05:21][DEBUG][PacketSender/#2] Did not send packet: no recipients
+[2021-12-19 12:05:21][INFO][sio/on_packet] Got packet #3 from <User sid='U4iB7Ji2hCDzdtqxAAAB'>, name='yo', content_type='NoneType'
+[2021-12-19 12:05:21][DEBUG][PacketHandler/#3] Handling packet, name='yo'
+[2021-12-19 12:05:21][DEBUG][PacketHandler/#3] Packet handling failed, code='error.packet.name.unknown'
+[2021-12-19 12:05:21][DEBUG][PacketHandler/#3] Handled packet, instant response is #4
+[2021-12-19 12:05:21][DEBUG][PacketSender/#3] Sending packet, name='error'
+ content={'code': 'error.packet.name.unknown'}
+ content: {'code': 'error.packet.name.unknown'}
+[2021-12-19 12:05:21][DEBUG][PacketSender/#3] Sent packet to 1 user(s)
+[2021-12-19 12:06:12][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='U4iB7Ji2hCDzdtqxAAAB'>
+[2021-12-19 12:06:12][DEBUG][sio/on_disconnect] <User sid='U4iB7Ji2hCDzdtqxAAAB'> disconnected
+[2021-12-19 12:06:12][DEBUG][PacketSender/#5] Sending packet, name='user.disconnected'
+ content={'sid': 'U4iB7Ji2hCDzdtqxAAAB', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'U4iB7Ji2hCDzdtqxAAAB', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:06:12][DEBUG][PacketSender/#5] Did not send packet: no recipients
+[2021-12-19 12:06:12][DEBUG][sio/on_connect] Handling connect, sid='-7MEQFTaXcR4IoFLAAAD' address='127.0.0.1'
+[2021-12-19 12:06:12][DEBUG][sio/on_connect] <User sid='-7MEQFTaXcR4IoFLAAAD'> connected
+[2021-12-19 12:06:12][DEBUG][PacketSender/#6] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['-7MEQFTaXcR4IoFLAAAD'], 'user_count': 1}
+ content: {'users_logged_in': ['-7MEQFTaXcR4IoFLAAAD'], 'user_count': 1}
+[2021-12-19 12:06:12][DEBUG][PacketSender/#6] Sent packet to 1 user(s)
+[2021-12-19 12:06:12][DEBUG][PacketSender/#7] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['-7MEQFTaXcR4IoFLAAAD'], 'user_count': 1}
+ content: {'users_logged_in': ['-7MEQFTaXcR4IoFLAAAD'], 'user_count': 1}
+[2021-12-19 12:06:12][DEBUG][PacketSender/#7] Did not send packet: no recipients
+[2021-12-19 12:06:15][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='-7MEQFTaXcR4IoFLAAAD'>
+[2021-12-19 12:06:15][DEBUG][sio/on_disconnect] <User sid='-7MEQFTaXcR4IoFLAAAD'> disconnected
+[2021-12-19 12:06:15][DEBUG][PacketSender/#8] Sending packet, name='user.disconnected'
+ content={'sid': '-7MEQFTaXcR4IoFLAAAD', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': '-7MEQFTaXcR4IoFLAAAD', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:06:15][DEBUG][PacketSender/#8] Did not send packet: no recipients
+[2021-12-19 12:06:15][DEBUG][sio/on_connect] Handling connect, sid='YWMnF1dm7tZnKUnXAAAF' address='127.0.0.1'
+[2021-12-19 12:06:15][DEBUG][sio/on_connect] <User sid='YWMnF1dm7tZnKUnXAAAF'> connected
+[2021-12-19 12:06:15][DEBUG][PacketSender/#9] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['YWMnF1dm7tZnKUnXAAAF'], 'user_count': 1}
+ content: {'users_logged_in': ['YWMnF1dm7tZnKUnXAAAF'], 'user_count': 1}
+[2021-12-19 12:06:15][DEBUG][PacketSender/#9] Sent packet to 1 user(s)
+[2021-12-19 12:06:15][DEBUG][PacketSender/#10] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['YWMnF1dm7tZnKUnXAAAF'], 'user_count': 1}
+ content: {'users_logged_in': ['YWMnF1dm7tZnKUnXAAAF'], 'user_count': 1}
+[2021-12-19 12:06:15][DEBUG][PacketSender/#10] Did not send packet: no recipients
+[2021-12-19 12:08:51][INFO][sio/on_packet] Got packet #11 from <User sid='YWMnF1dm7tZnKUnXAAAF'>, name='user.login.verify', content_type='dict'
+ content={'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+ content: {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:08:51][DEBUG][PacketHandler/#11] Handling packet, name='user.login.verify'
+ content={'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+ content: {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:08:51][DEBUG][PacketHandler/#11] profileObj {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:08:51][DEBUG][PacketHandler/#11] Handled packet, instant response is #12
+[2021-12-19 12:08:51][DEBUG][PacketSender/#11] Sending packet, name='user.login.verify.ok'
+ content={'token': 'cb339a6bde2dc22d966ba76c108689aa05cc1984c05060af32ee2cc27afee77e'}
+ content: {'token': 'cb339a6bde2dc22d966ba76c108689aa05cc1984c05060af32ee2cc27afee77e'}
+[2021-12-19 12:08:51][DEBUG][PacketSender/#11] Sent packet to 1 user(s)
+[2021-12-19 12:09:01][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='YWMnF1dm7tZnKUnXAAAF'>
+[2021-12-19 12:09:01][DEBUG][sio/on_disconnect] <User sid='YWMnF1dm7tZnKUnXAAAF'> disconnected
+[2021-12-19 12:09:01][DEBUG][PacketSender/#13] Sending packet, name='user.disconnected'
+ content={'sid': 'YWMnF1dm7tZnKUnXAAAF', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'YWMnF1dm7tZnKUnXAAAF', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:09:01][DEBUG][PacketSender/#13] Did not send packet: no recipients
+[2021-12-19 12:09:02][DEBUG][sio/on_connect] Handling connect, sid='mqw5m7FHrsHXGBJgAAAH' address='127.0.0.1'
+[2021-12-19 12:09:02][DEBUG][sio/on_connect] <User sid='mqw5m7FHrsHXGBJgAAAH'> connected
+[2021-12-19 12:09:02][DEBUG][PacketSender/#14] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['mqw5m7FHrsHXGBJgAAAH'], 'user_count': 1}
+ content: {'users_logged_in': ['mqw5m7FHrsHXGBJgAAAH'], 'user_count': 1}
+[2021-12-19 12:09:02][DEBUG][PacketSender/#14] Sent packet to 1 user(s)
+[2021-12-19 12:09:02][DEBUG][PacketSender/#15] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['mqw5m7FHrsHXGBJgAAAH'], 'user_count': 1}
+ content: {'users_logged_in': ['mqw5m7FHrsHXGBJgAAAH'], 'user_count': 1}
+[2021-12-19 12:09:02][DEBUG][PacketSender/#15] Did not send packet: no recipients
+[2021-12-19 12:09:33][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='mqw5m7FHrsHXGBJgAAAH'>
+[2021-12-19 12:09:33][DEBUG][sio/on_disconnect] <User sid='mqw5m7FHrsHXGBJgAAAH'> disconnected
+[2021-12-19 12:09:33][DEBUG][PacketSender/#16] Sending packet, name='user.disconnected'
+ content={'sid': 'mqw5m7FHrsHXGBJgAAAH', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'mqw5m7FHrsHXGBJgAAAH', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:09:33][DEBUG][PacketSender/#16] Did not send packet: no recipients
+[2021-12-19 12:09:33][DEBUG][sio/on_connect] Handling connect, sid='ayUte4R6XwatKKEtAAAJ' address='127.0.0.1'
+[2021-12-19 12:09:33][DEBUG][sio/on_connect] <User sid='ayUte4R6XwatKKEtAAAJ'> connected
+[2021-12-19 12:09:33][DEBUG][PacketSender/#17] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['ayUte4R6XwatKKEtAAAJ'], 'user_count': 1}
+ content: {'users_logged_in': ['ayUte4R6XwatKKEtAAAJ'], 'user_count': 1}
+[2021-12-19 12:09:33][DEBUG][PacketSender/#17] Sent packet to 1 user(s)
+[2021-12-19 12:09:33][DEBUG][PacketSender/#18] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['ayUte4R6XwatKKEtAAAJ'], 'user_count': 1}
+ content: {'users_logged_in': ['ayUte4R6XwatKKEtAAAJ'], 'user_count': 1}
+[2021-12-19 12:09:33][DEBUG][PacketSender/#18] Did not send packet: no recipients
+[2021-12-19 12:09:42][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='ayUte4R6XwatKKEtAAAJ'>
+[2021-12-19 12:09:42][DEBUG][sio/on_disconnect] <User sid='ayUte4R6XwatKKEtAAAJ'> disconnected
+[2021-12-19 12:09:42][DEBUG][PacketSender/#19] Sending packet, name='user.disconnected'
+ content={'sid': 'ayUte4R6XwatKKEtAAAJ', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'ayUte4R6XwatKKEtAAAJ', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:09:42][DEBUG][PacketSender/#19] Did not send packet: no recipients
+[2021-12-19 12:09:43][DEBUG][sio/on_connect] Handling connect, sid='aMaPUfjodaH4AIPSAAAL' address='127.0.0.1'
+[2021-12-19 12:09:43][DEBUG][sio/on_connect] <User sid='aMaPUfjodaH4AIPSAAAL'> connected
+[2021-12-19 12:09:43][DEBUG][PacketSender/#20] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['aMaPUfjodaH4AIPSAAAL'], 'user_count': 1}
+ content: {'users_logged_in': ['aMaPUfjodaH4AIPSAAAL'], 'user_count': 1}
+[2021-12-19 12:09:43][DEBUG][PacketSender/#20] Sent packet to 1 user(s)
+[2021-12-19 12:09:43][DEBUG][PacketSender/#21] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['aMaPUfjodaH4AIPSAAAL'], 'user_count': 1}
+ content: {'users_logged_in': ['aMaPUfjodaH4AIPSAAAL'], 'user_count': 1}
+[2021-12-19 12:09:43][DEBUG][PacketSender/#21] Did not send packet: no recipients
+[2021-12-19 12:10:30][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='aMaPUfjodaH4AIPSAAAL'>
+[2021-12-19 12:10:30][DEBUG][sio/on_disconnect] <User sid='aMaPUfjodaH4AIPSAAAL'> disconnected
+[2021-12-19 12:10:30][DEBUG][PacketSender/#22] Sending packet, name='user.disconnected'
+ content={'sid': 'aMaPUfjodaH4AIPSAAAL', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'aMaPUfjodaH4AIPSAAAL', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:10:30][DEBUG][PacketSender/#22] Did not send packet: no recipients
+[2021-12-19 12:10:30][DEBUG][sio/on_connect] Handling connect, sid='Ov7uGVG_7kyi7p3sAAAN' address='127.0.0.1'
+[2021-12-19 12:10:30][DEBUG][sio/on_connect] <User sid='Ov7uGVG_7kyi7p3sAAAN'> connected
+[2021-12-19 12:10:30][DEBUG][PacketSender/#23] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['Ov7uGVG_7kyi7p3sAAAN'], 'user_count': 1}
+ content: {'users_logged_in': ['Ov7uGVG_7kyi7p3sAAAN'], 'user_count': 1}
+[2021-12-19 12:10:30][DEBUG][PacketSender/#23] Sent packet to 1 user(s)
+[2021-12-19 12:10:30][DEBUG][PacketSender/#24] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['Ov7uGVG_7kyi7p3sAAAN'], 'user_count': 1}
+ content: {'users_logged_in': ['Ov7uGVG_7kyi7p3sAAAN'], 'user_count': 1}
+[2021-12-19 12:10:30][DEBUG][PacketSender/#24] Did not send packet: no recipients
+[2021-12-19 12:10:32][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='Ov7uGVG_7kyi7p3sAAAN'>
+[2021-12-19 12:10:32][DEBUG][sio/on_disconnect] <User sid='Ov7uGVG_7kyi7p3sAAAN'> disconnected
+[2021-12-19 12:10:32][DEBUG][PacketSender/#25] Sending packet, name='user.disconnected'
+ content={'sid': 'Ov7uGVG_7kyi7p3sAAAN', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'Ov7uGVG_7kyi7p3sAAAN', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:10:32][DEBUG][PacketSender/#25] Did not send packet: no recipients
+[2021-12-19 12:10:33][DEBUG][sio/on_connect] Handling connect, sid='tmzvuzbg7GUm9AV1AAAP' address='127.0.0.1'
+[2021-12-19 12:10:33][DEBUG][sio/on_connect] <User sid='tmzvuzbg7GUm9AV1AAAP'> connected
+[2021-12-19 12:10:33][DEBUG][PacketSender/#26] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['tmzvuzbg7GUm9AV1AAAP'], 'user_count': 1}
+ content: {'users_logged_in': ['tmzvuzbg7GUm9AV1AAAP'], 'user_count': 1}
+[2021-12-19 12:10:33][DEBUG][PacketSender/#26] Sent packet to 1 user(s)
+[2021-12-19 12:10:33][DEBUG][PacketSender/#27] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['tmzvuzbg7GUm9AV1AAAP'], 'user_count': 1}
+ content: {'users_logged_in': ['tmzvuzbg7GUm9AV1AAAP'], 'user_count': 1}
+[2021-12-19 12:10:33][DEBUG][PacketSender/#27] Did not send packet: no recipients
+[2021-12-19 12:10:40][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='tmzvuzbg7GUm9AV1AAAP'>
+[2021-12-19 12:10:40][DEBUG][sio/on_disconnect] <User sid='tmzvuzbg7GUm9AV1AAAP'> disconnected
+[2021-12-19 12:10:40][DEBUG][PacketSender/#28] Sending packet, name='user.disconnected'
+ content={'sid': 'tmzvuzbg7GUm9AV1AAAP', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'tmzvuzbg7GUm9AV1AAAP', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:10:40][DEBUG][PacketSender/#28] Did not send packet: no recipients
+[2021-12-19 12:10:40][DEBUG][sio/on_connect] Handling connect, sid='X92_hBjGwhkN_KQTAAAR' address='127.0.0.1'
+[2021-12-19 12:10:40][DEBUG][sio/on_connect] <User sid='X92_hBjGwhkN_KQTAAAR'> connected
+[2021-12-19 12:10:40][DEBUG][PacketSender/#29] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['X92_hBjGwhkN_KQTAAAR'], 'user_count': 1}
+ content: {'users_logged_in': ['X92_hBjGwhkN_KQTAAAR'], 'user_count': 1}
+[2021-12-19 12:10:40][DEBUG][PacketSender/#29] Sent packet to 1 user(s)
+[2021-12-19 12:10:40][DEBUG][PacketSender/#30] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['X92_hBjGwhkN_KQTAAAR'], 'user_count': 1}
+ content: {'users_logged_in': ['X92_hBjGwhkN_KQTAAAR'], 'user_count': 1}
+[2021-12-19 12:10:40][DEBUG][PacketSender/#30] Did not send packet: no recipients
+[2021-12-19 12:10:41][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='X92_hBjGwhkN_KQTAAAR'>
+[2021-12-19 12:10:41][DEBUG][sio/on_disconnect] <User sid='X92_hBjGwhkN_KQTAAAR'> disconnected
+[2021-12-19 12:10:41][DEBUG][PacketSender/#31] Sending packet, name='user.disconnected'
+ content={'sid': 'X92_hBjGwhkN_KQTAAAR', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'X92_hBjGwhkN_KQTAAAR', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:10:41][DEBUG][PacketSender/#31] Did not send packet: no recipients
+[2021-12-19 12:10:42][DEBUG][sio/on_connect] Handling connect, sid='uqE9X2MP15REsh6LAAAT' address='127.0.0.1'
+[2021-12-19 12:10:42][DEBUG][sio/on_connect] <User sid='uqE9X2MP15REsh6LAAAT'> connected
+[2021-12-19 12:10:42][DEBUG][PacketSender/#32] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['uqE9X2MP15REsh6LAAAT'], 'user_count': 1}
+ content: {'users_logged_in': ['uqE9X2MP15REsh6LAAAT'], 'user_count': 1}
+[2021-12-19 12:10:42][DEBUG][PacketSender/#32] Sent packet to 1 user(s)
+[2021-12-19 12:10:42][DEBUG][PacketSender/#33] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['uqE9X2MP15REsh6LAAAT'], 'user_count': 1}
+ content: {'users_logged_in': ['uqE9X2MP15REsh6LAAAT'], 'user_count': 1}
+[2021-12-19 12:10:42][DEBUG][PacketSender/#33] Did not send packet: no recipients
+[2021-12-19 12:11:22][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='uqE9X2MP15REsh6LAAAT'>
+[2021-12-19 12:11:22][DEBUG][sio/on_disconnect] <User sid='uqE9X2MP15REsh6LAAAT'> disconnected
+[2021-12-19 12:11:22][DEBUG][PacketSender/#34] Sending packet, name='user.disconnected'
+ content={'sid': 'uqE9X2MP15REsh6LAAAT', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'uqE9X2MP15REsh6LAAAT', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:11:22][DEBUG][PacketSender/#34] Did not send packet: no recipients
+[2021-12-19 12:11:22][DEBUG][sio/on_connect] Handling connect, sid='wULVJnUpWuE3_8B-AAAV' address='127.0.0.1'
+[2021-12-19 12:11:22][DEBUG][sio/on_connect] <User sid='wULVJnUpWuE3_8B-AAAV'> connected
+[2021-12-19 12:11:22][DEBUG][PacketSender/#35] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['wULVJnUpWuE3_8B-AAAV'], 'user_count': 1}
+ content: {'users_logged_in': ['wULVJnUpWuE3_8B-AAAV'], 'user_count': 1}
+[2021-12-19 12:11:22][DEBUG][PacketSender/#35] Sent packet to 1 user(s)
+[2021-12-19 12:11:22][DEBUG][PacketSender/#36] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['wULVJnUpWuE3_8B-AAAV'], 'user_count': 1}
+ content: {'users_logged_in': ['wULVJnUpWuE3_8B-AAAV'], 'user_count': 1}
+[2021-12-19 12:11:22][DEBUG][PacketSender/#36] Did not send packet: no recipients
+[2021-12-19 12:11:23][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='wULVJnUpWuE3_8B-AAAV'>
+[2021-12-19 12:11:23][DEBUG][sio/on_disconnect] <User sid='wULVJnUpWuE3_8B-AAAV'> disconnected
+[2021-12-19 12:11:23][DEBUG][PacketSender/#37] Sending packet, name='user.disconnected'
+ content={'sid': 'wULVJnUpWuE3_8B-AAAV', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'wULVJnUpWuE3_8B-AAAV', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:11:23][DEBUG][PacketSender/#37] Did not send packet: no recipients
+[2021-12-19 12:11:24][DEBUG][sio/on_connect] Handling connect, sid='AUlM9fYwxv7V24kyAAAX' address='127.0.0.1'
+[2021-12-19 12:11:24][DEBUG][sio/on_connect] <User sid='AUlM9fYwxv7V24kyAAAX'> connected
+[2021-12-19 12:11:24][DEBUG][PacketSender/#38] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['AUlM9fYwxv7V24kyAAAX'], 'user_count': 1}
+ content: {'users_logged_in': ['AUlM9fYwxv7V24kyAAAX'], 'user_count': 1}
+[2021-12-19 12:11:24][DEBUG][PacketSender/#38] Sent packet to 1 user(s)
+[2021-12-19 12:11:24][DEBUG][PacketSender/#39] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['AUlM9fYwxv7V24kyAAAX'], 'user_count': 1}
+ content: {'users_logged_in': ['AUlM9fYwxv7V24kyAAAX'], 'user_count': 1}
+[2021-12-19 12:11:24][DEBUG][PacketSender/#39] Did not send packet: no recipients
+[2021-12-19 12:11:35][INFO][sio/on_packet] Got packet #40 from <User sid='AUlM9fYwxv7V24kyAAAX'>, name='user.login.verify', content_type='dict'
+ content={'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+ content: {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:11:35][DEBUG][PacketHandler/#40] Handling packet, name='user.login.verify'
+ content={'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+ content: {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:11:35][DEBUG][PacketHandler/#40] profileObj {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:11:35][DEBUG][PacketHandler/#40] Handled packet, instant response is #41
+[2021-12-19 12:11:35][DEBUG][PacketSender/#40] Sending packet, name='user.login.verify.ok'
+ content={'token': 'ece9fdc4fb9463fdf5cdfc2149803fe50e302f2818558f1018467726a5f6bd41'}
+ content: {'token': 'ece9fdc4fb9463fdf5cdfc2149803fe50e302f2818558f1018467726a5f6bd41'}
+[2021-12-19 12:11:35][DEBUG][PacketSender/#40] Sent packet to 1 user(s)
+[2021-12-19 12:11:40][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='AUlM9fYwxv7V24kyAAAX'>
+[2021-12-19 12:11:40][DEBUG][sio/on_disconnect] <User sid='AUlM9fYwxv7V24kyAAAX'> disconnected
+[2021-12-19 12:11:40][DEBUG][PacketSender/#42] Sending packet, name='user.disconnected'
+ content={'sid': 'AUlM9fYwxv7V24kyAAAX', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'AUlM9fYwxv7V24kyAAAX', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:11:40][DEBUG][PacketSender/#42] Did not send packet: no recipients
+[2021-12-19 12:11:40][DEBUG][sio/on_connect] Handling connect, sid='VLEnhLm3XKVw0Sa_AAAZ' address='127.0.0.1'
+[2021-12-19 12:11:40][DEBUG][sio/on_connect] <User sid='VLEnhLm3XKVw0Sa_AAAZ'> connected
+[2021-12-19 12:11:40][DEBUG][PacketSender/#43] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['VLEnhLm3XKVw0Sa_AAAZ'], 'user_count': 1}
+ content: {'users_logged_in': ['VLEnhLm3XKVw0Sa_AAAZ'], 'user_count': 1}
+[2021-12-19 12:11:40][DEBUG][PacketSender/#43] Sent packet to 1 user(s)
+[2021-12-19 12:11:40][DEBUG][PacketSender/#44] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['VLEnhLm3XKVw0Sa_AAAZ'], 'user_count': 1}
+ content: {'users_logged_in': ['VLEnhLm3XKVw0Sa_AAAZ'], 'user_count': 1}
+[2021-12-19 12:11:40][DEBUG][PacketSender/#44] Did not send packet: no recipients
+[2021-12-19 12:11:40][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='VLEnhLm3XKVw0Sa_AAAZ'>
+[2021-12-19 12:11:40][DEBUG][sio/on_disconnect] <User sid='VLEnhLm3XKVw0Sa_AAAZ'> disconnected
+[2021-12-19 12:11:40][DEBUG][PacketSender/#45] Sending packet, name='user.disconnected'
+ content={'sid': 'VLEnhLm3XKVw0Sa_AAAZ', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'VLEnhLm3XKVw0Sa_AAAZ', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:11:40][DEBUG][PacketSender/#45] Did not send packet: no recipients
+[2021-12-19 12:11:41][DEBUG][sio/on_connect] Handling connect, sid='KX9gdYzqaKcKazj6AAAb' address='127.0.0.1'
+[2021-12-19 12:11:41][DEBUG][sio/on_connect] <User sid='KX9gdYzqaKcKazj6AAAb'> connected
+[2021-12-19 12:11:41][DEBUG][PacketSender/#46] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['KX9gdYzqaKcKazj6AAAb'], 'user_count': 1}
+ content: {'users_logged_in': ['KX9gdYzqaKcKazj6AAAb'], 'user_count': 1}
+[2021-12-19 12:11:41][DEBUG][PacketSender/#46] Sent packet to 1 user(s)
+[2021-12-19 12:11:41][DEBUG][PacketSender/#47] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['KX9gdYzqaKcKazj6AAAb'], 'user_count': 1}
+ content: {'users_logged_in': ['KX9gdYzqaKcKazj6AAAb'], 'user_count': 1}
+[2021-12-19 12:11:41][DEBUG][PacketSender/#47] Did not send packet: no recipients
+[2021-12-19 12:11:46][INFO][sio/on_packet] Got packet #48 from <User sid='KX9gdYzqaKcKazj6AAAb'>, name='user.login.verify', content_type='dict'
+ content={'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+ content: {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:11:46][DEBUG][PacketHandler/#48] Handling packet, name='user.login.verify'
+ content={'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+ content: {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:11:46][DEBUG][PacketHandler/#48] profileObj {'googleId': '111009068323601905937', 'imageUrl': 'https://lh3.googleusercontent.com/a/AATXAJw-3Wen7fh1ugBRix7je6rPJf0XFCwxk49UkwX6=s96-c', 'email': 'julianibibo@gmail.com', 'name': 'Julian Bibo', 'givenName': 'Julian', 'familyName': 'Bibo'}
+[2021-12-19 12:11:46][DEBUG][PacketHandler/#48] Handled packet, instant response is #49
+[2021-12-19 12:11:46][DEBUG][PacketSender/#48] Sending packet, name='user.login.verify.ok'
+ content={'token': '965dc7d8851a06991542a8041a0dc5388e3545fe9dd65a4d1ef42935a7ceb61d'}
+ content: {'token': '965dc7d8851a06991542a8041a0dc5388e3545fe9dd65a4d1ef42935a7ceb61d'}
+[2021-12-19 12:11:46][DEBUG][PacketSender/#48] Sent packet to 1 user(s)
+[2021-12-19 12:23:33][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='KX9gdYzqaKcKazj6AAAb'>
+[2021-12-19 12:23:33][DEBUG][sio/on_disconnect] <User sid='KX9gdYzqaKcKazj6AAAb'> disconnected
+[2021-12-19 12:23:33][DEBUG][PacketSender/#50] Sending packet, name='user.disconnected'
+ content={'sid': 'KX9gdYzqaKcKazj6AAAb', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'KX9gdYzqaKcKazj6AAAb', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:23:33][DEBUG][PacketSender/#50] Did not send packet: no recipients
+[2021-12-19 12:28:08][DEBUG][sio/on_connect] Handling connect, sid='On2563CFm4ip-gIuAAAd' address='127.0.0.1'
+[2021-12-19 12:28:08][DEBUG][sio/on_connect] <User sid='On2563CFm4ip-gIuAAAd'> connected
+[2021-12-19 12:28:08][DEBUG][PacketSender/#51] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['On2563CFm4ip-gIuAAAd'], 'user_count': 1}
+ content: {'users_logged_in': ['On2563CFm4ip-gIuAAAd'], 'user_count': 1}
+[2021-12-19 12:28:08][DEBUG][PacketSender/#51] Sent packet to 1 user(s)
+[2021-12-19 12:28:08][DEBUG][PacketSender/#52] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['On2563CFm4ip-gIuAAAd'], 'user_count': 1}
+ content: {'users_logged_in': ['On2563CFm4ip-gIuAAAd'], 'user_count': 1}
+[2021-12-19 12:28:08][DEBUG][PacketSender/#52] Did not send packet: no recipients
+[2021-12-19 12:28:11][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='On2563CFm4ip-gIuAAAd'>
+[2021-12-19 12:28:11][DEBUG][sio/on_disconnect] <User sid='On2563CFm4ip-gIuAAAd'> disconnected
+[2021-12-19 12:28:11][DEBUG][PacketSender/#53] Sending packet, name='user.disconnected'
+ content={'sid': 'On2563CFm4ip-gIuAAAd', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'On2563CFm4ip-gIuAAAd', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:28:11][DEBUG][PacketSender/#53] Did not send packet: no recipients
+[2021-12-19 12:28:12][DEBUG][sio/on_connect] Handling connect, sid='pXwyDTNRnTIAc90PAAAf' address='127.0.0.1'
+[2021-12-19 12:28:12][DEBUG][sio/on_connect] <User sid='pXwyDTNRnTIAc90PAAAf'> connected
+[2021-12-19 12:28:12][DEBUG][PacketSender/#54] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['pXwyDTNRnTIAc90PAAAf'], 'user_count': 1}
+ content: {'users_logged_in': ['pXwyDTNRnTIAc90PAAAf'], 'user_count': 1}
+[2021-12-19 12:28:12][DEBUG][PacketSender/#54] Sent packet to 1 user(s)
+[2021-12-19 12:28:12][DEBUG][PacketSender/#55] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['pXwyDTNRnTIAc90PAAAf'], 'user_count': 1}
+ content: {'users_logged_in': ['pXwyDTNRnTIAc90PAAAf'], 'user_count': 1}
+[2021-12-19 12:28:12][DEBUG][PacketSender/#55] Did not send packet: no recipients
+[2021-12-19 12:29:50][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='pXwyDTNRnTIAc90PAAAf'>
+[2021-12-19 12:29:50][DEBUG][sio/on_disconnect] <User sid='pXwyDTNRnTIAc90PAAAf'> disconnected
+[2021-12-19 12:29:50][DEBUG][PacketSender/#56] Sending packet, name='user.disconnected'
+ content={'sid': 'pXwyDTNRnTIAc90PAAAf', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'pXwyDTNRnTIAc90PAAAf', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:29:50][DEBUG][PacketSender/#56] Did not send packet: no recipients
+[2021-12-19 12:29:52][DEBUG][sio/on_connect] Handling connect, sid='yEx94NyoiF5sudbyAAAh' address='127.0.0.1'
+[2021-12-19 12:29:52][DEBUG][sio/on_connect] <User sid='yEx94NyoiF5sudbyAAAh'> connected
+[2021-12-19 12:29:52][DEBUG][PacketSender/#57] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['yEx94NyoiF5sudbyAAAh'], 'user_count': 1}
+ content: {'users_logged_in': ['yEx94NyoiF5sudbyAAAh'], 'user_count': 1}
+[2021-12-19 12:29:52][DEBUG][PacketSender/#57] Sent packet to 1 user(s)
+[2021-12-19 12:29:52][DEBUG][PacketSender/#58] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['yEx94NyoiF5sudbyAAAh'], 'user_count': 1}
+ content: {'users_logged_in': ['yEx94NyoiF5sudbyAAAh'], 'user_count': 1}
+[2021-12-19 12:29:52][DEBUG][PacketSender/#58] Did not send packet: no recipients
+[2021-12-19 12:30:59][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='yEx94NyoiF5sudbyAAAh'>
+[2021-12-19 12:30:59][DEBUG][sio/on_disconnect] <User sid='yEx94NyoiF5sudbyAAAh'> disconnected
+[2021-12-19 12:30:59][DEBUG][PacketSender/#59] Sending packet, name='user.disconnected'
+ content={'sid': 'yEx94NyoiF5sudbyAAAh', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'yEx94NyoiF5sudbyAAAh', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:30:59][DEBUG][PacketSender/#59] Did not send packet: no recipients
+[2021-12-19 12:31:00][DEBUG][sio/on_connect] Handling connect, sid='FIw6-ToI7HFCoaFQAAAj' address='127.0.0.1'
+[2021-12-19 12:31:00][DEBUG][sio/on_connect] <User sid='FIw6-ToI7HFCoaFQAAAj'> connected
+[2021-12-19 12:31:00][DEBUG][PacketSender/#60] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['FIw6-ToI7HFCoaFQAAAj'], 'user_count': 1}
+ content: {'users_logged_in': ['FIw6-ToI7HFCoaFQAAAj'], 'user_count': 1}
+[2021-12-19 12:31:00][DEBUG][PacketSender/#60] Sent packet to 1 user(s)
+[2021-12-19 12:31:00][DEBUG][PacketSender/#61] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['FIw6-ToI7HFCoaFQAAAj'], 'user_count': 1}
+ content: {'users_logged_in': ['FIw6-ToI7HFCoaFQAAAj'], 'user_count': 1}
+[2021-12-19 12:31:00][DEBUG][PacketSender/#61] Did not send packet: no recipients
+[2021-12-19 12:31:56][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='FIw6-ToI7HFCoaFQAAAj'>
+[2021-12-19 12:31:56][DEBUG][sio/on_disconnect] <User sid='FIw6-ToI7HFCoaFQAAAj'> disconnected
+[2021-12-19 12:31:56][DEBUG][PacketSender/#62] Sending packet, name='user.disconnected'
+ content={'sid': 'FIw6-ToI7HFCoaFQAAAj', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'FIw6-ToI7HFCoaFQAAAj', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:31:56][DEBUG][PacketSender/#62] Did not send packet: no recipients
+[2021-12-19 12:31:56][DEBUG][sio/on_connect] Handling connect, sid='I6A4vbXJbDbAnJJbAAAl' address='127.0.0.1'
+[2021-12-19 12:31:56][DEBUG][sio/on_connect] <User sid='I6A4vbXJbDbAnJJbAAAl'> connected
+[2021-12-19 12:31:56][DEBUG][PacketSender/#63] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['I6A4vbXJbDbAnJJbAAAl'], 'user_count': 1}
+ content: {'users_logged_in': ['I6A4vbXJbDbAnJJbAAAl'], 'user_count': 1}
+[2021-12-19 12:31:56][DEBUG][PacketSender/#63] Sent packet to 1 user(s)
+[2021-12-19 12:31:56][DEBUG][PacketSender/#64] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['I6A4vbXJbDbAnJJbAAAl'], 'user_count': 1}
+ content: {'users_logged_in': ['I6A4vbXJbDbAnJJbAAAl'], 'user_count': 1}
+[2021-12-19 12:31:56][DEBUG][PacketSender/#64] Did not send packet: no recipients
+[2021-12-19 12:32:33][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='I6A4vbXJbDbAnJJbAAAl'>
+[2021-12-19 12:32:33][DEBUG][sio/on_disconnect] <User sid='I6A4vbXJbDbAnJJbAAAl'> disconnected
+[2021-12-19 12:32:33][DEBUG][PacketSender/#65] Sending packet, name='user.disconnected'
+ content={'sid': 'I6A4vbXJbDbAnJJbAAAl', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'I6A4vbXJbDbAnJJbAAAl', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:32:33][DEBUG][PacketSender/#65] Did not send packet: no recipients
+[2021-12-19 12:32:33][DEBUG][sio/on_connect] Handling connect, sid='P1Ft6_5DN4UzGw9IAAAn' address='127.0.0.1'
+[2021-12-19 12:32:33][DEBUG][sio/on_connect] <User sid='P1Ft6_5DN4UzGw9IAAAn'> connected
+[2021-12-19 12:32:33][DEBUG][PacketSender/#66] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['P1Ft6_5DN4UzGw9IAAAn'], 'user_count': 1}
+ content: {'users_logged_in': ['P1Ft6_5DN4UzGw9IAAAn'], 'user_count': 1}
+[2021-12-19 12:32:33][DEBUG][PacketSender/#66] Sent packet to 1 user(s)
+[2021-12-19 12:32:33][DEBUG][PacketSender/#67] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['P1Ft6_5DN4UzGw9IAAAn'], 'user_count': 1}
+ content: {'users_logged_in': ['P1Ft6_5DN4UzGw9IAAAn'], 'user_count': 1}
+[2021-12-19 12:32:33][DEBUG][PacketSender/#67] Did not send packet: no recipients
+[2021-12-19 12:33:36][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='P1Ft6_5DN4UzGw9IAAAn'>
+[2021-12-19 12:33:36][DEBUG][sio/on_disconnect] <User sid='P1Ft6_5DN4UzGw9IAAAn'> disconnected
+[2021-12-19 12:33:36][DEBUG][PacketSender/#68] Sending packet, name='user.disconnected'
+ content={'sid': 'P1Ft6_5DN4UzGw9IAAAn', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'P1Ft6_5DN4UzGw9IAAAn', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:33:36][DEBUG][PacketSender/#68] Did not send packet: no recipients
+[2021-12-19 12:33:37][DEBUG][sio/on_connect] Handling connect, sid='Z6O3VTGSlje6VENeAAAp' address='127.0.0.1'
+[2021-12-19 12:33:37][DEBUG][sio/on_connect] <User sid='Z6O3VTGSlje6VENeAAAp'> connected
+[2021-12-19 12:33:37][DEBUG][PacketSender/#69] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['Z6O3VTGSlje6VENeAAAp'], 'user_count': 1}
+ content: {'users_logged_in': ['Z6O3VTGSlje6VENeAAAp'], 'user_count': 1}
+[2021-12-19 12:33:37][DEBUG][PacketSender/#69] Sent packet to 1 user(s)
+[2021-12-19 12:33:37][DEBUG][PacketSender/#70] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['Z6O3VTGSlje6VENeAAAp'], 'user_count': 1}
+ content: {'users_logged_in': ['Z6O3VTGSlje6VENeAAAp'], 'user_count': 1}
+[2021-12-19 12:33:37][DEBUG][PacketSender/#70] Did not send packet: no recipients
+[2021-12-19 12:34:01][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='Z6O3VTGSlje6VENeAAAp'>
+[2021-12-19 12:34:01][DEBUG][sio/on_disconnect] <User sid='Z6O3VTGSlje6VENeAAAp'> disconnected
+[2021-12-19 12:34:01][DEBUG][PacketSender/#71] Sending packet, name='user.disconnected'
+ content={'sid': 'Z6O3VTGSlje6VENeAAAp', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'Z6O3VTGSlje6VENeAAAp', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:34:01][DEBUG][PacketSender/#71] Did not send packet: no recipients
+[2021-12-19 12:34:02][DEBUG][sio/on_connect] Handling connect, sid='2HzAlY0CgISVR534AAAr' address='127.0.0.1'
+[2021-12-19 12:34:02][DEBUG][sio/on_connect] <User sid='2HzAlY0CgISVR534AAAr'> connected
+[2021-12-19 12:34:02][DEBUG][PacketSender/#72] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['2HzAlY0CgISVR534AAAr'], 'user_count': 1}
+ content: {'users_logged_in': ['2HzAlY0CgISVR534AAAr'], 'user_count': 1}
+[2021-12-19 12:34:02][DEBUG][PacketSender/#72] Sent packet to 1 user(s)
+[2021-12-19 12:34:02][DEBUG][PacketSender/#73] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['2HzAlY0CgISVR534AAAr'], 'user_count': 1}
+ content: {'users_logged_in': ['2HzAlY0CgISVR534AAAr'], 'user_count': 1}
+[2021-12-19 12:34:02][DEBUG][PacketSender/#73] Did not send packet: no recipients
+[2021-12-19 12:34:35][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='2HzAlY0CgISVR534AAAr'>
+[2021-12-19 12:34:35][DEBUG][sio/on_disconnect] <User sid='2HzAlY0CgISVR534AAAr'> disconnected
+[2021-12-19 12:34:35][DEBUG][PacketSender/#74] Sending packet, name='user.disconnected'
+ content={'sid': '2HzAlY0CgISVR534AAAr', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': '2HzAlY0CgISVR534AAAr', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:34:35][DEBUG][PacketSender/#74] Did not send packet: no recipients
+[2021-12-19 12:34:37][DEBUG][sio/on_connect] Handling connect, sid='g_ZPBTv9zbA594_lAAAt' address='127.0.0.1'
+[2021-12-19 12:34:37][DEBUG][sio/on_connect] <User sid='g_ZPBTv9zbA594_lAAAt'> connected
+[2021-12-19 12:34:37][DEBUG][PacketSender/#75] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['g_ZPBTv9zbA594_lAAAt'], 'user_count': 1}
+ content: {'users_logged_in': ['g_ZPBTv9zbA594_lAAAt'], 'user_count': 1}
+[2021-12-19 12:34:37][DEBUG][PacketSender/#75] Sent packet to 1 user(s)
+[2021-12-19 12:34:37][DEBUG][PacketSender/#76] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['g_ZPBTv9zbA594_lAAAt'], 'user_count': 1}
+ content: {'users_logged_in': ['g_ZPBTv9zbA594_lAAAt'], 'user_count': 1}
+[2021-12-19 12:34:37][DEBUG][PacketSender/#76] Did not send packet: no recipients
+[2021-12-19 12:34:39][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='g_ZPBTv9zbA594_lAAAt'>
+[2021-12-19 12:34:39][DEBUG][sio/on_disconnect] <User sid='g_ZPBTv9zbA594_lAAAt'> disconnected
+[2021-12-19 12:34:39][DEBUG][PacketSender/#77] Sending packet, name='user.disconnected'
+ content={'sid': 'g_ZPBTv9zbA594_lAAAt', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'g_ZPBTv9zbA594_lAAAt', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:34:39][DEBUG][PacketSender/#77] Did not send packet: no recipients
+[2021-12-19 12:34:40][DEBUG][sio/on_connect] Handling connect, sid='E7bzwCIraVwPRS03AAAv' address='127.0.0.1'
+[2021-12-19 12:34:40][DEBUG][sio/on_connect] <User sid='E7bzwCIraVwPRS03AAAv'> connected
+[2021-12-19 12:34:40][DEBUG][PacketSender/#78] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['E7bzwCIraVwPRS03AAAv'], 'user_count': 1}
+ content: {'users_logged_in': ['E7bzwCIraVwPRS03AAAv'], 'user_count': 1}
+[2021-12-19 12:34:40][DEBUG][PacketSender/#78] Sent packet to 1 user(s)
+[2021-12-19 12:34:40][DEBUG][PacketSender/#79] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['E7bzwCIraVwPRS03AAAv'], 'user_count': 1}
+ content: {'users_logged_in': ['E7bzwCIraVwPRS03AAAv'], 'user_count': 1}
+[2021-12-19 12:34:40][DEBUG][PacketSender/#79] Did not send packet: no recipients
+[2021-12-19 12:34:46][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='E7bzwCIraVwPRS03AAAv'>
+[2021-12-19 12:34:46][DEBUG][sio/on_disconnect] <User sid='E7bzwCIraVwPRS03AAAv'> disconnected
+[2021-12-19 12:34:46][DEBUG][PacketSender/#80] Sending packet, name='user.disconnected'
+ content={'sid': 'E7bzwCIraVwPRS03AAAv', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'E7bzwCIraVwPRS03AAAv', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:34:46][DEBUG][PacketSender/#80] Did not send packet: no recipients
+[2021-12-19 12:34:46][DEBUG][sio/on_connect] Handling connect, sid='shdIOwg13y6NWRGJAAAx' address='127.0.0.1'
+[2021-12-19 12:34:46][DEBUG][sio/on_connect] <User sid='shdIOwg13y6NWRGJAAAx'> connected
+[2021-12-19 12:34:46][DEBUG][PacketSender/#81] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['shdIOwg13y6NWRGJAAAx'], 'user_count': 1}
+ content: {'users_logged_in': ['shdIOwg13y6NWRGJAAAx'], 'user_count': 1}
+[2021-12-19 12:34:46][DEBUG][PacketSender/#81] Sent packet to 1 user(s)
+[2021-12-19 12:34:46][DEBUG][PacketSender/#82] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['shdIOwg13y6NWRGJAAAx'], 'user_count': 1}
+ content: {'users_logged_in': ['shdIOwg13y6NWRGJAAAx'], 'user_count': 1}
+[2021-12-19 12:34:46][DEBUG][PacketSender/#82] Did not send packet: no recipients
+[2021-12-19 12:35:11][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='shdIOwg13y6NWRGJAAAx'>
+[2021-12-19 12:35:11][DEBUG][sio/on_disconnect] <User sid='shdIOwg13y6NWRGJAAAx'> disconnected
+[2021-12-19 12:35:11][DEBUG][PacketSender/#83] Sending packet, name='user.disconnected'
+ content={'sid': 'shdIOwg13y6NWRGJAAAx', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'shdIOwg13y6NWRGJAAAx', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:35:11][DEBUG][PacketSender/#83] Did not send packet: no recipients
+[2021-12-19 12:35:11][DEBUG][sio/on_connect] Handling connect, sid='9CjaL9VOSJNFHkmIAAAz' address='127.0.0.1'
+[2021-12-19 12:35:11][DEBUG][sio/on_connect] <User sid='9CjaL9VOSJNFHkmIAAAz'> connected
+[2021-12-19 12:35:11][DEBUG][PacketSender/#84] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['9CjaL9VOSJNFHkmIAAAz'], 'user_count': 1}
+ content: {'users_logged_in': ['9CjaL9VOSJNFHkmIAAAz'], 'user_count': 1}
+[2021-12-19 12:35:11][DEBUG][PacketSender/#84] Sent packet to 1 user(s)
+[2021-12-19 12:35:11][DEBUG][PacketSender/#85] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['9CjaL9VOSJNFHkmIAAAz'], 'user_count': 1}
+ content: {'users_logged_in': ['9CjaL9VOSJNFHkmIAAAz'], 'user_count': 1}
+[2021-12-19 12:35:11][DEBUG][PacketSender/#85] Did not send packet: no recipients
+[2021-12-19 12:35:17][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='9CjaL9VOSJNFHkmIAAAz'>
+[2021-12-19 12:35:17][DEBUG][sio/on_disconnect] <User sid='9CjaL9VOSJNFHkmIAAAz'> disconnected
+[2021-12-19 12:35:17][DEBUG][PacketSender/#86] Sending packet, name='user.disconnected'
+ content={'sid': '9CjaL9VOSJNFHkmIAAAz', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': '9CjaL9VOSJNFHkmIAAAz', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:35:17][DEBUG][PacketSender/#86] Did not send packet: no recipients
+[2021-12-19 12:35:20][DEBUG][sio/on_connect] Handling connect, sid='CvDcWU3wKKzX6Jw1AAA1' address='127.0.0.1'
+[2021-12-19 12:35:20][DEBUG][sio/on_connect] <User sid='CvDcWU3wKKzX6Jw1AAA1'> connected
+[2021-12-19 12:35:20][DEBUG][PacketSender/#87] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['CvDcWU3wKKzX6Jw1AAA1'], 'user_count': 1}
+ content: {'users_logged_in': ['CvDcWU3wKKzX6Jw1AAA1'], 'user_count': 1}
+[2021-12-19 12:35:20][DEBUG][PacketSender/#87] Sent packet to 1 user(s)
+[2021-12-19 12:35:20][DEBUG][PacketSender/#88] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['CvDcWU3wKKzX6Jw1AAA1'], 'user_count': 1}
+ content: {'users_logged_in': ['CvDcWU3wKKzX6Jw1AAA1'], 'user_count': 1}
+[2021-12-19 12:35:20][DEBUG][PacketSender/#88] Did not send packet: no recipients
+[2021-12-19 12:35:22][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='CvDcWU3wKKzX6Jw1AAA1'>
+[2021-12-19 12:35:22][DEBUG][sio/on_disconnect] <User sid='CvDcWU3wKKzX6Jw1AAA1'> disconnected
+[2021-12-19 12:35:22][DEBUG][PacketSender/#89] Sending packet, name='user.disconnected'
+ content={'sid': 'CvDcWU3wKKzX6Jw1AAA1', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'CvDcWU3wKKzX6Jw1AAA1', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:35:22][DEBUG][PacketSender/#89] Did not send packet: no recipients
+[2021-12-19 12:35:22][DEBUG][sio/on_connect] Handling connect, sid='wZf6xcJxgV3oU9ECAAA3' address='127.0.0.1'
+[2021-12-19 12:35:22][DEBUG][sio/on_connect] <User sid='wZf6xcJxgV3oU9ECAAA3'> connected
+[2021-12-19 12:35:22][DEBUG][PacketSender/#90] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['wZf6xcJxgV3oU9ECAAA3'], 'user_count': 1}
+ content: {'users_logged_in': ['wZf6xcJxgV3oU9ECAAA3'], 'user_count': 1}
+[2021-12-19 12:35:22][DEBUG][PacketSender/#90] Sent packet to 1 user(s)
+[2021-12-19 12:35:22][DEBUG][PacketSender/#91] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['wZf6xcJxgV3oU9ECAAA3'], 'user_count': 1}
+ content: {'users_logged_in': ['wZf6xcJxgV3oU9ECAAA3'], 'user_count': 1}
+[2021-12-19 12:35:22][DEBUG][PacketSender/#91] Did not send packet: no recipients
+[2021-12-19 12:37:46][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='wZf6xcJxgV3oU9ECAAA3'>
+[2021-12-19 12:37:46][DEBUG][sio/on_disconnect] <User sid='wZf6xcJxgV3oU9ECAAA3'> disconnected
+[2021-12-19 12:37:46][DEBUG][PacketSender/#92] Sending packet, name='user.disconnected'
+ content={'sid': 'wZf6xcJxgV3oU9ECAAA3', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'wZf6xcJxgV3oU9ECAAA3', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:37:46][DEBUG][PacketSender/#92] Did not send packet: no recipients
+[2021-12-19 12:37:47][DEBUG][sio/on_connect] Handling connect, sid='wtVpD1dEDd5Kz_cqAAA5' address='127.0.0.1'
+[2021-12-19 12:37:47][DEBUG][sio/on_connect] <User sid='wtVpD1dEDd5Kz_cqAAA5'> connected
+[2021-12-19 12:37:47][DEBUG][PacketSender/#93] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['wtVpD1dEDd5Kz_cqAAA5'], 'user_count': 1}
+ content: {'users_logged_in': ['wtVpD1dEDd5Kz_cqAAA5'], 'user_count': 1}
+[2021-12-19 12:37:47][DEBUG][PacketSender/#93] Sent packet to 1 user(s)
+[2021-12-19 12:37:47][DEBUG][PacketSender/#94] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['wtVpD1dEDd5Kz_cqAAA5'], 'user_count': 1}
+ content: {'users_logged_in': ['wtVpD1dEDd5Kz_cqAAA5'], 'user_count': 1}
+[2021-12-19 12:37:47][DEBUG][PacketSender/#94] Did not send packet: no recipients
+[2021-12-19 12:42:19][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='wtVpD1dEDd5Kz_cqAAA5'>
+[2021-12-19 12:42:19][DEBUG][sio/on_disconnect] <User sid='wtVpD1dEDd5Kz_cqAAA5'> disconnected
+[2021-12-19 12:42:19][DEBUG][PacketSender/#95] Sending packet, name='user.disconnected'
+ content={'sid': 'wtVpD1dEDd5Kz_cqAAA5', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'wtVpD1dEDd5Kz_cqAAA5', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:42:19][DEBUG][PacketSender/#95] Did not send packet: no recipients
+[2021-12-19 12:42:24][DEBUG][sio/on_connect] Handling connect, sid='hc0SU-Mvr7NIyWxAAAA7' address='127.0.0.1'
+[2021-12-19 12:42:24][DEBUG][sio/on_connect] <User sid='hc0SU-Mvr7NIyWxAAAA7'> connected
+[2021-12-19 12:42:24][DEBUG][PacketSender/#96] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['hc0SU-Mvr7NIyWxAAAA7'], 'user_count': 1}
+ content: {'users_logged_in': ['hc0SU-Mvr7NIyWxAAAA7'], 'user_count': 1}
+[2021-12-19 12:42:24][DEBUG][PacketSender/#96] Sent packet to 1 user(s)
+[2021-12-19 12:42:24][DEBUG][PacketSender/#97] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['hc0SU-Mvr7NIyWxAAAA7'], 'user_count': 1}
+ content: {'users_logged_in': ['hc0SU-Mvr7NIyWxAAAA7'], 'user_count': 1}
+[2021-12-19 12:42:24][DEBUG][PacketSender/#97] Did not send packet: no recipients
+[2021-12-19 12:42:46][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='hc0SU-Mvr7NIyWxAAAA7'>
+[2021-12-19 12:42:46][DEBUG][sio/on_disconnect] <User sid='hc0SU-Mvr7NIyWxAAAA7'> disconnected
+[2021-12-19 12:42:46][DEBUG][PacketSender/#98] Sending packet, name='user.disconnected'
+ content={'sid': 'hc0SU-Mvr7NIyWxAAAA7', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'hc0SU-Mvr7NIyWxAAAA7', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:42:46][DEBUG][PacketSender/#98] Did not send packet: no recipients
+[2021-12-19 12:42:46][DEBUG][sio/on_connect] Handling connect, sid='4RxuU06y4Eqvucw9AAA9' address='127.0.0.1'
+[2021-12-19 12:42:46][DEBUG][sio/on_connect] <User sid='4RxuU06y4Eqvucw9AAA9'> connected
+[2021-12-19 12:42:46][DEBUG][PacketSender/#99] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['4RxuU06y4Eqvucw9AAA9'], 'user_count': 1}
+ content: {'users_logged_in': ['4RxuU06y4Eqvucw9AAA9'], 'user_count': 1}
+[2021-12-19 12:42:46][DEBUG][PacketSender/#99] Sent packet to 1 user(s)
+[2021-12-19 12:42:46][DEBUG][PacketSender/#100] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['4RxuU06y4Eqvucw9AAA9'], 'user_count': 1}
+ content: {'users_logged_in': ['4RxuU06y4Eqvucw9AAA9'], 'user_count': 1}
+[2021-12-19 12:42:46][DEBUG][PacketSender/#100] Did not send packet: no recipients
+[2021-12-19 12:42:46][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='4RxuU06y4Eqvucw9AAA9'>
+[2021-12-19 12:42:46][DEBUG][sio/on_disconnect] <User sid='4RxuU06y4Eqvucw9AAA9'> disconnected
+[2021-12-19 12:42:46][DEBUG][PacketSender/#101] Sending packet, name='user.disconnected'
+ content={'sid': '4RxuU06y4Eqvucw9AAA9', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': '4RxuU06y4Eqvucw9AAA9', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:42:46][DEBUG][PacketSender/#101] Did not send packet: no recipients
+[2021-12-19 12:42:46][DEBUG][sio/on_connect] Handling connect, sid='wmD-CrHsTaEhdtEmAAA_' address='127.0.0.1'
+[2021-12-19 12:42:46][DEBUG][sio/on_connect] <User sid='wmD-CrHsTaEhdtEmAAA_'> connected
+[2021-12-19 12:42:46][DEBUG][PacketSender/#102] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['wmD-CrHsTaEhdtEmAAA_'], 'user_count': 1}
+ content: {'users_logged_in': ['wmD-CrHsTaEhdtEmAAA_'], 'user_count': 1}
+[2021-12-19 12:42:46][DEBUG][PacketSender/#102] Sent packet to 1 user(s)
+[2021-12-19 12:42:46][DEBUG][PacketSender/#103] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['wmD-CrHsTaEhdtEmAAA_'], 'user_count': 1}
+ content: {'users_logged_in': ['wmD-CrHsTaEhdtEmAAA_'], 'user_count': 1}
+[2021-12-19 12:42:46][DEBUG][PacketSender/#103] Did not send packet: no recipients
+[2021-12-19 12:42:48][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='wmD-CrHsTaEhdtEmAAA_'>
+[2021-12-19 12:42:48][DEBUG][sio/on_disconnect] <User sid='wmD-CrHsTaEhdtEmAAA_'> disconnected
+[2021-12-19 12:42:48][DEBUG][PacketSender/#104] Sending packet, name='user.disconnected'
+ content={'sid': 'wmD-CrHsTaEhdtEmAAA_', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'wmD-CrHsTaEhdtEmAAA_', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:42:48][DEBUG][PacketSender/#104] Did not send packet: no recipients
+[2021-12-19 12:42:48][DEBUG][sio/on_connect] Handling connect, sid='pAxtbhJrv2RAyYyzAABB' address='127.0.0.1'
+[2021-12-19 12:42:48][DEBUG][sio/on_connect] <User sid='pAxtbhJrv2RAyYyzAABB'> connected
+[2021-12-19 12:42:48][DEBUG][PacketSender/#105] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['pAxtbhJrv2RAyYyzAABB'], 'user_count': 1}
+ content: {'users_logged_in': ['pAxtbhJrv2RAyYyzAABB'], 'user_count': 1}
+[2021-12-19 12:42:48][DEBUG][PacketSender/#105] Sent packet to 1 user(s)
+[2021-12-19 12:42:48][DEBUG][PacketSender/#106] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['pAxtbhJrv2RAyYyzAABB'], 'user_count': 1}
+ content: {'users_logged_in': ['pAxtbhJrv2RAyYyzAABB'], 'user_count': 1}
+[2021-12-19 12:42:48][DEBUG][PacketSender/#106] Did not send packet: no recipients
+[2021-12-19 12:42:50][DEBUG][sio/on_disconnect] Handling disconnect of <User sid='pAxtbhJrv2RAyYyzAABB'>
+[2021-12-19 12:42:50][DEBUG][sio/on_disconnect] <User sid='pAxtbhJrv2RAyYyzAABB'> disconnected
+[2021-12-19 12:42:50][DEBUG][PacketSender/#107] Sending packet, name='user.disconnected'
+ content={'sid': 'pAxtbhJrv2RAyYyzAABB', 'users_logged_in': [], 'user_count': 0}
+ content: {'sid': 'pAxtbhJrv2RAyYyzAABB', 'users_logged_in': [], 'user_count': 0}
+[2021-12-19 12:42:50][DEBUG][PacketSender/#107] Did not send packet: no recipients
+[2021-12-19 12:42:50][DEBUG][sio/on_connect] Handling connect, sid='CHWA4662YAzlF7hbAABD' address='127.0.0.1'
+[2021-12-19 12:42:50][DEBUG][sio/on_connect] <User sid='CHWA4662YAzlF7hbAABD'> connected
+[2021-12-19 12:42:50][DEBUG][PacketSender/#108] Sending packet, name='user.connected.you'
+ content={'users_logged_in': ['CHWA4662YAzlF7hbAABD'], 'user_count': 1}
+ content: {'users_logged_in': ['CHWA4662YAzlF7hbAABD'], 'user_count': 1}
+[2021-12-19 12:42:50][DEBUG][PacketSender/#108] Sent packet to 1 user(s)
+[2021-12-19 12:42:50][DEBUG][PacketSender/#109] Sending packet, name='user.connected.other'
+ content={'users_logged_in': ['CHWA4662YAzlF7hbAABD'], 'user_count': 1}
+ content: {'users_logged_in': ['CHWA4662YAzlF7hbAABD'], 'user_count': 1}
+[2021-12-19 12:42:50][DEBUG][PacketSender/#109] Did not send packet: no recipients

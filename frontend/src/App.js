@@ -1,23 +1,26 @@
 import Login from "./components/Login";
-import { useEffect } from "react";
-import { connectSocket, disconnectSocket, socket } from "./connection";
+import { SocketContext } from "./SocketContext";
+import { useEffect, useContext } from "react";
+import { connectSocket, disconnectSocket } from "./connection";
 
 export default function App() {
+  const { socket, setSocket } = useContext(SocketContext);
+
+  // setInterval(() => {
+  //   console.debug("socket currently", socket);
+  // }, 1000);
+
   useEffect(() => {
-    connectSocket();
+    let newSocket = connectSocket()
+    setSocket(newSocket)
+    
 
-    socket.on("testmessage", (packet) => {
-      console.debug("> RECV", packet);
-    });
-
-    socket.on("user.verify.ok", (packet) => {
-      console.debug("> RECV", packet);
-    });
+    console.debug("App() useEffect", socket);
 
     return () => {
       disconnectSocket();
     };
-  }, []);
+  }, [socket, setSocket]);
 
-  return <Login />;
+  return socket?.connected ? <Login /> : null;
 }

@@ -18,8 +18,9 @@ def handle_packets_loop(ferdy):
             instant_response = handle_packet(ferdy, user, name, content)
 
         except PacketHandlingFailed as ex:
-            Log.debug(f"Packet handling failed, {ex.code=}")
-            instant_response = make_error_packet(ex.code)
+            code = ex.code
+            Log.debug(f"Packet handling failed, {code=}")
+            instant_response = make_error_packet(code)
 
         except Exception as ex:
             Log.error("Unhandled exception on handle_packet", ex=ex)
@@ -108,6 +109,13 @@ def handle_packet(ferdy, user, name: str, content: Union[list, dict]) -> tuple:
 
     if name == "user.log.out":
         raise NotImplementedError
+
+    if name == "user.verify":
+        # TODO actually verify???
+
+        Log.debug(f"profileObj {content}")
+        token = secrets.token_hex(32)
+        return "user.verify.ok", {"token": token}
 
     if name == "user.message.send":
         raise NotImplementedError

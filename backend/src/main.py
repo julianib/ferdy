@@ -100,7 +100,7 @@ def on_packet(name, content):
 
     packet_id = ferdy.get_next_packet_id()
     content_type = type(content).__name__
-    Log.debug(f"Got packet #{packet_id} from {user}, {name=}, {content_type=}",
+    Log.info(f"Got packet #{packet_id} from {user}, {name=}, {content_type=}",
               content=content)
     # sio.emit("testmessage", {"test": "message"}, to=sid)
     ferdy.incoming_packets_queue.put((user, name, content, packet_id))

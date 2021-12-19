@@ -41,8 +41,13 @@ class Ferdy:
         return user
 
     def handle_disconnect(self, user):
-        # TODO handle right now right now
-        pass
+        self._users.remove(user)
+
+        self.send_packet_to_all("user.disconnected", {
+            "sid": user.sid,
+            "users_logged_in": [user.sid for user in self.get_all_users()],
+            "user_count": self.get_user_count(),
+        })
 
     def get_all_users(self):
         return self._users.copy()

@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 export const { REACT_APP_BACKEND_URL } = process.env;
 
-export let socket = null;
+let socket = null;
 
 export function connectSocket() {
   if (socket) {
@@ -20,9 +20,9 @@ export function connectSocket() {
     console.debug("> GOT", data, data2);
   });
 
-  socket.on("connect", (data) => {
-    console.debug("Socket connected", data);
-    sendPacket("yo");
+  socket.on("connect", () => {
+    console.debug("Socket connected");
+    // sendPacket("yo");
   });
 
   socket.on("disconnect", (data) => {
@@ -45,6 +45,8 @@ export function connectSocket() {
   socket.on("reconnect_error", (ex) => {
     console.debug("Socket reconnect error", ex);
   });
+
+  return socket;
 }
 
 export function disconnectSocket() {
