@@ -2,6 +2,7 @@
 Redirect insecure HTTP requests
 """
 
+from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
@@ -15,11 +16,13 @@ class RequestRedirect(BaseHTTPRequestHandler):
         self.send_header("Location", DESTINATION)
         self.end_headers()
         address = self.client_address[0]
-        print(f"Redirected someone, {address=}")
+        now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        print(f"[{now}] Redirected client, {address=}")
 
 
 def redirect_loop():
-    print(f"Redirecting http traffic to {DESTINATION}")
+    now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{now}] Redirecting http traffic to {DESTINATION}")
     HTTPServer(("", 80), RequestRedirect).serve_forever()
 
 

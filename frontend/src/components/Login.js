@@ -60,6 +60,8 @@ export default function Login() {
     sendPacket("user.log_out");
   }
 
+  // TODO add normal email and password field in case google button doesnt work
+
   return (
     <>
       {user ? (

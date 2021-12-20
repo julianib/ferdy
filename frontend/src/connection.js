@@ -1,20 +1,44 @@
 import { io } from "socket.io-client";
 
-const { REACT_APP_BACKEND_URL } = process.env;
-
 // this object gets returned by getSocket()
 let socket = null;
 
+// get environment variables
+const {
+  REACT_APP_BACKEND_CUSTOM,
+  REACT_APP_BACKEND_HTTPS,
+  REACT_APP_BACKEND_PORT,
+} = process.env;
+
+const domain = window.location.domain;
+
+export function getBackendUrl() {
+  // if custom url is set, use that url
+  // if no custom url is set, check if https is enabled or disabled
+  // then set the url
+  if (REACT_APP_BACKEND_CUSTOM) {
+    return REACT_APP_BACKEND_CUSTOM;
+  }
+
+  if (REACT_APP_BACKEND_HTTPS === "true") {
+    return `https://${domain}:${REACT_APP_BACKEND_PORT}`;
+  }
+
+  return `http://${domain}:${REACT_APP_BACKEND_PORT}`;
+}
+
 export function getSocket() {
+  // socket is already was already initialized by another component, so just
+  // return the already-initialized socket instance to use
   if (socket) {
-    // socket is already was already initialized by another component, so just
-    // return the already-initialized socket instance to use
     return socket;
   }
 
-  console.debug(`Connecting socket, url=${REACT_APP_BACKEND_URL}`);
+  const backendUrl = getBackendUrl();
 
-  socket = io(REACT_APP_BACKEND_URL, {
+  console.debug(`Connecting socket, url=${backendUrl}`);
+
+  socket = io(backendUrl, {
     timeout: 1000,
   });
 
@@ -65,6 +89,7 @@ export function disconnectSocket() {
 }
 
 export function sendPacket(name, content) {
+  // only send packets if the socket is connected
   if (socket?.connected) {
     socket.send(name, content);
     console.debug("<= SENT:", name, content);
@@ -75,7 +100,9 @@ export function sendPacket(name, content) {
 }
 
 export function fetchBackend(method, body) {
-  fetch(REACT_APP_BACKEND_URL, {
+  // shorthand function for using fetch to send requests to backend
+
+  fetch(getBackendUrl(), {
     method: method,
     headers: {
       "Content-Type": "application/json",

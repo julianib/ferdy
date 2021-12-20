@@ -1,4 +1,4 @@
-const { REACT_APP_BACKEND_URL } = process.env;
+import { getBackendUrl } from "../connection";
 
 const classes = {
   container: {},
@@ -15,8 +15,8 @@ export default function ChatMessage({ author, text }) {
     <li style={classes.container}>
       <img
         style={classes.avatar}
-        src={`${REACT_APP_BACKEND_URL}/files/avatars/default.png`}
-        alt="alt"
+        src={`${getBackendUrl()}/files/avatars/default.png`}
+        alt=""
       />
       <span style={classes.author}>{author}</span>
       <span style={classes.text}>{text}</span>
