@@ -3,4 +3,4 @@ files/
 logs/
 test/
 
-/src/scary_secrets.py
+/src/secret_keys.py

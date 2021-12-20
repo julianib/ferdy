@@ -11,16 +11,17 @@ from log import Log
 from packet_handler import handle_packets_loop
 from packet_sender import send_packets_loop
 
+
 # setup flask
 
 app = Flask(__name__)
 CORS(app)
 
-if SCARY_SECRETS_IMPORTED:
+if SECRET_KEYS_IMPORTED:
     app.config["SECRET_KEY"] = FLASK_SECRET_KEY
 else:
     # random key, cookies will not work
-    app.config["SECRET_KEY"] = secrets.token_hex(32)
+    app.config["SECRET_KEY"] = secrets.token_hex(24)
 
 
 # setup socketio
@@ -150,7 +151,7 @@ def main():
         app=app,
         host=HOST,
         port=PORT,
-        debug=DEBUG_FLASK,
+        debug=FLASK_DEBUG,
         log_output=LOG_CONNECTIONS
     )
 

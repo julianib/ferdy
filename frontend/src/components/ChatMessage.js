@@ -16,6 +16,7 @@ export default function ChatMessage({ author, text }) {
       <img
         style={classes.avatar}
         src={`${REACT_APP_BACKEND_URL}/files/avatars/default.png`}
+        alt="alt"
       />
       <span style={classes.author}>{author}</span>
       <span style={classes.text}>{text}</span>

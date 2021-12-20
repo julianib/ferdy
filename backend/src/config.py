@@ -6,7 +6,7 @@ from colorama import Fore, Style
 
 # general
 CRASH_RESTART_DELAY = 0  # seconds, falsy to disable
-DEBUG_FLASK = False
+FLASK_DEBUG = False
 HOST = "0.0.0.0"
 PORT = 1962
 

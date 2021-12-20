@@ -53,11 +53,11 @@ from log import Log
 
 # import secrets.py, contains sensitive data
 try:
-    from scary_secrets import *
-    SCARY_SECRETS_IMPORTED = True
+    from secret_keys import *
+    SECRET_KEYS_IMPORTED = True
 except ImportError:
     Log.warning("Could not import scary_secrets.py")
-    SCARY_SECRETS_IMPORTED = False
+    SECRET_KEYS_IMPORTED = False
 
 
 def setup_folders():

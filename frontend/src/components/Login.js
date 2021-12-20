@@ -49,10 +49,10 @@ export default function Login() {
   }
 
   function onLoginFailure(res) {
-    console.debug("google log in error", res);
+    console.debug("google log in error, reporting error", res);
 
     // notify backend of error
-    sendPacket("user.log_in.error", res);
+    sendPacket("user.log_in.google_error", res);
   }
 
   function onLogoutSuccess() {
@@ -65,7 +65,7 @@ export default function Login() {
       {user ? (
         <GoogleLogout
           clientId={REACT_APP_CLIENT_ID}
-          buttonText={"Logout"}
+          buttonText="Logout"
           onLogoutSuccess={onLogoutSuccess}
         >
           Log out
@@ -73,7 +73,7 @@ export default function Login() {
       ) : (
         <GoogleLogin
           clientId={REACT_APP_CLIENT_ID}
-          cookiePolicy={"single_host_origin"}
+          cookiePolicy="single_host_origin"
           buttonText="Sign In with Google"
           onSuccess={onLoginSuccess}
           onFailure={onLoginFailure}

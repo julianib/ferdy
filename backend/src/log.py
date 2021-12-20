@@ -149,7 +149,7 @@ class Log:
 
         # if a packet is given, add it to the outputted message
         if content is not None:
-            raw_message += f"\n content={content}"
+            raw_message += f"\n\tcontent={content}"
 
         # check if sufficient log level before logging
         if CONSOLE_LOG_LEVEL and \
@@ -168,7 +168,7 @@ class Log:
 
             # only log timestamp in console if it's enabled
             if CONSOLE_TIMESTAMP:
-                now = datetime.now().strftime("%H:%M:%S")
+                now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
                 print(
                     f"{color}[{now}][{level_text}][{greenlet_name}] "
                     f"{Style.RESET_ALL}{message}"
@@ -189,7 +189,7 @@ class Log:
         if FILE_LOG_LEVEL and \
                 level[0] >= get_level_int_from_str(FILE_LOG_LEVEL):
 
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             Log.FILE_WRITING_QUEUE.put(
                 (now, level, greenlet_name, raw_message, ex, content))
 
@@ -225,8 +225,8 @@ class Log:
 
         # set and clear the latest log
         latest_log = f"{LOGS_FOLDER}/.latest.txt"
+        Log.debug(f"Emptying latest log, {latest_log=}")
         open(latest_log, "w").close()
-        Log.debug(f"Emptied latest log")
 
         Log.debug("Log writer loop ready")
 
@@ -235,7 +235,7 @@ class Log:
                 content = Log.FILE_WRITING_QUEUE.get()
 
             if content is not None:
-                message += f"\n content: {content}"
+                message += f"\n\tcontent: {content}"
 
             with open(latest_log, "a", encoding="utf-8") as f:
                 f.write(
