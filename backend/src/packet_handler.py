@@ -22,12 +22,12 @@ def handle_packets_loop(ferdy: Ferdy):
 
         except NotImplementedError:
             Log.debug("Handling failed: not implemented")
-            instant_response = error_content("error.notimplemented")
+            instant_response = error_content("not_implemented")
 
         except Exception as ex:
             # TODO if user has correct roles, give error traceback in packet
             Log.error("Unhandled exception on handle_packet", ex=ex)
-            instant_response = error_content("error.backend")
+            instant_response = error_content("backend")
 
         if instant_response:
 

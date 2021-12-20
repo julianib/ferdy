@@ -16,19 +16,21 @@ from typing import Dict, Iterable, List, Union, Optional, Tuple, Set
 
 # 3rd party modules
 import eventlet
-from eventlet.green import subprocess  # greenlet friendly
+# greenlet friendly modules
+from eventlet.green import subprocess
 from eventlet.green.Queue import Queue
 import google
+import greenlet
 
 
 # log.Log uses this function, so define it before importing
 def set_greenlet_name(name: str):  # nopep8
     """
     Set the name of the greenlet that called this function. This is pretty
-    dirty (current_thread.getName isn't for greenlets).
+    dirty (current_thread.getName does work on greenlets).
     """
 
-    eventlet.getcurrent().__dict__["_greenlet_name"] = name
+    greenlet.getcurrent().__dict__["_greenlet_name"] = name
 
 
 def get_greenlet_name() -> str:  # nopep8
@@ -37,8 +39,8 @@ def get_greenlet_name() -> str:  # nopep8
     """
 
     try:
-        return eventlet.getcurrent().__dict__["_greenlet_name"]
-    except:
+        return greenlet.getcurrent().__dict__["_greenlet_name"]
+    except KeyError:
         # just in case if the greenlet has no name set (shouldn't happen)
         return "NAMELESS"
 

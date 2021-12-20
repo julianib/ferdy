@@ -1,7 +1,7 @@
 import eventlet
 eventlet.monkey_patch()  # nopep8
 
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
@@ -11,24 +11,21 @@ from log import Log
 from packet_handler import handle_packets_loop
 from packet_sender import send_packets_loop
 
-
-set_greenlet_name("Main")
-
 # setup flask
 
-flask_app = Flask(__name__)
-CORS(flask_app)
+app = Flask(__name__)
+CORS(app)
 
 if SCARY_SECRETS_IMPORTED:
-    flask_app.config["SECRET_KEY"] = FLASK_SECRET_KEY
+    app.config["SECRET_KEY"] = FLASK_SECRET_KEY
 else:
     # random key, cookies will not work
-    flask_app.config["SECRET_KEY"] = secrets.token_hex(32)
+    app.config["SECRET_KEY"] = secrets.token_hex(32)
 
 
 # setup socketio
 sio = SocketIO(
-    app=flask_app,
+    app=app,
     async_mode="eventlet",
     cors_allowed_origins='*',
     logger=LOG_SOCKETIO,  # socketio logger
@@ -41,17 +38,48 @@ ferdy: Union[Ferdy, None] = None
 
 # flask routes
 
-@flask_app.get("/test")
-def get_test():
-    Log.debug("get_test()")
-    return {"deez": ""}
+@app.get(f"/{AVATARS_FOLDER}/<filename>")
+def get_avatar(filename):
+    set_greenlet_name("app/get_avatar")
+
+    # TODO implement check if user is authorized
+
+    # file_type = filename.split(".")[-1]
+    # if file_type not in ["png", "jpg"]:
+    Log.debug(f"Reading avatar file, {filename=}")
+
+    if os.path.exists(f"{AVATARS_FOLDER}/{filename}"):
+        return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}", filename)
+    else:
+        Log.warning(f"Requested file not found, using default, {filename=}")
+        if os.path.exists(f"{AVATARS_FOLDER}/default.png"):
+            return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}",
+                                       "default.png")
+        else:
+            Log.warning("Fallback avatar file default.png does not exist")
+            return error_content("backend")
 
 
-@flask_app.post("/")
+@app.get("/")
+def get():
+    set_greenlet_name("app/get")
+    return "GET root!"
+
+
+@app.post("/")
 def post():
+    set_greenlet_name("app/post")
     body = request.json
-    Log.debug(f"post {body=}")
-    return {"status": "success"}
+    Log.test(f"post {body=}")
+    return "POST root!"
+
+
+@app.errorhandler(404)
+def app_errorhandler(e):
+    set_greenlet_name("app/error")
+    path = request.path
+    Log.warning(f"Exception on flask app, {path=}", ex=e)
+    return error_content("backend")
 
 
 # socketio events
@@ -64,9 +92,10 @@ def on_connect():
     Log.debug(f"Handling connect, {sid[:4]=} {address=}")
     user = ferdy.handle_connect(sid, address)
 
+    # refuse the connection if user object was not created
     if not user:
-        Log.error("Refusing connect attempt, could not create user object")
-        return False  # refuse the connection
+        Log.error("Refusing connect attempt, user object not created")
+        return False
 
     Log.info(f"{user} connected")
 
@@ -103,6 +132,7 @@ def on_packet(name, content):
 
 
 def main():
+    set_greenlet_name("MAIN")
     setup_folders()  # TODO fix cwd problem that causes extra files
 
     if FILE_LOG_LEVEL:
@@ -117,7 +147,7 @@ def main():
     Log.info(f"Starting on {PORT=}")
 
     sio.run(
-        app=flask_app,
+        app=app,
         host=HOST,
         port=PORT,
         debug=DEBUG_FLASK,

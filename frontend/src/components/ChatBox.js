@@ -1,16 +1,18 @@
 import { useContext, useEffect, useState } from "react";
-import { getSocket, sendPacket } from "../connection";
-import { MessagesContext } from "../contexts/MessagesContext";
-import { UserContext } from "../contexts/UserContext";
 
-export default function MessageBox() {
-  const { messages, setMessages } = useContext(MessagesContext);
+import { getSocket, sendPacket } from "../connection";
+import { UserContext } from "../contexts/UserContext";
+import useChatMessages from "../hooks/useChatMessages";
+import ChatMessage from "./ChatMessage";
+
+const classes = {
+  messagesList: {},
+};
+
+export default function ChatBox() {
+  const { chatMessages, addChatMessage } = useChatMessages();
   const { user } = useContext(UserContext);
   const [messageInput, setMessageInput] = useState("");
-
-  function addMessage(message) {
-    setMessages([...messages, message]);
-  }
 
   function onInputChange(e) {
     setMessageInput(e.target.value);
@@ -29,7 +31,7 @@ export default function MessageBox() {
     let socket = getSocket();
 
     socket.on("user.message.receive", (content) => {
-      addMessage({ ...content });
+      addChatMessage({ ...content });
     });
 
     return () => {
@@ -39,13 +41,9 @@ export default function MessageBox() {
 
   return (
     <div>
-      <ul>
-        {messages.map((message, i) => {
-          return (
-            <li key={i}>
-              <b>{message.author}</b>: {message.text}
-            </li>
-          );
+      <ul styles={classes.messagesList}>
+        {chatMessages.map((message, i) => {
+          return <ChatMessage key={i} {...message} />;
         })}
       </ul>
       {user ? (

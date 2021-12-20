@@ -165,11 +165,19 @@ class Log:
             # no need for a lock, https://stackoverflow.com/a/2854703/13216113
             color = level[2]
             level_text = level[1].upper()
-            # now = datetime.now().strftime("%H:%M:%S")
-            print(
-                f"{color}[{level_text}][{greenlet_name}] "
-                f"{Style.RESET_ALL}{message}"
-            )
+
+            # only log timestamp in console if it's enabled
+            if CONSOLE_TIMESTAMP:
+                now = datetime.now().strftime("%H:%M:%S")
+                print(
+                    f"{color}[{now}][{level_text}][{greenlet_name}] "
+                    f"{Style.RESET_ALL}{message}"
+                )
+            else:
+                print(
+                    f"{color}[{level_text}][{greenlet_name}] "
+                    f"{Style.RESET_ALL}{message}"
+                )
 
             if ex:
                 traceback.print_exception(
