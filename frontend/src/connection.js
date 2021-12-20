@@ -24,17 +24,15 @@ export function getSocket() {
 
   socket.on("connect", () => {
     console.debug("Socket connected");
-    // sendPacket("yo");
   });
 
   socket.on("disconnect", (data) => {
     console.debug("Socket disconnected:", data);
   });
 
-  // this built in event is shadowing "error" packets from backend, so skip
-  // socket.on("error", (ex) => {
-  //   console.debug("Socket error", ex);
-  // });
+  socket.on("error", (ex) => {
+    console.debug("Socket error", ex);
+  });
 
   socket.on("reconnect", (data) => {
     console.debug("Socket reconnected", data);

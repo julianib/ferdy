@@ -144,15 +144,32 @@ def main():
     eventlet.spawn(send_packets_loop, ferdy)
     eventlet.spawn(handle_packets_loop, ferdy)
 
-    # TODO start with ssl if -h flag not in argv
-    Log.info(f"Starting on {PORT=}")
+    if CERTFILE and KEYFILE and "--insecure" not in sys.argv and \
+            "-i" not in sys.argv:
+        ssl_enabled = True
+        Log.info("Running with SSL enabled "
+                 "(disable with --insecure/-i flag)")
+        
+    else:
+        ssl_enabled = False
+        Log.warning("Running with SSL DISABLED "
+                    "(no cert files or --insecure/-i flag)")
 
+    if FLASK_DEBUG:
+        Log.warning("Running Flask in DEBUG MODE, this is INSECURE!")
+
+    Log.info(f"Starting, {PORT=}, {ssl_enabled=}, {FLASK_DEBUG=}")
+
+    # suitable for deployment, see:
+    # https://flask-socketio.readthedocs.io/en/latest/deployment.html
     sio.run(
         app=app,
         host=HOST,
         port=PORT,
+        certfile=CERTFILE if ssl_enabled else None,
+        keyfile=KEYFILE if ssl_enabled else None,
         debug=FLASK_DEBUG,
-        log_output=LOG_CONNECTIONS
+        log_output=LOG_CONNECTIONS,
     )
 
 

@@ -1,8 +1,10 @@
+# config files and folders
 /.idea/
 /.vscode/
 /.shove-copy/
 
+# cache folders
 __pycache__/
 
-cert.pem
-key.pem
+# certficiate files
+*.pem

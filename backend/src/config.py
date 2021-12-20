@@ -9,6 +9,9 @@ CRASH_RESTART_DELAY = 0  # seconds, falsy to disable
 FLASK_DEBUG = False
 HOST = "0.0.0.0"
 PORT = 1962
+SECURE_URL = "https://doferdydurke.nl"
+CERTFILE = "../fullchain.pem"
+KEYFILE = "../privkey.pem"
 
 
 # folders, REMOVE leading and trailing /'s!
