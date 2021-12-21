@@ -1,4 +1,4 @@
-import { getBackendUrl } from "../connection";
+import { BACKEND } from "../backend";
 
 const classes = {
   container: {},
@@ -15,7 +15,7 @@ export default function ChatMessage({ author, text }) {
     <li style={classes.container}>
       <img
         style={classes.avatar}
-        src={`${getBackendUrl()}/files/avatars/default.png`}
+        src={`${BACKEND}/files/avatars/default.png`}
         alt=""
       />
       <span style={classes.author}>{author}</span>

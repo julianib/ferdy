@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import { sendPacket } from "../backend";
 
-import { getSocket, sendPacket } from "../connection";
 import { UserContext } from "../contexts/UserContext";
 import useChatMessages from "../hooks/useChatMessages";
 import ChatMessage from "./ChatMessage";
@@ -10,7 +10,7 @@ const classes = {
 };
 
 export default function ChatBox() {
-  const { chatMessages, addChatMessage } = useChatMessages();
+  const { chatMessages } = useChatMessages();
   const { user } = useContext(UserContext);
   const [messageInput, setMessageInput] = useState("");
 
@@ -26,18 +26,6 @@ export default function ChatBox() {
     setMessageInput("");
     e.preventDefault();
   }
-
-  useEffect(() => {
-    let socket = getSocket();
-
-    socket.on("user.message.receive", (content) => {
-      addChatMessage({ ...content });
-    });
-
-    return () => {
-      socket.off("user.message.receive");
-    };
-  });
 
   return (
     <div>

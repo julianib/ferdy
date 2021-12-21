@@ -1,43 +1,34 @@
 import { useContext, useEffect } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
+import { sendPacket, usePacket } from "../backend";
 
-import { getSocket, sendPacket } from "../connection";
 import { UserContext } from "../contexts/UserContext";
 
 export default function Login() {
   const { REACT_APP_CLIENT_ID } = process.env;
   const { user, setUser } = useContext(UserContext);
 
-  useEffect(() => {
-    const socket = getSocket();
-
-    socket.on("user.log_in.error", (content) => {
-      console.error("Log in failed, clear user state,", content.reason);
-      setUser(null);
-    });
-
-    socket.on("user.log_in.ok", (content) => {
-      console.log("Log in OK");
-      setUser({ ...content }); // TODO check what data we want to give the user
-    });
-
-    socket.on("user.log_out.error", (content) => {
-      console.error("Log out error, clearing user state", content.error);
-      setUser(null);
-    });
-
-    socket.on("user.log_out.ok", () => {
-      console.log("Log out OK");
-      setUser(null);
-    });
-
-    return () => {
-      socket.off("user.log_in.error");
-      socket.off("user.log_in.ok");
-      socket.off("user.log_out.error");
-      socket.off("user.log_out.ok");
-    };
+  usePacket("user.log_in.error", (content) => {
+    console.error("Log in failed, clear user state,", content.reason);
+    setUser(null);
   });
+
+  usePacket("user.log_in.ok", (content) => {
+    console.log("Log in OK");
+    setUser({ ...content }); // TODO check what data we want to give the user
+  });
+
+  usePacket("user.log_out.error", (content) => {
+    console.error("Log out error, clearing user state", content.error);
+    setUser(null);
+  });
+
+  usePacket("user.log_out.ok", () => {
+    console.log("Log out OK");
+    setUser(null);
+  });
+
+  useEffect(() => {});
 
   async function onLoginSuccess(res) {
     // TODO login request again after socket lost connection
