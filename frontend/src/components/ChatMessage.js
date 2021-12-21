@@ -1,4 +1,4 @@
-import { BACKEND } from "../backend";
+import { BACKEND } from "../util/backend";
 
 const classes = {
   container: {},

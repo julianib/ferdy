@@ -1,25 +1,31 @@
 import { useContext, useEffect } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
-import { sendPacket, usePacket } from "../backend";
-
 import { UserContext } from "../contexts/UserContext";
+import usePacket from "../hooks/usePacket";
+import sendPacket from "../util/sendPacket";
+
+const { REACT_APP_CLIENT_ID } = process.env;
 
 export default function Login() {
-  const { REACT_APP_CLIENT_ID } = process.env;
+  // const { user, setUser } = useUser(); // wtfffff broken
   const { user, setUser } = useContext(UserContext);
 
+  useEffect(() => {
+    console.debug("useEffect Login", user);
+  }, [user]);
+
   usePacket("user.log_in.error", (content) => {
-    console.error("Log in failed, clear user state,", content.reason);
+    console.error("Log in failed, clear user state:", content.error);
     setUser(null);
   });
 
   usePacket("user.log_in.ok", (content) => {
     console.log("Log in OK");
-    setUser({ ...content }); // TODO check what data we want to give the user
+    setUser({ ...content });
   });
 
   usePacket("user.log_out.error", (content) => {
-    console.error("Log out error, clearing user state", content.error);
+    console.error("Log out error, clearing user state:", content.error);
     setUser(null);
   });
 
@@ -28,9 +34,7 @@ export default function Login() {
     setUser(null);
   });
 
-  useEffect(() => {});
-
-  async function onLoginSuccess(res) {
+  function onGoogleLoginOk(res) {
     // TODO login request again after socket lost connection
     console.debug("google log in ok, asking verification", res);
     sendPacket("user.log_in", {
@@ -39,14 +43,14 @@ export default function Login() {
     });
   }
 
-  function onLoginFailure(res) {
+  function onGoogleLoginError(res) {
     console.debug("google log in error, reporting error", res);
 
     // notify backend of error
     sendPacket("user.log_in.google_error", res);
   }
 
-  function onLogoutSuccess() {
+  function onGoogleLogoutOk() {
     console.debug("google log out ok");
     sendPacket("user.log_out");
   }
@@ -59,7 +63,7 @@ export default function Login() {
         <GoogleLogout
           clientId={REACT_APP_CLIENT_ID}
           buttonText="Logout"
-          onLogoutSuccess={onLogoutSuccess}
+          onLogoutSuccess={onGoogleLogoutOk}
         >
           Log out
         </GoogleLogout>
@@ -68,13 +72,14 @@ export default function Login() {
           clientId={REACT_APP_CLIENT_ID}
           cookiePolicy="single_host_origin"
           buttonText="Sign In with Google"
-          onSuccess={onLoginSuccess}
-          onFailure={onLoginFailure}
+          onSuccess={onGoogleLoginOk}
+          onFailure={onGoogleLoginError}
           isSignedIn
         >
           Log in
         </GoogleLogin>
       )}
+      {user?.name || "no user set"}
     </>
   );
 }

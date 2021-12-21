@@ -144,16 +144,14 @@ def main():
     eventlet.spawn(send_packets_loop, ferdy)
     eventlet.spawn(handle_packets_loop, ferdy)
 
-    if CERTFILE and KEYFILE and "--insecure" not in sys.argv and \
-            "-i" not in sys.argv:
+    if CERTFILE and KEYFILE and os.path.exists(CERTFILE) and \
+        os.path.exists(KEYFILE):
         ssl_enabled = True
-        Log.info("Running with SSL enabled "
-                 "(disable with --insecure/-i flag)")
+        Log.info("Running with SSL enabled")
         
     else:
         ssl_enabled = False
-        Log.warning("Running with SSL DISABLED "
-                    "(no cert files or --insecure/-i flag)")
+        Log.warning("Running with SSL DISABLED (no certificate files)")
 
     if FLASK_DEBUG:
         Log.warning("Running Flask in DEBUG MODE, this is INSECURE!")

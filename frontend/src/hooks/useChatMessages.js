@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { usePacket } from "../backend";
+import usePacket from "../hooks/usePacket";
 
-const MAX_CHAT_MESSAGES = 10;
+const MAX_CHAT_MESSAGES = 5;
 
 export default function useChatMessages() {
   const [chatMessages, setChatMessages] = useState([]);
+
+  // packet handler to add incoming messages to the list of messages
+  usePacket("user.message.receive", (content) => {
+    addChatMessage(content);
+  });
 
   function addChatMessage(chatMessage) {
     setChatMessages((oldState) => {
@@ -33,11 +38,6 @@ export default function useChatMessages() {
       return newState;
     });
   }
-
-  // packet handler to add incoming messages to the list of messages
-  usePacket("user.message.receive", (content) => {
-    addChatMessage({ ...content });
-  });
 
   return { chatMessages, addChatMessage, removeChatMessage };
 }

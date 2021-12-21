@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
-import { sendPacket } from "../backend";
-
-import { UserContext } from "../contexts/UserContext";
 import useChatMessages from "../hooks/useChatMessages";
 import ChatMessage from "./ChatMessage";
+import sendPacket from "../util/sendPacket";
+import { UserContext } from "../contexts/UserContext";
 
 const classes = {
   messagesList: {},
@@ -11,7 +10,9 @@ const classes = {
 
 export default function ChatBox() {
   const { chatMessages } = useChatMessages();
+  // const { user } = useUser();
   const { user } = useContext(UserContext);
+
   const [messageInput, setMessageInput] = useState("");
 
   function onInputChange(e) {
