@@ -15,6 +15,7 @@ class RequestRedirect(BaseHTTPRequestHandler):
         self.send_response(301)
         self.send_header("Location", DESTINATION)
         self.end_headers()
+
         address = self.client_address[0]
         now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
         print(f"[{now}] Redirected client, {address=}")
