@@ -10,7 +10,7 @@ const {
   REACT_APP_BACKEND_PORT,
 } = process.env;
 
-const domain = window.location.domain;
+const domain = window.location.hostname;
 
 export function getBackendUrl() {
   // if custom url is set, use that url
