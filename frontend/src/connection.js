@@ -10,7 +10,7 @@ const {
   REACT_APP_BACKEND_PORT,
 } = process.env;
 
-const domain = window.location.hostname;
+const hostname = window.location.hostname;
 
 export function getBackendUrl() {
   // if custom url is set, use that url
@@ -21,10 +21,10 @@ export function getBackendUrl() {
   }
 
   if (REACT_APP_BACKEND_HTTPS === "true") {
-    return `https://${domain}:${REACT_APP_BACKEND_PORT}`;
+    return `https://${hostname}:${REACT_APP_BACKEND_PORT}`;
   }
 
-  return `http://${domain}:${REACT_APP_BACKEND_PORT}`;
+  return `http://${hostname}:${REACT_APP_BACKEND_PORT}`;
 }
 
 export function getSocket() {
