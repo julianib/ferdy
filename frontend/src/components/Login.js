@@ -1,18 +1,12 @@
-import { useContext, useEffect } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
-import { UserContext } from "../contexts/UserContext";
 import usePacket from "../hooks/usePacket";
 import sendPacket from "../util/sendPacket";
+import useUser from "../hooks/useUser";
 
 const { REACT_APP_CLIENT_ID } = process.env;
 
 export default function Login() {
-  // const { user, setUser } = useUser(); // wtfffff broken
-  const { user, setUser } = useContext(UserContext);
-
-  useEffect(() => {
-    console.debug("useEffect Login", user);
-  }, [user]);
+  const { user, setUser } = useUser();
 
   usePacket("user.log_in.error", (content) => {
     console.error("Log in failed, clear user state:", content.error);

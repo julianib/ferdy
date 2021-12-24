@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 export default function useUser() {
-  const [user, setUser] = useState({
-    name: "initial name",
-    first_name: "initial first_name",
-  });
+  const { user, setUser } = useContext(UserContext);
 
   return { user, setUser };
 }
