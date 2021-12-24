@@ -144,19 +144,27 @@ def main():
     eventlet.spawn(send_packets_loop, ferdy)
     eventlet.spawn(handle_packets_loop, ferdy)
 
-    if CERTFILE and KEYFILE and os.path.exists(CERTFILE) and \
-        os.path.exists(KEYFILE):
-        ssl_enabled = True
-        Log.info("Running with SSL enabled")
-        
+    https_enabled = False
+
+    if HTTPS:
+        if CERTFILE and KEYFILE:
+            if os.path.exists(CERTFILE) and os.path.exists(KEYFILE):
+                Log.debug("Certfile and keyfile exist")
+                https_enabled = True
+
+            else:
+                Log.warning("Could not find certfile and keyfile")
+
+        else:
+            Log.warning("No path set for certfile and keyfile")
+
     else:
-        ssl_enabled = False
-        Log.warning("Running with SSL DISABLED (no certificate files)")
+        Log.warning("Running with HTTPS disabled")
 
     if FLASK_DEBUG:
-        Log.warning("Running Flask in DEBUG MODE, this is INSECURE!")
+        Log.warning("Running Flask in DEBUG MODE (insecure)")
 
-    Log.info(f"Starting, {PORT=}, {ssl_enabled=}, {FLASK_DEBUG=}")
+    Log.info(f"Starting, {PORT=}, {https_enabled=}, {FLASK_DEBUG=}")
 
     # suitable for deployment, see:
     # https://flask-socketio.readthedocs.io/en/latest/deployment.html
@@ -164,8 +172,8 @@ def main():
         app=app,
         host=HOST,
         port=PORT,
-        certfile=CERTFILE if ssl_enabled else None,
-        keyfile=KEYFILE if ssl_enabled else None,
+        certfile=CERTFILE if https_enabled else None,
+        keyfile=KEYFILE if https_enabled else None,
         debug=FLASK_DEBUG,
         log_output=LOG_CONNECTIONS,
     )

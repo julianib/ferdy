@@ -31,11 +31,11 @@ SOCKET.onAny((name, content) => {
 SOCKET.on("connect", () => {
   console.debug("Socket connected");
 });
+SOCKET.on("connect_error", (error) => {
+  console.warn("Socket connect failed");
+});
 SOCKET.on("disconnect", (reason) => {
   console.debug("Socket disconnected:", reason);
-});
-SOCKET.on("error", (error) => {
-  console.debug("Socket error:", error);
 });
 
 // shorthand function for using fetch to send requests to backend

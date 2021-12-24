@@ -9,6 +9,7 @@ CRASH_RESTART_DELAY = 0  # seconds, falsy to disable
 FLASK_DEBUG = False
 HOST = "0.0.0.0"
 PORT = 1962
+HTTPS = False
 CERTFILE = "../fullchain.pem"
 KEYFILE = "../privkey.pem"
 
