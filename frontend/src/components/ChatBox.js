@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import useChatMessages from "../hooks/useChatMessages";
 import ChatMessage from "./ChatMessage";
 import sendPacket from "../util/sendPacket";
-import { UserContext } from "../contexts/UserContext";
+import useUser from "../hooks/useUser";
 
 const classes = {
   messagesList: {},
@@ -10,8 +10,7 @@ const classes = {
 
 export default function ChatBox() {
   const { chatMessages } = useChatMessages();
-  // const { user } = useUser();
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
 
   const [messageInput, setMessageInput] = useState("");
 
@@ -20,7 +19,7 @@ export default function ChatBox() {
   }
 
   function onSubmit(e) {
-    sendPacket("user.message.send", {
+    sendPacket("user.send_message", {
       author: user.name,
       text: messageInput,
     });
@@ -35,7 +34,7 @@ export default function ChatBox() {
           return <ChatMessage key={i} {...message} />;
         })}
       </ul>
-      {user ? (
+      {user && (
         <form onSubmit={onSubmit}>
           <input
             type="textarea"
@@ -45,7 +44,7 @@ export default function ChatBox() {
             autoFocus
           />
         </form>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -12,9 +12,11 @@ PORT = 1962
 HTTPS = False
 CERTFILE = "../fullchain.pem"
 KEYFILE = "../privkey.pem"
+CLIENT_ID = "179923541658-kfl4lp6lgd1nur0pk5vnqsb3d2hg49e6" \
+            ".apps.googleusercontent.com"
 
 
-# folders, REMOVE leading and trailing /'s!
+# application folders, remove leading and trailing slashes
 DATABASES_FOLDER = "databases"
 FILES_FOLDER = "files"
 AVATARS_FOLDER = "files/avatars"
@@ -27,7 +29,7 @@ TEST = 0, "test", Fore.MAGENTA + Style.NORMAL
 DEBUG = 1, "debug", Fore.WHITE + Style.DIM
 INFO = 2, "info", Fore.GREEN + Style.NORMAL
 WARNING = 3, "warning", Fore.YELLOW + Style.NORMAL
-ERROR = 4, "error", Fore.RED + Style.NORMAL
+ERROR = 4, "error", Fore.RED + Style.BRIGHT
 
 
 # logging

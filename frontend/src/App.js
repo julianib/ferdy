@@ -10,7 +10,6 @@ export default function App() {
       {user ? <h1>{user.first_name}</h1> : <h1>Not logged in</h1>}
       <Login />
       <ChatBox />
-      {user?.name || "no user set"}
     </>
   );
 }

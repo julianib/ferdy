@@ -1,6 +1,7 @@
 from convenience import *
 from ferdy import Ferdy
 from user import User
+import verify_google_token
 
 
 def handle_packets_loop(ferdy: Ferdy):
@@ -73,6 +74,8 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
     # aim is to have as little as possible handlers for frontend to register
     # and unregister each time components call useEffect
 
+    # content keys should_be_pep8
+
     # TODO split up different handlers into different files, room, user, etc.
 
     # game packets should be handled by game handler
@@ -123,21 +126,52 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         if user.is_logged_in():
             return "user.log_in.error", error_content("already_logged_in")
 
-        # TODO actually verify???
-        Log.debug("Skipping token verification")
+        # todo share profile data across users if logged in from 2 SIDs
 
-        google_id = int(content["google_id"])
-        name = content["name"]
+        # todo verification takes 100-200ms, use other greenlet: eventlet.spawn
+
+        token_id = content["token_id"]
+        google_data = verify_google_token.verify(token_id)
+        if not google_data:
+            return "user.log_in.error", error_content("invalid_google_token")
+
+        # todo verify token "is signed by google:"
+        # https://developers.google.com/identity/sign-in/web/backend-auth?hl=nl
+        #       #verify-the-integrity-of-the-id-token
+
+        audience = google_data["aud"]
+        if type(audience) == str and not audience == CLIENT_ID:
+            Log.warning("Intended audience does not match client id, "
+                        f" {audience=}, {CLIENT_ID=}")
+            return "user.log_in_error"
+
+        google_id = google_data["sub"]
 
         # lookup the profile matching the google id
         Log.debug("Checking if profile exists")
         profile = ferdy.profiles.match_single(google_id=google_id)
 
         # if profile does not exist in db, create it
+        # fields explained: https://stackoverflow.com/a/31099850/13216113
         if not profile:
-            profile = ferdy.profiles.create_profile(
+            email = google_data["email"]
+            email_verified = google_data["email_verified"]
+            avatar_url = google_data["picture"]
+            name = google_data["name"]
+            first_name = google_data["given_name"]
+            last_name = google_data["family_name"]
+            locale = google_data["locale"]
+
+            profile = ferdy.profiles.create(
                 google_id=google_id,
+                email=email,
+                email_verified=email_verified,
+                avatar_url=avatar_url,
+                avatar_external=True,
                 name=name,
+                first_name=first_name,
+                last_name=last_name,
+                locale=locale,
             )
 
         # TODO provide a session token for the user (for POST fetches)
@@ -163,11 +197,11 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
         return "user.log_out.ok"
 
-    if name == "user.message.send":
+    if name == "user.send_message":
         if not user.is_logged_in():
-            return "user.message.send.error", error_content("not_logged_in")
+            return "user.send_message.error", error_content("not_logged_in")
 
-        ferdy.send_packet_to_all("user.message.receive", {
+        ferdy.send_packet_to_all("user.receive_message", {
             "author": user.get_profile()["name"],
             "text": content["text"],
         })

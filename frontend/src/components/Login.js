@@ -1,15 +1,14 @@
-import { GoogleLogin, GoogleLogout } from "react-google-login";
-import usePacket from "../hooks/usePacket";
+import { usePacket } from "../hooks/usePacket";
 import sendPacket from "../util/sendPacket";
 import useUser from "../hooks/useUser";
-
-const { REACT_APP_CLIENT_ID } = process.env;
+import LogoutButton from "./LogoutButton";
+import LoginButton from "./LoginButton";
 
 export default function Login() {
   const { user, setUser } = useUser();
 
   usePacket("user.log_in.error", (content) => {
-    console.error("Log in failed, clear user state:", content.error);
+    console.error("Log in failed, clearing user state:", content.error);
     setUser(null);
   });
 
@@ -32,8 +31,7 @@ export default function Login() {
     // TODO login request again after socket lost connection
     console.debug("google log in ok, asking verification", res);
     sendPacket("user.log_in", {
-      google_id: parseInt(res.profileObj.googleId),
-      name: res.profileObj.name,
+      token_id: res.tokenId,
     });
   }
 
@@ -54,26 +52,13 @@ export default function Login() {
   return (
     <>
       {user ? (
-        <GoogleLogout
-          clientId={REACT_APP_CLIENT_ID}
-          buttonText="Logout"
-          onLogoutSuccess={onGoogleLogoutOk}
-        >
-          Log out
-        </GoogleLogout>
+        <LogoutButton onGoogleLogoutOk={onGoogleLogoutOk} />
       ) : (
-        <GoogleLogin
-          clientId={REACT_APP_CLIENT_ID}
-          cookiePolicy="single_host_origin"
-          buttonText="Sign In with Google"
-          onSuccess={onGoogleLoginOk}
-          onFailure={onGoogleLoginError}
-          isSignedIn
-        >
-          Log in
-        </GoogleLogin>
+        <LoginButton
+          onGoogleLoginOk={onGoogleLoginOk}
+          onGoogleLoginError={onGoogleLoginError}
+        />
       )}
-      {user?.name || "no user set"}
     </>
   );
 }

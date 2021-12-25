@@ -7,7 +7,7 @@ class Profiles(Database):
     def __init__(self):
         super().__init__(Profile, "profiles.json")
 
-    def create_profile(self, google_id, name):
+    def create(self, google_id, name):
         Log.debug(f"Creating profile")
 
         if not (google_id and name):

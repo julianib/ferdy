@@ -18,8 +18,6 @@ export const BACKEND = REACT_APP_BACKEND_CUSTOM
   ? `https://${HOSTNAME}:${REACT_APP_BACKEND_PORT}`
   : `http://${HOSTNAME}:${REACT_APP_BACKEND_PORT}`;
 
-// socketio setup:
-
 // init socket
 console.debug(`Connecting socket, backend=${BACKEND}`);
 export const SOCKET = io(BACKEND);
@@ -39,18 +37,18 @@ SOCKET.on("disconnect", (reason) => {
 });
 
 // shorthand function for using fetch to send requests to backend
-// export function fetchBackend(method, body) {
-//   fetch(BACKEND, {
-//     method: method,
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ body }),
-//   })
-//     .then((res) => {
-//       console.debug("fetch backend ok:", res);
-//     })
-//     .catch((ex) => {
-//       console.error("fetch backend error:", ex);
-//     });
-// }
+export function fetchBackend(method, body) {
+  fetch(BACKEND, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ body }),
+  })
+    .then((res) => {
+      console.debug("fetch backend ok:", res);
+    })
+    .catch((ex) => {
+      console.error("fetch backend error:", ex);
+    });
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import usePacket from "../hooks/usePacket";
+import { usePacket } from "../hooks/usePacket";
 
 const MAX_CHAT_MESSAGES = 5;
 
@@ -7,8 +7,13 @@ export default function useChatMessages() {
   const [chatMessages, setChatMessages] = useState([]);
 
   // packet handler to add incoming messages to the list of messages
-  usePacket("user.message.receive", (content) => {
+  usePacket("user.receive_message", (content) => {
     addChatMessage(content);
+  });
+
+  // drop errors in the chatbox
+  usePacket("user.send_message.error", ({ text }) => {
+    addChatMessage({ text });
   });
 
   function addChatMessage(chatMessage) {
@@ -26,7 +31,7 @@ export default function useChatMessages() {
     });
   }
 
-  // TODO removing a message should get the least old message from backend
+  // todo removing a message should get the least old message from backend
   // to keep the amount of messages always at MAX items
   function removeChatMessage(text) {
     setChatMessages((oldState) => {
