@@ -12,7 +12,7 @@ class User:
     def __repr__(self):
         name = self.get_name()
         sid = self.sid
-        return f"<User {sid[:4]=} {name=}>"
+        return f"<User {sid=}, {name=}>"
 
     def get_name(self) -> str:
         if self.is_logged_in():
@@ -29,14 +29,14 @@ class User:
 
     def log_in(self, profile):
         if self._profile:
-            raise ValueError("Log in failed: already logged in")
+            raise ValueError("User object already has a profile set")
 
         self._profile = profile
         Log.info(f"{self} logged in")
 
     def log_out(self):
         if not self._profile:
-            raise ValueError("Log out failed: not logged in")
+            raise ValueError("User object does not have a profile set")
 
         self._profile = None
         Log.info(f"{self} logged out")

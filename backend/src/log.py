@@ -19,7 +19,7 @@ def get_level_int_from_str(level_str: str) -> int:
         if level[1] == level_str:
             return level[0]
 
-    raise ValueError(f"Unknown log level: {level_str=}")
+    raise ValueError(f"Unknown log level, {level_str=}")
 
 
 def filter_content(content, abbreviate_keys=True) -> Optional[Union[dict, list]]:
@@ -103,7 +103,8 @@ class Log:
 
     @staticmethod
     def test(raw_message, **kwargs):
-        Log._log(raw_message, TEST, **kwargs)
+        kwargs.pop("cutoff", None)
+        Log._log(raw_message, TEST, cutoff=False, **kwargs)
 
     @staticmethod
     def debug(raw_message, **kwargs):
@@ -149,7 +150,7 @@ class Log:
 
         # if a packet is given, add it to the outputted message
         if content is not None:
-            raw_message += f"\n\tcontent={content}"
+            raw_message += f"\n\t{content=}"
 
         # check if sufficient log level before logging
         if CONSOLE_LOG_LEVEL and \
@@ -235,7 +236,7 @@ class Log:
                 content = Log.FILE_WRITING_QUEUE.get()
 
             if content is not None:
-                message += f"\n\tcontent: {content}"
+                message += f"\n\t{content=}"
 
             with open(latest_log, "a", encoding="utf-8") as f:
                 f.write(

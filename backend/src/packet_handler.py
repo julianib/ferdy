@@ -1,7 +1,7 @@
 from convenience import *
 from ferdy import Ferdy
 from user import User
-import verify_google_token
+import verify_google_token_id
 
 
 def handle_packets_loop(ferdy: Ferdy):
@@ -38,13 +38,12 @@ def handle_packets_loop(ferdy: Ferdy):
             elif type(response_packet) == str:
                 response_name, response_content = response_packet, None
             else:
-                Log.error(f"Handled packet but response packet structure is "
+                Log.error("Handled packet but response packet structure is "
                           f"invalid, skipping, {response_packet=}")
                 continue
 
             response_packet_id = ferdy.get_next_packet_id()
-            Log.debug(f"Handled packet, instant response is "
-                      f"#{response_packet_id}")
+            Log.debug(f"Handled packet, {response_packet_id=}")
             ferdy.outgoing_packets_queue.put(
                 (user, response_name, response_content, response_packet_id,
                  None)
@@ -71,14 +70,13 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         content_type = type(content).__name__
         raise ValueError(f"Invalid packet content type, {content_type=}")
 
-    # aim is to have as little as possible handlers for frontend to register
+    # -> aim is to have as little as possible handlers for frontend to register
     # and unregister each time components call useEffect
-
-    # content keys should_be_pep8
+    # -> content keys should_be_pep8
 
     # TODO split up different handlers into different files, room, user, etc.
-
     # game packets should be handled by game handler
+
     # TODO implement games
 
     # profile
@@ -128,31 +126,19 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
         # todo share profile data across users if logged in from 2 SIDs
 
-        # todo verification takes 100-200ms, use other greenlet: eventlet.spawn
-
         token_id = content["token_id"]
-        google_data = verify_google_token.verify(token_id)
+        google_data = verify_google_token_id.verify(token_id)
         if not google_data:
             return "user.log_in.error", error_content("invalid_google_token")
 
-        # todo verify token "is signed by google:"
-        # https://developers.google.com/identity/sign-in/web/backend-auth?hl=nl
-        #       #verify-the-integrity-of-the-id-token
-
-        audience = google_data["aud"]
-        if type(audience) == str and not audience == CLIENT_ID:
-            Log.warning("Intended audience does not match client id, "
-                        f" {audience=}, {CLIENT_ID=}")
-            return "user.log_in_error"
-
-        google_id = google_data["sub"]
+        google_id = int(google_data["sub"])
 
         # lookup the profile matching the google id
         Log.debug("Checking if profile exists")
         profile = ferdy.profiles.match_single(google_id=google_id)
 
         # if profile does not exist in db, create it
-        # fields explained: https://stackoverflow.com/a/31099850/13216113
+        # info for the fields: https://stackoverflow.com/a/31099850/13216113
         if not profile:
             email = google_data["email"]
             email_verified = google_data["email_verified"]
@@ -167,23 +153,16 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
                 email=email,
                 email_verified=email_verified,
                 avatar_url=avatar_url,
-                avatar_external=True,
                 name=name,
                 first_name=first_name,
                 last_name=last_name,
                 locale=locale,
             )
 
-        # TODO provide a session token for the user (for POST fetches)
+        # TODO provide a session token for the user (for get/post requests)
         user.log_in(profile)
 
-        return "user.log_in.ok", {  # TODO return profile jsonable
-            "avatar_url": "<url>",
-            "email": "<email>",
-            "first_name": "<first_name>",
-            "last_name": "<last_name>",
-            "name": profile["name"],
-        }
+        return "user.log_in.ok", profile.get_jsonable()
 
     if name == "user.log_in.google_error":
         Log.debug(f"User {user} got google log in error")

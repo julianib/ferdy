@@ -37,7 +37,8 @@ def send_packet(sio, users, name, content, skip) -> set:
     if type(users) == User:
         users = {users}
     elif type(users) == list:
-        Log.warning("'users' type is list, should be set")
+        Log.warning("'users' type is list, converted to set")
+        users = set(users)
     elif type(users) == set:
         pass
     else:
@@ -48,12 +49,13 @@ def send_packet(sio, users, name, content, skip) -> set:
         if type(skip) == User:
             skip = {skip}
         elif type(skip) == list:
-            Log.warning("'skip' type is list, should be set")
+            Log.warning("'skip' type is list, converted to set")
+            skip = set(skip)
         elif type(skip) == set:
             pass
         else:
             skip_type = type(skip).__name__
-            raise ValueError(f"Invalid 'skip' type, {skip_type}")
+            raise ValueError(f"Invalid 'skip' type, {skip_type=}")
 
         for user in users.copy():
             if user in skip:

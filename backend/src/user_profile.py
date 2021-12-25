@@ -8,7 +8,7 @@ class Profile(DatabaseEntry):
     def __repr__(self):
         entry_id = self["entry_id"]
         name = self["name"]
-        return f"<Profile #{entry_id} {name=}>"
+        return f"<Profile #{entry_id}, {name=}>"
 
     @staticmethod
     def convert_jsonable_from_disk(jsonable: dict):
@@ -18,9 +18,16 @@ class Profile(DatabaseEntry):
     @staticmethod
     def get_default_data() -> dict:
         return {
-            "name": str(),
+            "avatar_external": bool(),
+            "avatar_url": str(),
+            "email": str(),
+            "email_verified": bool(),
+            "first_name": str(),
             "google_id": int(),
-            "register_unix": int(),
+            "last_name": str(),
+            "locale": str(),
+            "name": str(),
+            "registered_unix": int(),
         }
 
     @staticmethod
@@ -29,4 +36,5 @@ class Profile(DatabaseEntry):
         return set()
 
     def get_jsonable(self, filter_values=True) -> dict:
+        # nothing to change, all data is json compatible
         return self.get_data_copy(filter_values=filter_values)

@@ -7,6 +7,8 @@ class DatabaseEntry(ABC):
         Create a DB entry instance of the correct type
         """
 
+        Log.debug("Initializing db entry")
+
         if not in_database:
             raise ValueError("No db given")
         if "entry_id" not in kwargs:
@@ -31,27 +33,41 @@ class DatabaseEntry(ABC):
         default_data.update(kwargs)
         self._data = default_data
 
-        Log.debug(f"Created db entry: {self}")
+        Log.debug(f"Initialized db entry: {self}")
 
     def __getitem__(self, key):
         try:
             return self._data[key]
 
+        except AttributeError as ex:
+            Log.error(f"Attempted to get data before initialization", ex=ex)
+
         except KeyError as ex:
-            Log.error(f"Invalid key for {self}, {key=}", ex=ex)
+            Log.error(f"Invalid data key, {key=}", ex=ex)
+
+    def __repr__(self):
+        return f"<DB entry '{type(self).__name__}'>"
 
     def __setitem__(self, key, value):
         try:
             self._data[key] = value
 
+        except AttributeError as ex:
+            Log.error(f"Attempted to set data before initialization", ex=ex)
+
         except KeyError as ex:
-            # TODO check if this even ever runs
-            Log.error(f"Invalid key for {self}, {key=}", ex=ex)
+            Log.error(f"Invalid data key, {key=}", ex=ex)
 
         self.trigger_db_write()
 
-    def get_data_copy(self, filter_values=True) -> dict:
-        data_copy = self._data.copy()
+    def get_data_copy(self, filter_values=True) -> Optional[dict]:
+        try:
+            data_copy = self._data.copy()
+
+        except AttributeError as ex:
+            Log.error(f"Attempted to copy data before initialization",
+                      ex=ex)
+            return
 
         if filter_values and self.get_filter_keys():
             for key in self.get_filter_keys():

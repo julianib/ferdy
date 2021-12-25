@@ -8,6 +8,8 @@ class Database(ABC):
         Abstract class representing a db that can be saved as a json file
         """
 
+        Log.debug("Initializing db")
+
         self._entry_class = entry_class
         self._filename: str = filename
         self._file_path: str = f"{DATABASES_FOLDER}/{filename}"
@@ -17,12 +19,13 @@ class Database(ABC):
 
         self._read_from_disk()
 
-        Log.debug(f"Created db {self}")  # TODO calc and print MB used
+        Log.debug(f"Initialized db: {self}")
+        # TODO calc and print MB used
         # TODO compare size in memory with size on disk
 
     def __repr__(self):
         entries_count = self.get_entries_count()
-        return f"<DB '{type(self).__name__}' {entries_count=}>"
+        return f"<DB '{type(self).__name__}', {entries_count=}>"
 
     def _get_next_entry_id(self) -> int:
         self._last_entry_id += 1
@@ -76,6 +79,8 @@ class Database(ABC):
         type's default data. Returns the created entry.
         """
 
+        Log.debug(f"Starting initialization of new entry for {self}")
+
         if "entry_id" in kwargs:
             if not from_disk:
                 raise ValueError("entry_id not allowed in kwargs if creating "
@@ -90,8 +95,8 @@ class Database(ABC):
             for key, value in default_data.items():
                 if key not in kwargs:
                     entry_id = kwargs["entry_id"]
-                    Log.debug(f"Entry on disk was missing key, set default "
-                              f"{entry_id=} {key=}")
+                    Log.debug(f"Entry on disk was missing key, set default, "
+                              f"{entry_id=}, {key=}")
                     disk_was_missing_keys = True
 
             # convert from jsonable types in data to usable types
@@ -149,7 +154,7 @@ class Database(ABC):
             return set()
 
     def match_single(self, raise_no_match=False, match_casing=False, **kwargs):
-        Log.debug(f"Matching entry with kwargs, {match_casing=} {kwargs=}")
+        Log.debug(f"Matching entry with kwargs, {match_casing=}, {kwargs=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")

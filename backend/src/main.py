@@ -1,3 +1,5 @@
+import os
+
 import eventlet
 eventlet.monkey_patch()  # nopep8
 
@@ -10,6 +12,7 @@ from ferdy import Ferdy
 from log import Log
 from packet_handler import handle_packets_loop
 from packet_sender import send_packets_loop
+import port_free_check
 
 
 # setup flask
@@ -71,7 +74,7 @@ def get():
 def post():
     set_greenlet_name("app/post")
     body = request.json
-    Log.test(f"post {body=}")
+    Log.test(f"post, {body=}")
     return "POST root!"
 
 
@@ -90,7 +93,7 @@ def on_connect():
     set_greenlet_name("sio/on_connect")
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    Log.debug(f"Handling connect, {sid[:4]=} {address=}")
+    Log.debug(f"Handling connect, {sid=}, {address=}")
     user = ferdy.handle_connect(sid, address)
 
     # refuse the connection if user object was not created
@@ -108,7 +111,7 @@ def on_disconnect():
     user = ferdy.get_user_by_sid(sid)
 
     if not user:
-        Log.error(f"Couldn't handle disconnect: no user object, {sid[:4]=}")
+        Log.error(f"Couldn't handle disconnect: no user object, {sid=}")
         return
 
     Log.debug(f"Handling disconnect of {user}")
@@ -122,19 +125,33 @@ def on_packet(name, content):
     sid = request.sid
     user = ferdy.get_user_by_sid(sid)
     if not user:
-        Log.warning(f"Couldn't handle packet: no user object, {sid[:4]=}")
+        Log.warning(f"Couldn't handle packet: no user object, {sid=}")
         return
 
     # TODO check max size of name and content
 
     packet_id = ferdy.get_next_packet_id()
-    Log.info(f"Received packet #{packet_id} from {user}, {name=}")
+    Log.info(f"Received packet #{packet_id}, {user=}, {name=}")
     ferdy.incoming_packets_queue.put((user, name, content, packet_id))
 
 
 def main():
     set_greenlet_name("MAIN")
-    setup_folders()  # TODO fix cwd problem that causes extra files
+
+    try:
+        # todo checking if port is taken gives false positives?
+        # port_free_check.check(PORT)
+        Log.debug("Skipping check if port is free")
+    except socket.error as e:
+        Log.error(f"No access to port {PORT} (already running?), aborting",
+                  ex=e)
+        return
+
+    if os.path.split(os.getcwd())[-1] != "backend":
+        Log.error(f"Cwd is not equal to 'backend', aborting, {os.getcwd()=}")
+        return
+
+    setup_folders()
 
     if FILE_LOG_LEVEL:
         eventlet.spawn(Log.log_writer_loop)
