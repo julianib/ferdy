@@ -1,5 +1,3 @@
-import os
-
 import eventlet
 eventlet.monkey_patch()  # nopep8
 
@@ -12,7 +10,6 @@ from ferdy import Ferdy
 from log import Log
 from packet_handler import handle_packets_loop
 from packet_sender import send_packets_loop
-import port_free_check
 
 
 # setup flask

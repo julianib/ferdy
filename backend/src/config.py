@@ -6,7 +6,7 @@ from colorama import Fore, Style
 
 # general
 CRASH_RESTART_DELAY = 0  # seconds, falsy to disable
-FLASK_DEBUG = True
+FLASK_DEBUG = False
 HOST = "0.0.0.0"
 PORT = 1962
 HTTPS = False
@@ -38,9 +38,9 @@ CONSOLE_CUTOFF = 180  # falsy to disable
 CONSOLE_LOG_LEVEL = "test"  # falsy to disable
 CONSOLE_TIMESTAMP = True
 FILE_LOG_LEVEL = "debug"  # falsy to disable
-LOG_CONNECTIONS = True
-LOG_ENGINEIO = True
-LOG_SOCKETIO = True
+LOG_CONNECTIONS = False
+LOG_ENGINEIO = False
+LOG_SOCKETIO = False
 CONTENT_KEYS_TO_ABBREVIATE = []
 SOUND_LEVEL = None  # falsy to disable
 TRACEBACK_LIMIT = 5  # falsy to disable

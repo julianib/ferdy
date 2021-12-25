@@ -23,7 +23,7 @@ class Profile(DatabaseEntry):
             "email": str(),
             "email_verified": bool(),
             "first_name": str(),
-            "google_id": int(),
+            "google_id": str(),  # str because JS can only handle up to 2^53-1
             "last_name": str(),
             "locale": str(),
             "name": str(),

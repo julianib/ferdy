@@ -17,6 +17,6 @@ def verify(token_id: str) -> Optional[dict]:
         Log.debug(f"Verified google token id OK")
         return id_info
 
-    except ValueError:
-        Log.debug(f"Google token id was invalid, {token_id=}")
+    except ValueError as ex:
+        Log.debug(f"Google token id was invalid", ex=ex)
         return

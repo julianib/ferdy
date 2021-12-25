@@ -131,7 +131,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         if not google_data:
             return "user.log_in.error", error_content("invalid_google_token")
 
-        google_id = int(google_data["sub"])
+        google_id = google_data["sub"]
 
         # lookup the profile matching the google id
         Log.debug("Checking if profile exists")
