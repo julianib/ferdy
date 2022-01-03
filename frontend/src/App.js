@@ -1,40 +1,42 @@
-import Login from "./components/Login";
-import ChatBox from "./components/ChatBox";
-import useUser from "./hooks/useUser";
-import Avatar from "./components/Avatar";
-
-/*
-import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
-
-export const themeOptions: ThemeOptions = {
-  palette: {
-    type: 'dark',
-    primary: {
-      main: '#ff7e00',
-      contrastText: '#000000',
-    },
-    secondary: {
-      main: '#ff3800',
-    },
-    background: {
-      default: '#282828',
-    },
-    error: {
-      main: '#ff0000',
-    },
-  },
-};
- */
+import { AppBar, Container, Toolbar } from "@mui/material";
+import TabMenuMain from "./components/TabMenuMain";
+import { usePacket } from "./hooks/usePacket";
 
 export default function App() {
-  const { user } = useUser();
+  usePacket("connect", () => {
+    console.debug("Connected");
+  })
+
+  usePacket("disconnect", (reason) => {
+    console.warn("Disconnected:", reason);
+  })
+
+  usePacket("connect_error", (error) => {
+    console.warn("Connect error:", error);
+  })
+  
 
   return (
     <>
-      {user ? <Avatar user={user} showName /> : <h1>Not logged in</h1>}
-      <br />
-      <Login />
-      <ChatBox />
+      <AppBar
+        enableColorOnDark
+        sx={{
+          // remove the mui brightening background image gradient
+          backgroundImage: "none",
+        }}
+      >
+        <Container>
+          <Toolbar>Ferdy</Toolbar>
+        </Container>
+      </AppBar>
+      <Container
+        sx={{
+          // offset from appbar
+          mt: 8,
+        }}
+      >
+        <TabMenuMain />
+      </Container>
     </>
   );
 }

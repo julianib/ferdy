@@ -21,19 +21,8 @@ export const BACKEND = REACT_APP_BACKEND_CUSTOM
 // init socket
 console.debug(`Connecting socket, backend=${BACKEND}`);
 export const SOCKET = io(BACKEND);
-
-// add connection event listeners
 SOCKET.onAny((name, content) => {
   console.debug("=> RECEIVED:", name, content);
-});
-SOCKET.on("connect", () => {
-  console.debug("Socket connected");
-});
-SOCKET.on("connect_error", (error) => {
-  console.warn("Socket connect failed");
-});
-SOCKET.on("disconnect", (reason) => {
-  console.debug("Socket disconnected:", reason);
 });
 
 // shorthand function for using fetch to send requests to backend
@@ -46,9 +35,9 @@ export function fetchBackend(method, body) {
     body: JSON.stringify({ body }),
   })
     .then((res) => {
-      console.debug("fetch backend ok:", res);
+      console.debug(`${method} fetch backend ok:`, res);
     })
     .catch((ex) => {
-      console.error("fetch backend error:", ex);
+      console.error(`${method} fetch backend error:`, ex);
     });
 }

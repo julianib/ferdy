@@ -11,8 +11,6 @@ export function usePacket(name, handler) {
       SOCKET.off(name);
       console.debug(`- removed packet handler: ${name}`);
     };
-
-    // todo prevent eslint warning
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
