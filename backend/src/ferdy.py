@@ -14,7 +14,7 @@ class Ferdy:
 
         self.profiles = Profiles()
 
-    def create_user_from_sid(self, sid):
+    def create_user_from_sid(self, sid) -> User:
         if sid in [user.sid for user in self.get_users()]:
             raise ValueError(f"Given sid is taken by user, {sid=}")
 
@@ -27,9 +27,6 @@ class Ferdy:
             raise ValueError(f"No sid or address given")
 
         user = self.create_user_from_sid(sid)
-
-        if not user:
-            raise ValueError("No user object given")
 
         self.send_packet_to(user, "user.connected", {
             "you": True,
@@ -66,7 +63,7 @@ class Ferdy:
             if user.sid == sid:
                 return user
 
-        raise ValueError(f"Could not get user by sid, {sid=}")
+        raise ValueError(f"Could not find user by sid, {sid=}")
 
     def get_user_count(self):
         return len(self.get_users())

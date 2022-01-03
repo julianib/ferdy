@@ -95,7 +95,7 @@ def on_connect():
 
     # refuse the connection if user object was not created
     if not user:
-        Log.error("Refusing connect attempt, user object not created")
+        Log.error("Refusing connect attempt, failed to create user object")
         return False
 
     Log.info(f"{user} connected")
@@ -108,7 +108,8 @@ def on_disconnect():
     user = ferdy.get_user_by_sid(sid)
 
     if not user:
-        Log.error(f"Couldn't handle disconnect: no user object, {sid=}")
+        Log.error(f"Couldn't handle disconnect: could not find user object,"
+                  f" {sid=}")
         return
 
     Log.debug(f"Handling disconnect of {user}")
@@ -116,7 +117,7 @@ def on_disconnect():
     Log.info(f"{user} disconnected")
 
 
-@sio.on("message")  # = anything that is not connect or disconnect
+@sio.on("message")  # anything that is not connect or disconnect
 def on_packet(name, content):
     set_greenlet_name("sio/on_packet")
     sid = request.sid
