@@ -1,5 +1,6 @@
-import { AppBar, Container, Toolbar, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 import ConnectionToast from "./components/ConnectionToast";
+import MainAppBar from "./components/MainAppBar";
 import MainTabMenu from "./components/MainTabMenu";
 
 export default function App() {
