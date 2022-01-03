@@ -1,4 +1,4 @@
-import { AppBar, Container, Toolbar } from "@mui/material";
+import { AppBar, Container, Toolbar, Typography } from "@mui/material";
 import ConnectionToast from "./components/ConnectionToast";
 import MainTabMenu from "./components/MainTabMenu";
 
@@ -13,7 +13,9 @@ export default function App() {
         }}
       >
         <Container>
-          <Toolbar>Ferdy</Toolbar>
+          <Toolbar>
+            <Typography>Ferdy</Typography>
+          </Toolbar>
         </Container>
       </AppBar>
       <Container
