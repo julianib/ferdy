@@ -5,11 +5,11 @@ import { SOCKET } from "../util/backend";
 export function usePacket(name, handler) {
   useEffect(() => {
     SOCKET.on(name, handler);
-    console.debug(`+ added packet handler: ${name}`);
+    console.debug(`+ added handler: ${name}`);
 
     return () => {
       SOCKET.off(name);
-      console.debug(`- removed packet handler: ${name}`);
+      console.debug(`- removed handler: ${name}`);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }
@@ -19,13 +19,13 @@ export function usePackets(names = [], handler) {
   useEffect(() => {
     names.forEach((name) => {
       SOCKET.on(name, handler);
-      console.debug(`+ added packet handler: ${name}`);
+      console.debug(`+ added handler: ${name}`);
     });
 
     return () => {
       names.forEach((name) => {
         SOCKET.off(name);
-        console.debug(`- removed packet handler: ${name}`);
+        console.debug(`- removed handler: ${name}`);
       });
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
