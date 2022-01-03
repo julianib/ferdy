@@ -1,24 +1,8 @@
 import { AppBar, Container, Toolbar } from "@mui/material";
+import ConnectionToast from "./components/ConnectionToast";
 import MainTabMenu from "./components/MainTabMenu";
-import { usePacket } from "./hooks/usePacket";
 
 export default function App() {
-  usePacket("connect", () => {
-    console.debug("Connected");
-    // todo show toast
-  })
-
-  usePacket("disconnect", (reason) => {
-    console.warn("Disconnected:", reason);
-    // todo show toast
-  })
-
-  usePacket("connect_error", (error) => {
-    console.warn("Connect error:", error);
-    // todo show toast
-  })
-  
-
   return (
     <>
       <AppBar
@@ -40,6 +24,7 @@ export default function App() {
       >
         <MainTabMenu />
       </Container>
+      <ConnectionToast />
     </>
   );
 }
