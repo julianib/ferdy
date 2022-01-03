@@ -1,13 +1,13 @@
 import Tabs from "@mui/material/Tabs";
 import PeopleIcon from "@mui/icons-material/People";
-import TabMenuUsers from "./TabMenuUsers";
+import UsersTabMenu from "./UsersTabMenu";
 import HomePage from "../pages/HomePage";
 import useRouteMatch from "../hooks/useRouteMatch";
 import { Link, Route, Routes } from "react-router-dom";
 import { Tab } from "@mui/material";
 import { onCustomTabFocus } from "../util/onCustomTabFocus";
 
-export default function TabMenuMain() {
+export default function MainTabMenu() {
   // the order should be ['users/add', 'users/edit', 'users'].
   const selectedMainTab = useRouteMatch(["/", "/users"]);
 
@@ -39,7 +39,7 @@ export default function TabMenuMain() {
       </Tabs>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/users" element={<TabMenuUsers />} />
+        <Route path="/users" element={<UsersTabMenu />} />
       </Routes>
     </>
   );

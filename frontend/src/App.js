@@ -1,18 +1,21 @@
 import { AppBar, Container, Toolbar } from "@mui/material";
-import TabMenuMain from "./components/TabMenuMain";
+import MainTabMenu from "./components/MainTabMenu";
 import { usePacket } from "./hooks/usePacket";
 
 export default function App() {
   usePacket("connect", () => {
     console.debug("Connected");
+    // todo show toast
   })
 
   usePacket("disconnect", (reason) => {
     console.warn("Disconnected:", reason);
+    // todo show toast
   })
 
   usePacket("connect_error", (error) => {
     console.warn("Connect error:", error);
+    // todo show toast
   })
   
 
@@ -21,7 +24,7 @@ export default function App() {
       <AppBar
         enableColorOnDark
         sx={{
-          // remove the mui brightening background image gradient
+          // removes the mui brightening background image gradient
           backgroundImage: "none",
         }}
       >
@@ -35,7 +38,7 @@ export default function App() {
           mt: 8,
         }}
       >
-        <TabMenuMain />
+        <MainTabMenu />
       </Container>
     </>
   );

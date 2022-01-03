@@ -6,7 +6,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import UsersAllPage from "../pages/UsersAllPage";
 import CustomTabPanel from "./CustomTabPanel";
 
-export default function TabMenuUsers() {
+export default function UsersTabMenu() {
   const [selectedUsersTab, setSelectedUsersTab] = useState(0);
 
   function onChangeTab(_event, newValue) {
