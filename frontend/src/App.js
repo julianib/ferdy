@@ -10,7 +10,11 @@ export default function App() {
       <Container
         sx={{
           // offset from appbar
-          mt: 8,
+          // todo <=300px suddenly makes the appbar 8px taller?
+          mt: {
+            xs: 6,
+            sm: 8,
+          },
         }}
       >
         <MainTabMenu />
