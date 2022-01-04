@@ -6,7 +6,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import CustomTabPanel from "./CustomTabPanel";
 import AllUsersPage from "../pages/AllUsersPage";
-import RolesPage from "../pages/RolesPage";
+import UserRolesPage from "../pages/UserRolesPage";
 
 export default function UsersTabMenu() {
   const [selectedUsersTab, setSelectedUsersTab] = useState(0);
@@ -33,7 +33,7 @@ export default function UsersTabMenu() {
       </CustomTabPanel>
       {selectedUsersTab === 1 && "Item 1"}
       <CustomTabPanel current={selectedUsersTab} index={2}>
-        <RolesPage />
+        <UserRolesPage />
       </CustomTabPanel>
     </>
   );

@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
 
-export default function RolesPage() {
+export default function UserRolesPage() {
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
