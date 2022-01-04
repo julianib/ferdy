@@ -8,8 +8,8 @@ class Role(DatabaseEntry):
     @staticmethod
     def get_default_data() -> dict:
         return {
-            "color_hex": "",
-            "name": "",
+            "color_hex": "#777",
+            "name": "<name>",
             "permissions": [],
         }
 

@@ -12,11 +12,6 @@ export default function useChatMessages() {
     addChatMessage(content);
   });
 
-  // drop errors in the chatbox
-  usePacket("user.send_message.error", ({ text }) => {
-    addChatMessage({ text });
-  });
-
   function addChatMessage(chatMessage) {
     setChatMessages((oldState) => {
       // add the new chat message to the old array

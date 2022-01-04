@@ -4,7 +4,7 @@ import { SOCKET } from "./backend";
 export default function sendPacket(name, content) {
   if (SOCKET.disconnected) {
     // if socket is disconnected and we try to send, packet will be put on hold
-    console.debug("Awaiting connection for packet", name, content);
+    console.debug("Standby packet upon connect:", name);
 
     // console.warn("Did not send packet: socket disconnected:", name, content);
     // return;

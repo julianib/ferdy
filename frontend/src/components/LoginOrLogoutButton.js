@@ -8,22 +8,14 @@ import { ProfileContext } from "../contexts/ProfileContext";
 export default function LoginOrLogoutButton() {
   const { profile, setProfile } = useContext(ProfileContext);
 
-  usePacket("user.log_in.error", (content) => {
-    console.error("Log in failed, clearing user state:", content.error);
-    setProfile(null);
-  });
-
-  usePacket("user.log_in.ok", () => {
+  usePacket("user.log_in.ok", (content) => {
     console.log("Log in OK");
-  });
-
-  usePacket("user.log_out.error", (content) => {
-    console.error("Log out error, clearing user state:", content.error);
-    setProfile(null);
+    setProfile(content.profile);
   });
 
   usePacket("user.log_out.ok", () => {
     console.log("Log out OK");
+    setProfile(null);
   });
 
   function onGoogleLoginOk(res) {

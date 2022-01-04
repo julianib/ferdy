@@ -43,4 +43,4 @@ LOG_ENGINEIO = False
 LOG_SOCKETIO = False
 CONTENT_KEYS_TO_ABBREVIATE = []
 SOUND_LEVEL = None  # falsy to disable
-TRACEBACK_LIMIT = 5  # falsy to disable
+TRACEBACK_LIMIT = None  # falsy to disable

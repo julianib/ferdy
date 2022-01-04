@@ -9,17 +9,31 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
-import usePacket from "../hooks/usePacket";
+import usePackets from "../hooks/usePackets";
 
 export default function UserRolesPage() {
+  const [selectedRole, setSelectedRole] = useState(null);
   const [roles, setRoles] = useState([]);
 
-  function addRole() {}
+  function clickedRole(role) {
+    setSelectedRole(role);
+  }
 
-  usePacket("role.list.ok", (content) => {
+  function createRole() {
+    sendPacket("role.create");
+  }
+
+  function deleteSelectedRole() {
+    sendPacket("role.delete", {
+      entry_id: selectedRole.entry_id,
+    });
+  }
+
+  usePackets(["role.list.ok"], (content) => {
     setRoles(content.roles);
   });
 
@@ -35,35 +49,50 @@ export default function UserRolesPage() {
           startIcon={<AddIcon />}
           variant="outlined"
           color="success"
-          onClick={addRole}
+          onClick={createRole}
         >
-          Add
+          Create
         </Button>
-        <List>
+        <List dense>
           {roles.map((role) => (
-            <ListItemButton key={role.entry_id}>
+            <ListItemButton
+              sx={{ color: role.color_hex }}
+              selected={selectedRole?.entry_id === role.entry_id}
+              onClick={() => clickedRole(role)}
+              key={role.entry_id}
+            >
               <ListItemText color={role.color_hex}>{role.name}</ListItemText>
             </ListItemButton>
           ))}
         </List>
       </Grid>
       <Grid item xs={8}>
-        <Paper sx={{ p: 1 }} variant="outlined">
-          <Box>
-            <ButtonGroup variant="outlined">
+        {selectedRole && (
+          <Paper sx={{ p: 1 }} variant="outlined">
+            <Typography variant="h5">{selectedRole.name}</Typography>
+
+            <Typography variant="body1">
+              Color: {selectedRole.color_hex}
+            </Typography>
+
+            <Box sx={{ mt: 2 }}>
               <Button
                 sx={{ mr: 1 }}
+                startIcon={<DeleteIcon />}
                 variant="contained"
                 color="error"
-                startIcon={<DeleteIcon />}
-                onClick={null}
+                onClick={deleteSelectedRole}
               >
                 Delete
               </Button>
-              <Button>test</Button>
-            </ButtonGroup>
-          </Box>
-        </Paper>
+
+              <ButtonGroup variant="outlined">
+                <Button>test</Button>
+                <Button>test</Button>
+              </ButtonGroup>
+            </Box>
+          </Paper>
+        )}
       </Grid>
     </Grid>
   );

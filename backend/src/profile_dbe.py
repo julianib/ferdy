@@ -14,19 +14,20 @@ class Profile(DatabaseEntry):
     @staticmethod
     def get_default_data() -> dict:
         return {
-            "avatar_external": False,
-            "avatar_url": "",
-            "email": "",
+            "avatar_external": True,
+            "avatar_url": "<avatar_url>",
+            "created_unix": 0,
+            "email": "<email>",
             "email_verified": False,
-            "first_name": "",
-            "google_id": "",  # str because google id is too big for a JS int
+            "first_name": "<first_name>",
+            "google_id": "<google_id>",  # str because too big for JS number
             "is_online": False,
-            "last_name": "",
+            "last_name": "<last_name>",
             "last_seen_unix": 0,
-            "locale": "",
-            "name": "",
-            "registered_unix": 0,
-            "roles": [],
+            "locale": "<locale>",
+            "log_in_count": 0,
+            "name": "<name>",
+            "role_ids": [],
         }
 
     @staticmethod

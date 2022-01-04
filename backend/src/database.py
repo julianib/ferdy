@@ -57,23 +57,30 @@ class Database(ABC):
             self._last_entry_id = data.get("last_entry_id", 0)
             entries_data = data.get("entries_data", [])
 
-        file_entries_missing_keys = 0  # entries missing keys
+        file_entries_missing_keys = 0
         for entry_data in entries_data:
-            entry = self.initialize_entry(from_disk=True, **entry_data)
+            entry = self.initialize_new_entry(from_disk=True, **entry_data)
             if entry.disk_was_missing_keys:
                 file_entries_missing_keys += 1
 
         if file_entries_missing_keys:
             Log.debug(f"{file_entries_missing_keys} entries were missing keys, "
                       "writing to disk")
-            self.write_to_disk()  # todo necessary?
+            self.write_to_disk()
 
         # prevent reading twice (could cause data loss)
         self._has_read_from_file = True
 
         Log.debug(f"{self} read from disk")
 
-    def initialize_entry(self, from_disk=False, **kwargs) -> DatabaseEntry:
+    def delete_entry(self, entry):
+        if entry not in self._entries:
+            raise ValueError("Entry is not in db")
+
+        self._entries.remove(entry)
+        self.write_to_disk()
+
+    def initialize_new_entry(self, from_disk=False, **kwargs):
         """
         Create a db entry for this db. Kwargs will overwrite the entry
         type's default data. Returns the created entry.
@@ -145,11 +152,12 @@ class Database(ABC):
                 matches.append(entry)
 
         if matches:
+            Log.debug(f"{len(matches)} match(es) found")
             return matches
         elif raise_no_match:
             raise NoEntriesMatch
         else:
-            Log.debug("No db entries match kwargs")
+            Log.debug("No entries match")
             return []
 
     def match_single(self, raise_no_match=False, match_casing=False, **kwargs) \
@@ -167,7 +175,7 @@ class Database(ABC):
         if raise_no_match:
             raise NoEntriesMatch
         else:
-            Log.debug("No db entry matches kwargs")
+            Log.debug("No entries match")
 
     # def remove_entry(self, entry):
     # TODO implement removing entries from db

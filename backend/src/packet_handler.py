@@ -16,7 +16,7 @@ def handle_packets_loop(ferdy: Ferdy):
         user, name, content, packet_id = ferdy.incoming_packets_queue.get()
         set_greenlet_name(f"PacketHandler/#{packet_id}")
         Log.debug(f"Handling packet, {name=}",
-                  content=content or "<no content>")
+                  content=content or "<NO CONTENT>")
 
         try:
             response_packet = handle_packet(ferdy, user, name, content)
@@ -97,6 +97,38 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     # role
 
+    if name == "role.create":
+        role = ferdy.roles.create()
+
+        ferdy.send_packet_to_all("role.list.ok", {
+            "roles": ferdy.roles.get_entries_data_copy()
+        })
+
+        return "role.create.ok", {
+            "role": role.get_data_copy(),
+        }
+
+    if name == "role.delete":
+        # todo check user authorized or not
+
+        entry_id = content["entry_id"]
+
+        try:
+            role = ferdy.roles.match_single(
+                raise_no_match=True, entry_id=entry_id)
+        except NoEntriesMatch:
+            return "role.delete.fail", error_content("not_found")
+
+        role.delete()
+
+        ferdy.send_packet_to_all("role.list.ok", {
+            "roles": ferdy.roles.get_entries_data_copy()
+        })
+
+        return "role.delete.ok", {
+            "role": role.get_data_copy(),
+        }
+
     if name == "role.list":
         roles = ferdy.roles.get_entries_data_copy(
             key=lambda r: r["entry_id"])
@@ -140,13 +172,13 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     if name == "user.log_in":
         if user.is_logged_in():
-            return "user.log_in.error", error_content("already_logged_in")
+            return "user.log_in.fail", error_content("already_logged_in")
         # todo share profile data across users if logged in from 2 SIDs
 
         token_id = content["token_id"]
         google_data = verify_google_token_id.verify(token_id)
         if not google_data:
-            return "user.log_in.error", error_content("invalid_google_token")
+            return "user.log_in.fail", error_content("invalid_google_token")
 
         google_id = google_data["sub"]
 
@@ -178,7 +210,9 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
         ferdy.handle_log_in(user, profile)
 
-        return "user.log_in.ok"
+        return "user.log_in.ok", {
+            "profile": profile.get_data_copy()
+        }
 
     if name == "user.log_in.google_error":
         Log.debug(f"User {user} got google log in error")
@@ -186,7 +220,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     if name == "user.log_out":
         if not user.is_logged_in():
-            return "user.log_out.error", error_content("not_logged_in")
+            return "user.log_out.fail", error_content("not_logged_in")
 
         ferdy.handle_log_out(user)
 
@@ -194,11 +228,10 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     if name == "user.send_message":
         if not user.is_logged_in():
-            return "user.send_message.error", error_content("not_logged_in")
+            return "user.send_message.fail", error_content("not_logged_in")
 
         ferdy.send_packet_to_all("user.receive_message", {
-            # todo send whole profile (including avatar) as author_profile
-            "author": user.get_profile_data_copy()["name"],
+            "author": user.get_profile_data_copy(),
             "text": content["text"],
         })
         return

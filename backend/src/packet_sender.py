@@ -19,6 +19,10 @@ def send_packets_loop(ferdy):
         try:
             sent_to = send_packet(ferdy.sio, users, name, content, skip)
 
+        except TypeError as ex:
+            Log.error(f"Could not send packet: {ex}")
+            return
+
         except Exception as ex:
             Log.error("Unhandled exception on send_packet", ex=ex)
             return
@@ -56,7 +60,6 @@ def send_packet(sio, users: Union[User, list], name, content, skip) -> list:
                 users.remove(user)
 
     for user in users:
-        # TODO error handling for sio.emit?
         sio.emit(name, content, to=user.sid)
 
     return users
