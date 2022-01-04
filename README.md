@@ -32,7 +32,7 @@ https://unix.stackexchange.com/a/106562
 https://certbot.eff.org/instructions?ws=other&os=ubuntufocal  
 https://eff-certbot.readthedocs.io/en/stable/using.html#where-are-my-certificates
 
-Place `fullchain.pem` and `privkey.pem` in this folder
+Place `fullchain.pem` and `privkey.pem` in root folder
 
 ## Enable running .sh scripts
 
