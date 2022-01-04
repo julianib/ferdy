@@ -5,7 +5,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import CustomTabPanel from "./CustomTabPanel";
-import AllUsersPage from "../pages/AllUsersPage";
+import ProfileListPage from "../pages/ProfileListPage";
 import UserRolesPage from "../pages/UserRolesPage";
 
 export default function UsersTabMenu() {
@@ -24,12 +24,12 @@ export default function UsersTabMenu() {
         onChange={onChangeTab}
         selectionFollowsFocus
       >
-        <Tab label="All" icon={<PeopleIcon />} />
+        <Tab label="List" icon={<PeopleIcon />} />
         <Tab label="Pending" icon={<PersonAddIcon />} />
         <Tab label="Roles" icon={<ToggleOnOutlinedIcon />} />
       </Tabs>
       <CustomTabPanel current={selectedUsersTab} index={0}>
-        <AllUsersPage />
+        <ProfileListPage />
       </CustomTabPanel>
       {selectedUsersTab === 1 && "Item 1"}
       <CustomTabPanel current={selectedUsersTab} index={2}>

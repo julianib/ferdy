@@ -17,7 +17,7 @@ import sendPacket from "../utils/sendPacket";
 import DeleteIcon from "@mui/icons-material/Delete";
 import timeAgo from "../utils/convertUnix";
 
-export default function UsersAllPage() {
+export default function ProfileListPage() {
   const [profileList, setProfileList] = useState([]);
 
   // todo make list with ListItemButtons on the left and a settings screen on the right to customize user roles etc

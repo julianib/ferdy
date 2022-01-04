@@ -10,9 +10,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
+import usePacket from "../hooks/usePacket";
 
 export default function UserRolesPage() {
   const [roles, setRoles] = useState([]);
+
+  usePacket("role.list.ok");
 
   useEffect(() => {
     sendPacket("role.list");
