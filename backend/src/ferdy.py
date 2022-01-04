@@ -1,6 +1,7 @@
 from convenience import *
 from user import User
-from user_profiles import Profiles
+from profiles_db import Profiles
+from roles_db import Roles
 
 
 class Ferdy:
@@ -10,16 +11,17 @@ class Ferdy:
         self.outgoing_packets_queue = Queue()  # users name content p_id skip
 
         self._last_packet_id = 0
-        self._users = set()
+        self._users = []
 
         self.profiles = Profiles()
+        self.roles = Roles()
 
     def create_user_from_sid(self, sid) -> User:
-        if sid in [user.sid for user in self.get_users()]:
+        if sid in [user.sid for user in self.get_users_copy()]:
             raise ValueError(f"Given sid is taken by user, {sid=}")
 
         user = User(sid)
-        self._users.add(user)
+        self._users.append(user)
         return user
 
     def handle_connect(self, sid, address) -> User:
@@ -30,14 +32,14 @@ class Ferdy:
 
         self.send_packet_to(user, "user.connected", {
             "you": True,
-            "logged_in_users": self.get_logged_in_users_jsonable(),
+            "online_profiles": self.get_online_profiles_data_copy(),
             "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         })
 
         self.send_packet_to_all("user.connected", {
             "you": False,
-            "logged_in_users": self.get_logged_in_users_jsonable(),
+            "online_profiles": self.get_online_profiles_data_copy(),
             "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         }, skip=user)
@@ -52,8 +54,8 @@ class Ferdy:
 
         self.send_packet_to_all("user.disconnected", {
             "profile":
-                user.get_profile_jsonable() if user.is_logged_in() else None,
-            "logged_in_users": self.get_logged_in_users_jsonable(),
+                user.get_profile_data() if user.is_logged_in() else None,
+            "online_profiles": self.get_online_profiles_data_copy(),
             "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         })
@@ -64,32 +66,32 @@ class Ferdy:
 
         self.send_packet_to(user, "user.logged_in", {
             "you": True,
-            "profile": profile.get_jsonable(),
+            "profile": profile.get_data_copy(),
         })
 
         self.send_packet_to_all("user.logged_in", {
             "you": False,
-            "profile": profile.get_jsonable(),
+            "profile": profile.get_data_copy(),
         }, skip=user)
 
     def handle_log_out(self, user):
         self.send_packet_to(user, "user.logged_out", {
             "you": True,
-            "profile": user.get_profile_jsonable(),
+            "profile": user.get_profile_data_copy(),
         })
 
         self.send_packet_to_all("user.logged_out", {
             "you": False,
-            "profile": user.get_profile_jsonable(),
+            "profile": user.get_profile_data_copy(),
         }, skip=user)
 
         user.log_out()
 
     def get_logged_in_user_count(self):
-        return len([user for user in self.get_users() if user.is_logged_in()])
+        return len([user for user in self.get_users_copy() if user.is_logged_in()])
 
-    def get_logged_in_users_jsonable(self):
-        return [user.get_profile_jsonable() for user in self.get_users()
+    def get_online_profiles_data_copy(self):
+        return [user.get_profile_data_copy() for user in self.get_users_copy()
                 if user.is_logged_in()]
 
     def get_next_packet_id(self):
@@ -97,16 +99,16 @@ class Ferdy:
         return self._last_packet_id
 
     def get_user_by_sid(self, sid):
-        for user in self.get_users():
+        for user in self.get_users_copy():
             if user.sid == sid:
                 return user
 
         raise ValueError(f"Could not find user by sid, {sid=}")
 
     def get_user_count(self):
-        return len(self.get_users())
+        return len(self.get_users_copy())
 
-    def get_users(self):
+    def get_users_copy(self):
         return self._users.copy()
 
     def send_packet_to(self, users, name, content, skip=None):
@@ -114,5 +116,5 @@ class Ferdy:
                                          self.get_next_packet_id(), skip))
 
     def send_packet_to_all(self, name, content, skip=None):
-        self.outgoing_packets_queue.put((self.get_users(), name, content,
+        self.outgoing_packets_queue.put((self.get_users_copy(), name, content,
                                          self.get_next_packet_id(), skip))

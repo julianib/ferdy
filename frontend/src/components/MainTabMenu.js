@@ -14,13 +14,11 @@ export default function MainTabMenu() {
   return (
     <>
       <Tabs
-        // todo Tabs with router is sometimes laggy
         sx={{ borderBottom: 1, borderColor: "divider" }}
-        value={selectedMainTab}
         variant="scrollable"
+        value={selectedMainTab}
       >
         <Tab
-          // todo implement CustomTab component to be DRY
           label="Home"
           value="/"
           to="/"
@@ -32,7 +30,6 @@ export default function MainTabMenu() {
           value="/users"
           to="/users"
           icon={<PeopleIcon />}
-          iconPosition="start"
           onFocus={onCustomTabFocus}
           component={Link}
         />

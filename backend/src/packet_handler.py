@@ -88,11 +88,21 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         raise NotImplementedError
 
     if name == "profile.list":
-        profiles = ferdy.profiles.get_entries_jsonable(
+        profiles = ferdy.profiles.get_entries_data_copy(
             key=lambda p: p["entry_id"])
 
         return "profile.list.ok", {
             "profiles": profiles,
+        }
+
+    # role
+
+    if name == "role.list":
+        roles = ferdy.roles.get_entries_data_copy(
+            key=lambda r: r["entry_id"])
+
+        return "role.list.ok", {
+            "roles": roles
         }
 
     # room
@@ -187,7 +197,8 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
             return "user.send_message.error", error_content("not_logged_in")
 
         ferdy.send_packet_to_all("user.receive_message", {
-            "author": user.get_profile()["name"],
+            # todo send whole profile (including avatar) as author_profile
+            "author": user.get_profile_data_copy()["name"],
             "text": content["text"],
         })
         return

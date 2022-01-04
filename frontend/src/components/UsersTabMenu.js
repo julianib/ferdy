@@ -3,8 +3,10 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import UsersAllPage from "../pages/UsersAllPage";
+import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import CustomTabPanel from "./CustomTabPanel";
+import AllUsersPage from "../pages/AllUsersPage";
+import RolesPage from "../pages/RolesPage";
 
 export default function UsersTabMenu() {
   const [selectedUsersTab, setSelectedUsersTab] = useState(0);
@@ -17,28 +19,22 @@ export default function UsersTabMenu() {
     <>
       <Tabs
         sx={{ borderBottom: 1, borderColor: "divider" }}
+        variant="scrollable"
         value={selectedUsersTab}
         onChange={onChangeTab}
         selectionFollowsFocus
-        variant="scrollable"
       >
-        <Tab label="List" icon={<PeopleIcon />} iconPosition="start" />
-        <Tab label="Pending" icon={<PersonAddIcon />} iconPosition="start" />
-        <Tab label="Item 2" />
-        <Tab label="Item 3" />
-        <Tab label="Item 4" />
-        <Tab label="Item 5" />
-        <Tab label="Item 6" />
+        <Tab label="All" icon={<PeopleIcon />} />
+        <Tab label="Pending" icon={<PersonAddIcon />} />
+        <Tab label="Roles" icon={<ToggleOnOutlinedIcon />} />
       </Tabs>
       <CustomTabPanel current={selectedUsersTab} index={0}>
-        <UsersAllPage />
+        <AllUsersPage />
       </CustomTabPanel>
       {selectedUsersTab === 1 && "Item 1"}
-      {selectedUsersTab === 2 && "Item 2"}
-      {selectedUsersTab === 3 && "Item 3"}
-      {selectedUsersTab === 4 && "Item 4"}
-      {selectedUsersTab === 5 && "Item 5"}
-      {selectedUsersTab === 6 && "Item 6"}
+      <CustomTabPanel current={selectedUsersTab} index={2}>
+        <RolesPage />
+      </CustomTabPanel>
     </>
   );
 }

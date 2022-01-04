@@ -61,6 +61,10 @@ class DatabaseEntry(ABC):
         self.trigger_db_write()
 
     def get_data_copy(self, filter_values=True) -> Optional[dict]:
+        """
+        Get a copy of this entry's data dict (JSON-compatible)
+        """
+
         try:
             data_copy = self._data.copy()
 
@@ -69,8 +73,8 @@ class DatabaseEntry(ABC):
                       ex=ex)
             return
 
-        if filter_values and self.get_filter_keys():
-            for key in self.get_filter_keys():
+        if filter_values and self.get_keys_to_filter():
+            for key in self.get_keys_to_filter():
                 data_copy[key] = "<filtered>"
 
         return data_copy
@@ -83,7 +87,7 @@ class DatabaseEntry(ABC):
 
         else:
             for key, value in kwargs.items():
-                # check if we're dealing with string
+                # check if we're dealing with a string
                 if type(self[key]) == type(value) == str:
                     if self[key].lower() != value.lower():
                         return False
@@ -97,38 +101,26 @@ class DatabaseEntry(ABC):
 
     def trigger_db_write(self):
         """
-        Tell this entry's db to write to disk, (should be) called when
-        data is changed
+        Tell this entry's db to write to disk, (should be) called when data is
+        updated
         """
-        self._in_database.write_to_disk()
 
-    @staticmethod
-    @abstractmethod
-    def convert_jsonable_from_disk(jsonable: dict):
-        """
-        Convert data read from disk to usable data types
-        """
-        pass
+        self._in_database.write_to_disk()
 
     @staticmethod
     @abstractmethod
     def get_default_data() -> dict:
         """
-        Get the default data of this entry type
+        Get the (JSON-compatible) default data key/values of this entry type
         """
+
         pass
 
     @staticmethod
     @abstractmethod
-    def get_filter_keys() -> set:
+    def get_keys_to_filter() -> list:
         """
-        Get the keys of this entry's type that should have filtered values
+        Get the data keys of this entry's type that should have filtered values
         """
-        pass
 
-    @abstractmethod
-    def get_jsonable(self, filter_values=True) -> dict:
-        """
-        Get this entry's data as a json-compatible dict
-        """
         pass

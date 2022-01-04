@@ -10,11 +10,11 @@ class Database(ABC):
 
         Log.debug("Initializing db")
 
+        self._entries: List[entry_class] = []
         self._entry_class = entry_class
         self._filename: str = filename
         self._file_path: str = f"{DATABASES_FOLDER}/{filename}"
         self._last_entry_id: int = 0
-        self._entries: Set[DatabaseEntry] = set()
         self._has_read_from_file: bool = False
 
         self._read_from_disk()
@@ -55,18 +55,18 @@ class Database(ABC):
         with open(self._file_path, "r") as f:
             data = json.load(f)
             self._last_entry_id = data.get("last_entry_id", 0)
-            entries_as_jsonable = data.get("entries", [])
+            entries_data = data.get("entries_data", [])
 
         file_entries_missing_keys = 0  # entries missing keys
-        for entry_as_jsonable in entries_as_jsonable:
-            entry = self.initialize_entry(from_disk=True, **entry_as_jsonable)
+        for entry_data in entries_data:
+            entry = self.initialize_entry(from_disk=True, **entry_data)
             if entry.disk_was_missing_keys:
                 file_entries_missing_keys += 1
 
         if file_entries_missing_keys:
-            Log.debug(f"{file_entries_missing_keys} entries were missing"
-                      "keys, updating")
-            self.write_to_disk()
+            Log.debug(f"{file_entries_missing_keys} entries were missing keys, "
+                      "writing to disk")
+            self.write_to_disk()  # todo necessary?
 
         # prevent reading twice (could cause data loss)
         self._has_read_from_file = True
@@ -99,15 +99,12 @@ class Database(ABC):
                               f"{entry_id=}, {key=}")
                     disk_was_missing_keys = True
 
-            # convert from jsonable types in data to usable types
-            kwargs = self._entry_class.convert_jsonable_from_disk(kwargs)
-
-        # init the entry object
+        # actually init the entry object
         new_entry = self._entry_class(
             in_database=self, disk_was_missing_keys=disk_was_missing_keys,
             **kwargs
         )
-        self._entries.add(new_entry)
+        self._entries.append(new_entry)
 
         # if created during runtime, update db on disk
         if not from_disk:
@@ -115,51 +112,55 @@ class Database(ABC):
 
         return new_entry
 
-    def get_entries(self) -> Set[DatabaseEntry]:
-        return self._entries.copy()  # TODO is it ok to return a copy?
+    def get_entries_copy(self, key=None, reverse=False) -> List[DatabaseEntry]:
+        if key:
+            return sorted(self._entries.copy(), key=key, reverse=reverse)
+
+        return self._entries.copy()
 
     def get_entries_count(self) -> int:
-        return len(self.get_entries())
+        return len(self.get_entries_copy())
 
-    def get_entries_jsonable(self, filter_values=True, key=None, reverse=False) -> List[dict]:
-        # TODO this probably can't be a set, should be a list (make sure)
+    def get_entries_data_copy(
+            self, filter_values=True, key=None, reverse=False) -> List[dict]:
 
         if key:
-            return [entry.get_jsonable(filter_values=filter_values)
-                    for entry in self.get_entries_sorted(key, reverse)]
+            return [entry.get_data_copy(filter_values=filter_values)
+                    for entry in self.get_entries_copy(key, reverse)]
 
-        return [entry.get_jsonable(filter_values=filter_values)
-                for entry in self.get_entries()]
+        return [entry.get_data_copy(filter_values=filter_values)
+                for entry in self.get_entries_copy()]
 
-    def get_entries_sorted(self, key, reverse=False) -> set:
-        return set(sorted(self.get_entries(), key=key, reverse=reverse))
+    def match_many(self, raise_no_match=False, match_casing=False, **kwargs) \
+            -> List[DatabaseEntry]:
 
-    def match_many(self, raise_no_match=False, match_casing=False, **kwargs):
-        Log.debug(f"Matching entries with kwargs, {match_casing=}, {kwargs=}")
+        Log.debug(f"Matching entries with kwargs, {kwargs=}, {match_casing=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")
 
-        candidates = set()
-        for entry in self.get_entries():
+        matches = []
+        for entry in self.get_entries_copy():
             if entry.matches_kwargs(match_casing, **kwargs):
-                candidates.add(entry)
+                matches.append(entry)
 
-        if candidates:
-            return candidates
+        if matches:
+            return matches
         elif raise_no_match:
             raise NoEntriesMatch
         else:
             Log.debug("No db entries match kwargs")
-            return set()
+            return []
 
-    def match_single(self, raise_no_match=False, match_casing=False, **kwargs):
-        Log.debug(f"Matching entry with kwargs, {match_casing=}, {kwargs=}")
+    def match_single(self, raise_no_match=False, match_casing=False, **kwargs) \
+            -> DatabaseEntry:
+
+        Log.debug(f"Matching entry with kwargs, {kwargs=}, {match_casing=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")
 
-        for entry in self.get_entries():
+        for entry in self.get_entries_copy():
             if entry.matches_kwargs(match_casing, **kwargs):
                 return entry
 
@@ -172,12 +173,14 @@ class Database(ABC):
     # TODO implement removing entries from db
 
     def write_to_disk(self):
-        entries_jsonable_sorted = self.get_entries_jsonable(
-            filter_values=True, key=lambda entry: entry["entry_id"]
+        entries_data = self.get_entries_data_copy(
+            filter_values=False, key=lambda entry: entry["entry_id"]
         )
 
+        to_dump = {
+            "last_entry_id": self._last_entry_id,
+            "entries_data": entries_data,
+        }
+
         with open(self._file_path, "w") as f:
-            json.dump({
-                "last_entry_id": self._last_entry_id,
-                "entries": entries_jsonable_sorted
-            }, f, indent=2, sort_keys=True)
+            json.dump(to_dump, f, indent=2, sort_keys=True)

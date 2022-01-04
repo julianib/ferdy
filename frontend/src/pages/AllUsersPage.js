@@ -78,7 +78,7 @@ export default function UsersAllPage() {
       </Grid>
       <Grid item xs={8}>
         {selectedProfile && (
-          <Paper sx={{ mt: 1, p: 1 }}>
+          <Paper sx={{ mt: 1, p: 1 }} elevation={10}>
             <Avatar src={selectedProfile.avatar_url} />
 
             <Typography sx={{ mt: 2 }} variant="h5">

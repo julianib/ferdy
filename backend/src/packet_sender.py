@@ -29,17 +29,14 @@ def send_packets_loop(ferdy):
             Log.debug("Did not send packet: no recipients")
 
 
-def send_packet(sio, users, name, content, skip) -> set:
+def send_packet(sio, users: Union[User, list], name, content, skip) -> list:
     """
     Send the packet
     """
 
     if type(users) == User:
-        users = {users}
+        users = [users]
     elif type(users) == list:
-        Log.warning("'users' type is list, converted to set")
-        users = set(users)
-    elif type(users) == set:
         pass
     else:
         users_type = type(users).__name__
@@ -47,11 +44,8 @@ def send_packet(sio, users, name, content, skip) -> set:
 
     if skip:
         if type(skip) == User:
-            skip = {skip}
+            skip = [skip]
         elif type(skip) == list:
-            Log.warning("'skip' type is list, converted to set")
-            skip = set(skip)
-        elif type(skip) == set:
             pass
         else:
             skip_type = type(skip).__name__

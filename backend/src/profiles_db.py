@@ -1,6 +1,6 @@
 from convenience import *
 from database import Database
-from user_profile import Profile
+from profile_dbe import Profile
 
 
 class Profiles(Database):

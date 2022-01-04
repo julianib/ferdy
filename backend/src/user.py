@@ -1,11 +1,11 @@
 from convenience import *
-from user_profile import Profile
+from profile_dbe import Profile
 
 
 class User:
     def __init__(self, sid):
         self.sid = sid
-        self._profile = None
+        self._profile: Optional[Profile] = None
 
         Log.debug(f"User created: {self}")
 
@@ -18,11 +18,8 @@ class User:
         if self.is_logged_in():
             return self._profile["name"]
 
-    def get_profile(self) -> Profile:
-        return self._profile
-
-    def get_profile_jsonable(self) -> dict:
-        return self._profile.get_jsonable()
+    def get_profile_data_copy(self) -> dict:
+        return self._profile.get_data_copy()
 
     def is_logged_in(self) -> bool:
         if self._profile:
@@ -37,6 +34,7 @@ class User:
         self._profile = profile
         self._profile["last_seen_unix"] = int(time.time())
         self._profile["is_online"] = True
+
         Log.info(f"{self} logged in")
 
     def log_out(self):
@@ -46,4 +44,5 @@ class User:
         self._profile["last_seen_unix"] = int(time.time())
         self._profile["is_online"] = False
         self._profile = None
+
         Log.info(f"{self} logged out")

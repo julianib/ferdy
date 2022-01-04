@@ -10,11 +10,11 @@ import { OnlineUsersContext } from "./contexts/OnlineUsersContext";
 import { ProfileContext } from "./contexts/ProfileContext";
 
 export default function App() {
-  const { setLoggedInUsers, setLoggedInUserCount, setUserCount } =
+  const { setOnlineProfiles, setLoggedInUserCount, setUserCount } =
     useContext(OnlineUsersContext);
 
   usePackets(["user.connected", "user.disconnected"], (content) => {
-    setLoggedInUsers(content.logged_in_users);
+    setOnlineProfiles(content.online_profiles);
     setLoggedInUserCount(content.logged_in_user_count);
     setUserCount(content.user_count);
   });
