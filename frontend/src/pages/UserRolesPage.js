@@ -1,3 +1,4 @@
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
@@ -6,6 +7,7 @@ import {
   Grid,
   List,
   ListItemButton,
+  ListItemText,
   Paper,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -15,18 +17,33 @@ import usePacket from "../hooks/usePacket";
 export default function UserRolesPage() {
   const [roles, setRoles] = useState([]);
 
-  usePacket("role.list.ok");
+  function addRole() {}
+
+  usePacket("role.list.ok", (content) => {
+    setRoles(content.roles);
+  });
 
   useEffect(() => {
     sendPacket("role.list");
   }, []);
 
   return (
-    <Grid container>
+    <Grid sx={{ mt: 1 }} container>
       <Grid item xs={4}>
+        <Button
+          sx={{ mr: 1 }}
+          startIcon={<AddIcon />}
+          variant="outlined"
+          color="success"
+          onClick={addRole}
+        >
+          Add
+        </Button>
         <List>
           {roles.map((role) => (
-            <ListItemButton key={role}></ListItemButton>
+            <ListItemButton key={role.entry_id}>
+              <ListItemText color={role.color_hex}>{role.name}</ListItemText>
+            </ListItemButton>
           ))}
         </List>
       </Grid>

@@ -7,6 +7,7 @@ import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import CustomTabPanel from "./CustomTabPanel";
 import ProfileListPage from "../pages/ProfileListPage";
 import UserRolesPage from "../pages/UserRolesPage";
+import PendingUsersPage from "../pages/PendingUsersPage";
 
 export default function UsersTabMenu() {
   const [selectedUsersTab, setSelectedUsersTab] = useState(0);
@@ -31,7 +32,9 @@ export default function UsersTabMenu() {
       <CustomTabPanel current={selectedUsersTab} index={0}>
         <ProfileListPage />
       </CustomTabPanel>
-      {selectedUsersTab === 1 && "Item 1"}
+      <CustomTabPanel current={selectedUsersTab} index={1}>
+        <PendingUsersPage />
+      </CustomTabPanel>
       <CustomTabPanel current={selectedUsersTab} index={2}>
         <UserRolesPage />
       </CustomTabPanel>
