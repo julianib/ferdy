@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useChatMessages from "../hooks/useChatMessages";
 import ChatMessage from "./ChatMessage";
-import sendPacket from "../util/sendPacket";
+import sendPacket from "../utils/sendPacket";
 import useUser from "../hooks/useUser";
 
 const classes = {

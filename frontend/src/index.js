@@ -1,5 +1,5 @@
 // execute backend script (connects to backend)
-import "./util/backend";
+import "./utils/backend";
 
 import React from "react";
 import ReactDOM from "react-dom";

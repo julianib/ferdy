@@ -12,10 +12,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { usePacket } from "../hooks/usePacket";
-import sendPacket from "../util/sendPacket";
+import usePacket from "../hooks/usePacket";
+import sendPacket from "../utils/sendPacket";
 import DeleteIcon from "@mui/icons-material/Delete";
-import timeAgo from "../util/convertUnix";
+import timeAgo from "../utils/convertUnix";
 
 export default function UsersAllPage() {
   const [profileList, setProfileList] = useState([]);

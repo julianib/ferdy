@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePacket } from "../hooks/usePacket";
+import usePacket from "../hooks/usePacket";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
 

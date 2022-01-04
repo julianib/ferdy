@@ -30,6 +30,7 @@ class Profile(DatabaseEntry):
             "locale": str(),
             "name": str(),
             "registered_unix": int(),
+            "roles": set(),
         }
 
     @staticmethod

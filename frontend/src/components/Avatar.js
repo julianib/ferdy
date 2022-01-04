@@ -1,4 +1,4 @@
-import { BACKEND } from "../util/backend";
+import { BACKEND } from "../utils/backend";
 
 // const classes = {
 //   avatar: {},

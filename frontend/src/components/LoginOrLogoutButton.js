@@ -1,5 +1,5 @@
-import { usePacket } from "../hooks/usePacket";
-import sendPacket from "../util/sendPacket";
+import usePacket from "../hooks/usePacket";
+import sendPacket from "../utils/sendPacket";
 import LogoutButton from "./LogoutButton";
 import LoginButton from "./LoginButton";
 import { useContext } from "react";
