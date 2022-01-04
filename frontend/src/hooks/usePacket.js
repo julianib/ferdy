@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { SOCKET } from "../util/backend";
 
 // register a packet handler for a component while it's mounted
+// IF different components use the same packet name, put usePacket in App.js!
 export function usePacket(name, handler) {
   useEffect(() => {
     SOCKET.on(name, handler);

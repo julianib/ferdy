@@ -1,42 +1,42 @@
 import { usePacket } from "../hooks/usePacket";
 import sendPacket from "../util/sendPacket";
-import useUser from "../hooks/useUser";
 import LogoutButton from "./LogoutButton";
 import LoginButton from "./LoginButton";
+import { useContext } from "react";
+import { ProfileContext } from "../contexts/ProfileContext";
 
-export default function Login() {
-  const { user, setUser } = useUser();
+export default function LoginOrLogoutButton() {
+  const { profile, setProfile } = useContext(ProfileContext);
 
   usePacket("user.log_in.error", (content) => {
     console.error("Log in failed, clearing user state:", content.error);
-    setUser(null);
+    setProfile(null);
   });
 
-  usePacket("user.log_in.ok", (content) => {
+  usePacket("user.log_in.ok", () => {
     console.log("Log in OK");
-    setUser({ ...content });
   });
 
   usePacket("user.log_out.error", (content) => {
     console.error("Log out error, clearing user state:", content.error);
-    setUser(null);
+    setProfile(null);
   });
 
   usePacket("user.log_out.ok", () => {
     console.log("Log out OK");
-    setUser(null);
   });
 
   function onGoogleLoginOk(res) {
     // TODO login request again after socket lost connection
-    console.debug("google log in ok, asking verification", res);
+
+    console.debug("Google log in OK, sending token");
     sendPacket("user.log_in", {
       token_id: res.tokenId,
     });
   }
 
   function onGoogleLoginError(res) {
-    console.debug("google log in error, reporting error", res);
+    console.debug("Google log in error, sending error", res);
 
     // notify backend of error
     sendPacket("user.log_in.google_error", res);
@@ -49,7 +49,7 @@ export default function Login() {
 
   return (
     <>
-      {user ? (
+      {profile ? (
         <LogoutButton onGoogleLogoutOk={onGoogleLogoutOk} />
       ) : (
         <LoginButton

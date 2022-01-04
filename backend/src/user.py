@@ -21,6 +21,9 @@ class User:
     def get_profile(self) -> Profile:
         return self._profile
 
+    def get_profile_jsonable(self) -> dict:
+        return self._profile.get_jsonable()
+
     def is_logged_in(self) -> bool:
         if self._profile:
             return True
@@ -32,11 +35,15 @@ class User:
             raise ValueError("User object already has a profile set")
 
         self._profile = profile
+        self._profile["last_seen_unix"] = int(time.time())
+        self._profile["is_online"] = True
         Log.info(f"{self} logged in")
 
     def log_out(self):
         if not self._profile:
             raise ValueError("User object does not have a profile set")
 
+        self._profile["last_seen_unix"] = int(time.time())
+        self._profile["is_online"] = False
         self._profile = None
         Log.info(f"{self} logged out")

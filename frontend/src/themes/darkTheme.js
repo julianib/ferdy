@@ -11,5 +11,8 @@ export const darkTheme = createTheme({
     secondary: {
       main: "#ff3800",
     },
+    error: {
+      main: "#cc0000",
+    },
   },
 });

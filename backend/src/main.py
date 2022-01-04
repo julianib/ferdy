@@ -108,8 +108,8 @@ def on_disconnect():
     user = ferdy.get_user_by_sid(sid)
 
     if not user:
-        Log.error(f"Couldn't handle disconnect: could not find user object,"
-                  f" {sid=}")
+        Log.error(f"Couldn't handle disconnect: could not find user object, "
+                  f"{sid=}")
         return
 
     Log.debug(f"Handling disconnect of {user}")
@@ -129,7 +129,7 @@ def on_packet(name, content):
     # TODO check max size of name and content
 
     packet_id = ferdy.get_next_packet_id()
-    Log.info(f"Received packet #{packet_id}, {user=}, {name=}")
+    Log.info(f"Received packet #{packet_id}, {name=}, {user=}")
     ferdy.incoming_packets_queue.put((user, name, content, packet_id))
 
 

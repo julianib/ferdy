@@ -24,7 +24,9 @@ class Profile(DatabaseEntry):
             "email_verified": bool(),
             "first_name": str(),
             "google_id": str(),  # str because JS can only handle up to 2^53-1
+            "is_online": bool(),
             "last_name": str(),
+            "last_seen_unix": int(),
             "locale": str(),
             "name": str(),
             "registered_unix": int(),

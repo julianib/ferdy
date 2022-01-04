@@ -84,8 +84,16 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
     if name == "profile.data":
         raise NotImplementedError
 
-    if name == "profile.list":
+    if name == "profile.delete":
         raise NotImplementedError
+
+    if name == "profile.list":
+        profiles = ferdy.profiles.get_entries_jsonable(
+            key=lambda p: p["entry_id"])
+
+        return "profile.list.ok", {
+            "profiles": profiles,
+        }
 
     # room
 
@@ -123,7 +131,6 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
     if name == "user.log_in":
         if user.is_logged_in():
             return "user.log_in.error", error_content("already_logged_in")
-
         # todo share profile data across users if logged in from 2 SIDs
 
         token_id = content["token_id"]
@@ -159,10 +166,9 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
                 locale=locale,
             )
 
-        # TODO provide a session token for the user (for get/post requests)
-        user.log_in(profile)
+        ferdy.handle_log_in(user, profile)
 
-        return "user.log_in.ok", profile.get_jsonable()
+        return "user.log_in.ok"
 
     if name == "user.log_in.google_error":
         Log.debug(f"User {user} got google log in error")
@@ -172,7 +178,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         if not user.is_logged_in():
             return "user.log_out.error", error_content("not_logged_in")
 
-        user.log_out()
+        ferdy.handle_log_out(user)
 
         return "user.log_out.ok"
 

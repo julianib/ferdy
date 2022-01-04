@@ -30,29 +30,67 @@ class Ferdy:
 
         self.send_packet_to(user, "user.connected", {
             "you": True,
-            "users": [user.sid for user in self.get_users()],
+            "logged_in_users": self.get_logged_in_users_jsonable(),
+            "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         })
 
         self.send_packet_to_all("user.connected", {
             "you": False,
-            "users": [user.sid for user in self.get_users()],
+            "logged_in_users": self.get_logged_in_users_jsonable(),
+            "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         }, skip=user)
 
         return user
 
     def handle_disconnect(self, user):
+        if user.is_logged_in():
+            user.log_out()
+
         self._users.remove(user)
 
         self.send_packet_to_all("user.disconnected", {
-            "sid": user.sid,
-            "users": [user.sid for user in self.get_users()],
+            "profile":
+                user.get_profile_jsonable() if user.is_logged_in() else None,
+            "logged_in_users": self.get_logged_in_users_jsonable(),
+            "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         })
 
-    def get_users(self):
-        return self._users.copy()
+    def handle_log_in(self, user, profile):
+        # TODO provide a session token for the user (for get/post requests)
+        user.log_in(profile)
+
+        self.send_packet_to(user, "user.logged_in", {
+            "you": True,
+            "profile": profile.get_jsonable(),
+        })
+
+        self.send_packet_to_all("user.logged_in", {
+            "you": False,
+            "profile": profile.get_jsonable(),
+        }, skip=user)
+
+    def handle_log_out(self, user):
+        self.send_packet_to(user, "user.logged_out", {
+            "you": True,
+            "profile": user.get_profile_jsonable(),
+        })
+
+        self.send_packet_to_all("user.logged_out", {
+            "you": False,
+            "profile": user.get_profile_jsonable(),
+        }, skip=user)
+
+        user.log_out()
+
+    def get_logged_in_user_count(self):
+        return len([user for user in self.get_users() if user.is_logged_in()])
+
+    def get_logged_in_users_jsonable(self):
+        return [user.get_profile_jsonable() for user in self.get_users()
+                if user.is_logged_in()]
 
     def get_next_packet_id(self):
         self._last_packet_id += 1
@@ -67,6 +105,9 @@ class Ferdy:
 
     def get_user_count(self):
         return len(self.get_users())
+
+    def get_users(self):
+        return self._users.copy()
 
     def send_packet_to(self, users, name, content, skip=None):
         self.outgoing_packets_queue.put((users, name, content,
