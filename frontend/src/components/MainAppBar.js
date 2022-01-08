@@ -14,41 +14,42 @@ import ProfileIconButton from "./ProfileIconButton";
 export default function MainAppBar() {
   return (
     <AppBar
-      sx={{
-        backgroundImage: "none",
-      }}
+      sx={{ backgroundImage: "none" }}
       position="static"
       enableColorOnDark
     >
       <Container>
-        <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
-            <MenuIcon />
-          </IconButton>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Box>
+            <IconButton
+              sx={{ mr: 2 }}
+              size="large"
+              edge="start"
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
 
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            Ferdy
-          </Typography>
-
-          <Box
-            // fills the space between left and right side
-            sx={{ flexGrow: 1 }}
-          />
-
-          <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-            <OnlineUsersIconButton />
-
-            <ProfileIconButton />
+            <Typography
+              sx={{ display: { xs: "none", sm: "inline" } }}
+              variant="h6"
+              noWrap
+            >
+              Ferdy
+            </Typography>
           </Box>
 
-          <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-            <IconButton color="inherit">
-              <MoreIcon />
-            </IconButton>
+          <Box>
+            <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+              <OnlineUsersIconButton />
+              <ProfileIconButton />
+            </Box>
+
+            <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+              <IconButton color="inherit">
+                <MoreIcon />
+              </IconButton>
+            </Box>
           </Box>
         </Toolbar>
       </Container>
