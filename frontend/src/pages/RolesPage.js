@@ -45,6 +45,9 @@ export default function RolesPage() {
   }
 
   function onClickSaveChanges() {
+    sendPacket("role.update", {
+      role: selectedRole,
+    });
     setUnsavedChanges(false);
   }
 
@@ -62,6 +65,10 @@ export default function RolesPage() {
 
   usePacket("role.delete.ok", (content) => {
     openToast(`Deleted role: ${content.role.name}`, "success");
+  });
+
+  usePacket("Role.update.ok", (content) => {
+    openToast(`Updated role: ${content.role.name}`, "success");
   });
 
   usePackets(["role.list.ok"], (content) => {
@@ -101,6 +108,7 @@ export default function RolesPage() {
         {selectedRole && (
           <Paper sx={{ p: 1 }} variant="outlined">
             <Button
+              sx={{ display: "block" }}
               color="info"
               variant="outlined"
               disabled={!unsavedChanges}
@@ -109,9 +117,8 @@ export default function RolesPage() {
               Save changes
             </Button>
 
-            <br />
-
             <TextField
+              sx={{ mt: 1 }}
               label="Test"
               autoComplete="off"
               value={selectedRole.name || ""}
@@ -120,7 +127,7 @@ export default function RolesPage() {
 
             {/* <Typography variant="h5">{selectedRole.name}</Typography> */}
 
-            <Typography variant="body1">
+            <Typography sx={{ mt: 1 }} variant="body1">
               Color: {selectedRole.color_hex}
             </Typography>
 

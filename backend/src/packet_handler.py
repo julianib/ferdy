@@ -24,6 +24,9 @@ def handle_packets_loop(ferdy: Ferdy):
         try:
             response_packet = handle_packet(ferdy, user, name, content)
 
+        except NoEntriesMatch:
+            response_packet = "error", error_content("no_entries_match")
+
         except NotImplementedError:
             Log.debug("Handling failed: not implemented")
             response_packet = "error", error_content("not_implemented")
@@ -86,8 +89,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         raise NotImplementedError
 
     if name == "profile.list":
-        profiles = ferdy.profiles.get_entries_data_copy(
-            key=lambda p: p["entry_id"])
+        profiles = ferdy.profiles.get_entries_data_copy()
 
         return "profile.list.ok", {
             "profiles": profiles,
@@ -111,11 +113,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
         entry_id = content["entry_id"]
 
-        try:
-            role = ferdy.roles.match_single(
-                raise_no_match=True, entry_id=entry_id)
-        except NoEntriesMatch:
-            return "role.delete.error", error_content("not_found")
+        role = ferdy.roles.match_single(raise_no_match=True, entry_id=entry_id)
 
         role.delete()
 
@@ -128,11 +126,33 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         }
 
     if name == "role.list":
-        roles = ferdy.roles.get_entries_data_copy(
-            key=lambda r: r["entry_id"])
+        roles = ferdy.roles.get_entries_data_copy()
 
         return "role.list.ok", {
             "roles": roles
+        }
+
+    if name == "role.update":
+        # todo check auth
+
+        new_role_data = content["role"]
+        entry_id = new_role_data["entry_id"]
+
+        role = ferdy.roles.match_single(raise_no_match=True,
+                                        entry_id=entry_id)
+
+        for key, value in new_role_data.items():
+            # only update date if necessary
+            if role[key] != value:
+                role[key] = value
+                Log.debug(f"Updated {key=} to {value=} of {role}")
+
+        ferdy.send_packet_to_all("role.list.ok", {
+            "roles": ferdy.roles.get_entries_data_copy()
+        })
+
+        return "role.update.ok", {
+            "role": new_role_data
         }
 
     # room
