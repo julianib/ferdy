@@ -4,6 +4,9 @@ from user import User
 import verify_google_token_id
 
 
+# TODO split up different handlers into different files, roles, user, etc.
+
+
 def handle_packets_loop(ferdy: Ferdy):
     """
     Blocking loop for handling incoming packets
@@ -56,7 +59,11 @@ def handle_packets_loop(ferdy: Ferdy):
 def handle_packet(ferdy: Ferdy, user: User, name: str,
                   content: Union[dict, list, None]) -> Union[tuple, str, None]:
     """
-    Handle a packet and return an optional direct response packet
+    Handle a packet and return an optional direct response packet.
+
+    -> aim is to have as little as possible packet names for frontend to listen
+       to.
+    -> content keys should_be_pep8.
     """
 
     if not name:
@@ -69,15 +76,6 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
     elif type(content) is not dict:
         content_type = type(content).__name__
         raise ValueError(f"Invalid packet content type, {content_type=}")
-
-    # -> aim is to have as little as possible handlers for frontend to register
-    # and unregister each time components call useEffect
-    # -> content keys should_be_pep8
-
-    # TODO split up different handlers into different files, room, user, etc.
-    # game packets should be handled by game handler
-
-    # TODO implement games
 
     # profile
 

@@ -1,16 +1,10 @@
 import { Button } from "@mui/material";
 import GoogleLogin from "react-google-login";
-import usePacket from "../hooks/usePacket";
-import useProfile from "../hooks/useProfile";
-import useToast from "../hooks/useToast";
 import sendPacket from "../utils/sendPacket";
 
 const { REACT_APP_CLIENT_ID } = process.env;
 
 export default function LoginButton() {
-  const { setProfile } = useProfile();
-  const { openToast } = useToast();
-
   function onGoogleLoginFailure(res) {
     console.debug("Google log in error, sending error", res);
 
@@ -26,16 +20,6 @@ export default function LoginButton() {
       token_id: res.tokenId,
     });
   }
-
-  usePacket("user.log_in.fail", (content) => {
-    openToast(`Couldn't log in: ${content.error}`, "error");
-  });
-
-  usePacket("user.log_in.ok", (content) => {
-    console.log("Log in OK");
-    openToast(`Logged in as: ${content.profile.name}`, "success");
-    setProfile(content.profile);
-  });
 
   return (
     <GoogleLogin
