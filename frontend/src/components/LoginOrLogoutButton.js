@@ -9,7 +9,7 @@ export default function LoginOrLogoutButton() {
   const { openToast } = useToast();
   const { setProfile } = useProfile();
 
-  usePacket("user.log_in.fail", (content) => {
+  usePacket("user.log_in.error", (content) => {
     openToast(`Couldn't log in: ${content.error}`, "error");
   });
 
@@ -19,7 +19,7 @@ export default function LoginOrLogoutButton() {
     setProfile(content.profile);
   });
 
-  usePacket("user.log_out.fail", (content) => {
+  usePacket("user.log_out.error", (content) => {
     openToast(`Couldn't log out: ${content.error}`, "error");
   });
 

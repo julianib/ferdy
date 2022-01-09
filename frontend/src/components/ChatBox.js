@@ -32,7 +32,7 @@ export default function ChatBox() {
     e.preventDefault();
   }
 
-  usePacket("user.send_message.fail", (content) => {
+  usePacket("user.send_message.error", (content) => {
     openToast(`Couldn't send message: ${content.error}`, "error");
   });
 

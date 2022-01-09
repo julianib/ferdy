@@ -18,7 +18,7 @@ import usePackets from "../hooks/usePackets";
 import usePacket from "../hooks/usePacket";
 import useToast from "../hooks/useToast";
 
-export default function UserRolesPage() {
+export default function RolesPage() {
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -48,7 +48,7 @@ export default function UserRolesPage() {
     setUnsavedChanges(false);
   }
 
-  usePacket("role.create.fail", (content) => {
+  usePacket("role.create.error", (content) => {
     openToast(`Couldn't create role: ${content.error}`, "error");
   });
 
@@ -56,7 +56,7 @@ export default function UserRolesPage() {
     openToast(`Created role: ${content.role.name}`, "success");
   });
 
-  usePacket("role.delete.fail", (content) => {
+  usePacket("role.delete.error", (content) => {
     openToast(`Couldn't delete role: ${content.error}`, "error");
   });
 

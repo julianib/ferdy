@@ -115,7 +115,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
             role = ferdy.roles.match_single(
                 raise_no_match=True, entry_id=entry_id)
         except NoEntriesMatch:
-            return "role.delete.fail", error_content("not_found")
+            return "role.delete.error", error_content("not_found")
 
         role.delete()
 
@@ -170,13 +170,13 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     if name == "user.log_in":
         if user.is_logged_in():
-            return "user.log_in.fail", error_content("already_logged_in")
+            return "user.log_in.error", error_content("already_logged_in")
         # todo share profile data across users if logged in from 2 SIDs
 
         token_id = content["token_id"]
         google_data = verify_google_token_id.verify(token_id)
         if not google_data:
-            return "user.log_in.fail", error_content("invalid_google_token")
+            return "user.log_in.error", error_content("invalid_google_token")
 
         google_id = google_data["sub"]
 
@@ -218,7 +218,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     if name == "user.log_out":
         if not user.is_logged_in():
-            return "user.log_out.fail", error_content("not_logged_in")
+            return "user.log_out.error", error_content("not_logged_in")
 
         ferdy.handle_log_out(user)
 
@@ -226,7 +226,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
 
     if name == "user.send_message":
         if not user.is_logged_in():
-            return "user.send_message.fail", error_content("not_logged_in")
+            return "user.send_message.error", error_content("not_logged_in")
 
         ferdy.send_packet_to_all("user.receive_message", {
             "author": user.get_profile_data_copy(),
