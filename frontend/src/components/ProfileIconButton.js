@@ -1,9 +1,8 @@
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import { useContext } from "react";
-import { ProfileContext } from "../contexts/ProfileContext";
+import useProfile from "../hooks/useProfile";
 
 export default function ProfileIconButton() {
-  const { profile } = useContext(ProfileContext);
+  const { profile } = useProfile();
 
   return (
     <IconButton edge="end" color="inherit">

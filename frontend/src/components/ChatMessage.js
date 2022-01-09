@@ -11,6 +11,8 @@ const classes = {
 };
 
 export default function ChatMessage({ author, text }) {
+  // todo outdated
+
   return (
     <li style={classes.container}>
       {

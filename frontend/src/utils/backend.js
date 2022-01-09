@@ -20,6 +20,7 @@ export const BACKEND = REACT_APP_BACKEND_CUSTOM
 
 // init and configure socket
 console.debug(`Connecting socket, backend=${BACKEND}`);
+
 export const SOCKET = io(BACKEND, {
   // reconnect every 3 seconds
   randomizationFactor: 0,

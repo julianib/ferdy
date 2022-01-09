@@ -8,7 +8,6 @@ import { Tab } from "@mui/material";
 import { onCustomTabFocus } from "../utils/onCustomTabFocus";
 
 export default function MainTabMenu() {
-  // the order should be ['users/add', 'users/edit', 'users'].
   const selectedMainTab = useRouteMatch(["/", "/users"]);
 
   return (

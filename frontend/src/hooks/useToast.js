@@ -1,1 +1,8 @@
-// todo implement global hook to easily make toast popups appear
+import { useContext } from "react";
+import { ToastContext } from "../contexts/ToastContext";
+
+export default function useToast() {
+  const { toast, setToast, closeToast, openToast } = useContext(ToastContext);
+
+  return { toast, setToast, closeToast, openToast };
+}

@@ -1,12 +1,11 @@
 import { Badge, IconButton } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
-import { useContext } from "react";
-import { OnlineUsersContext } from "../contexts/OnlineUsersContext";
 import usePackets from "../hooks/usePackets";
+import useOnlineUsers from "../hooks/useOnlineUsers";
 
 export default function OnlineUsersIconButton() {
   const { setOnlineProfiles, setLoggedInUserCount, userCount, setUserCount } =
-    useContext(OnlineUsersContext);
+    useOnlineUsers();
 
   usePackets(["user.connected", "user.disconnected"], (content) => {
     setOnlineProfiles(content.online_profiles);

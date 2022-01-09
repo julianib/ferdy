@@ -1,7 +1,9 @@
 import { matchPath, useLocation } from "react-router-dom";
 
-// return any of the possible provided paths, if it matches current location
 export default function useRouteMatch(patterns) {
+  // return any of the possible provided paths, if it matches current location
+  // the order should be ['users/add', 'users/edit', 'users'].
+
   // src https://v5.reactrouter.com/web/api/location
   const { pathname } = useLocation();
 

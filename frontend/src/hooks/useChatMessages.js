@@ -5,6 +5,7 @@ const MAX_CHAT_MESSAGES = 5;
 
 export default function useChatMessages() {
   // todo should use context
+  
   const [chatMessages, setChatMessages] = useState([]);
 
   // packet handler to add incoming messages to the list of messages

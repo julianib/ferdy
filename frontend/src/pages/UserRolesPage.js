@@ -9,29 +9,60 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
 import usePackets from "../hooks/usePackets";
+import usePacket from "../hooks/usePacket";
+import useToast from "../hooks/useToast";
 
 export default function UserRolesPage() {
-  const [selectedRole, setSelectedRole] = useState(null);
   const [roles, setRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const { openToast } = useToast();
 
-  function clickedRole(role) {
+  function onClickRole(role) {
     setSelectedRole(role);
   }
 
-  function createRole() {
+  function onClickCreateRole() {
     sendPacket("role.create");
   }
 
-  function deleteSelectedRole() {
+  function onClickDeleteRole() {
     sendPacket("role.delete", {
       entry_id: selectedRole.entry_id,
     });
   }
+
+  function onChangeRoleName(event) {
+    setSelectedRole({ ...selectedRole, name: event.target.value });
+    setUnsavedChanges(true);
+    console.debug("changed name", selectedRole);
+  }
+
+  function onClickSaveChanges() {
+    setUnsavedChanges(false);
+  }
+
+  usePacket("role.create.fail", (content) => {
+    openToast(`Couldn't create role: ${content.error}`, "error");
+  });
+
+  usePacket("role.create.ok", (content) => {
+    openToast(`Created role: ${content.role.name}`, "success");
+  });
+
+  usePacket("role.delete.fail", (content) => {
+    openToast(`Couldn't delete role: ${content.error}`, "error");
+  });
+
+  usePacket("role.delete.ok", (content) => {
+    openToast(`Deleted role: ${content.role.name}`, "success");
+  });
 
   usePackets(["role.list.ok"], (content) => {
     setRoles(content.roles);
@@ -49,7 +80,7 @@ export default function UserRolesPage() {
           startIcon={<AddIcon />}
           variant="outlined"
           color="success"
-          onClick={createRole}
+          onClick={onClickCreateRole}
         >
           Create
         </Button>
@@ -58,7 +89,7 @@ export default function UserRolesPage() {
             <ListItemButton
               sx={{ color: role.color_hex }}
               selected={selectedRole?.entry_id === role.entry_id}
-              onClick={() => clickedRole(role)}
+              onClick={() => onClickRole(role)}
               key={role.entry_id}
             >
               <ListItemText color={role.color_hex}>{role.name}</ListItemText>
@@ -69,7 +100,25 @@ export default function UserRolesPage() {
       <Grid item xs={8}>
         {selectedRole && (
           <Paper sx={{ p: 1 }} variant="outlined">
-            <Typography variant="h5">{selectedRole.name}</Typography>
+            <Button
+              color="info"
+              variant="outlined"
+              disabled={!unsavedChanges}
+              onClick={onClickSaveChanges}
+            >
+              Save changes
+            </Button>
+
+            <br />
+
+            <TextField
+              label="Test"
+              autoComplete="off"
+              value={selectedRole.name || ""}
+              onChange={onChangeRoleName}
+            />
+
+            {/* <Typography variant="h5">{selectedRole.name}</Typography> */}
 
             <Typography variant="body1">
               Color: {selectedRole.color_hex}
@@ -81,7 +130,7 @@ export default function UserRolesPage() {
                 startIcon={<DeleteIcon />}
                 variant="contained"
                 color="error"
-                onClick={deleteSelectedRole}
+                onClick={onClickDeleteRole}
               >
                 Delete
               </Button>

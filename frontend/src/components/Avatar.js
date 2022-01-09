@@ -1,10 +1,8 @@
 import { BACKEND } from "../utils/backend";
 
-// const classes = {
-//   avatar: {},
-// };
-
 export default function Avatar({ user, showName }) {
+  // todo outdated
+
   let avatar_url;
   if (user.avatar_external) {
     avatar_url = user.avatar_url;

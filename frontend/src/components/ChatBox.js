@@ -3,14 +3,19 @@ import useChatMessages from "../hooks/useChatMessages";
 import ChatMessage from "./ChatMessage";
 import sendPacket from "../utils/sendPacket";
 import useUser from "../hooks/useUser";
+import usePacket from "../hooks/usePacket";
+import useToast from "../hooks/useToast";
 
 const classes = {
   messagesList: {},
 };
 
 export default function ChatBox() {
+  // todo outdated
+
   const { chatMessages } = useChatMessages();
   const { user } = useUser();
+  const { openToast } = useToast();
 
   const [messageInput, setMessageInput] = useState("");
 
@@ -26,6 +31,10 @@ export default function ChatBox() {
     setMessageInput("");
     e.preventDefault();
   }
+
+  usePacket("user.send_message.fail", (content) => {
+    openToast(`Couldn't send message: ${content.error}`, "error");
+  });
 
   return (
     <div>

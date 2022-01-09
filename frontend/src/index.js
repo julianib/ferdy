@@ -11,6 +11,7 @@ import { darkTheme } from "./themes/darkTheme";
 import { BrowserRouter } from "react-router-dom";
 import { OnlineUsersContextProvider } from "./contexts/OnlineUsersContext";
 import { ProfileContextProvider } from "./contexts/ProfileContext";
+import { ToastContextProvider } from "./contexts/ToastContext";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,8 +19,10 @@ ReactDOM.render(
       <BrowserRouter>
         <OnlineUsersContextProvider>
           <ProfileContextProvider>
-            <CssBaseline />
-            <App />
+            <ToastContextProvider>
+              <CssBaseline />
+              <App />
+            </ToastContextProvider>
           </ProfileContextProvider>
         </OnlineUsersContextProvider>
       </BrowserRouter>
