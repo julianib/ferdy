@@ -95,6 +95,29 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
             "profiles": profiles,
         }
 
+    if name == "profile.update":
+        # todo check auth
+
+        updated_profile = content["updated_profile"]
+        entry_id = content["entry_id"]
+
+        profile = ferdy.profiles.match_single(raise_no_match=True,
+                                              entry_id=entry_id)
+
+        for key, value in updated_profile.items():
+            # only update date if necessary
+            if profile[key] != value:
+                profile[key] = value
+                Log.debug(f"Updated {key=} to {value=} of {profile}")
+
+        ferdy.send_packet_to_all("profile.list.ok", {
+            "profiles": ferdy.profiles.get_entries_data_copy()
+        })
+
+        return "profile.update.ok", {
+            "profile": profile.get_data_copy()
+        }
+
     # role
 
     if name == "role.create":
@@ -135,13 +158,13 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
     if name == "role.update":
         # todo check auth
 
-        new_role_data = content["role"]
-        entry_id = new_role_data["entry_id"]
+        entry_id = content["entry_id"]
+        updated_role = content["updated_role"]
 
         role = ferdy.roles.match_single(raise_no_match=True,
                                         entry_id=entry_id)
 
-        for key, value in new_role_data.items():
+        for key, value in updated_role.items():
             # only update date if necessary
             if role[key] != value:
                 role[key] = value
@@ -152,7 +175,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         })
 
         return "role.update.ok", {
-            "role": new_role_data
+            "role": role.get_data_copy()
         }
 
     # room
@@ -205,7 +228,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         profile = ferdy.profiles.match_single(google_id=google_id)
 
         # if profile does not exist in db, create it
-        # info for the fields: https://stackoverflow.com/a/31099850/13216113
+        # fields src: https://stackoverflow.com/a/31099850/13216113
         if not profile:
             email = google_data["email"]
             email_verified = google_data["email_verified"]

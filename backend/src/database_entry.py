@@ -52,6 +52,8 @@ class DatabaseEntry(ABC):
         return f"<DB entry '{type(self).__name__}'>"
 
     def __setitem__(self, key, value):
+        # todo make sure entry_id is never modified
+
         try:
             self._data[key] = value
 

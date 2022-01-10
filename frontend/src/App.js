@@ -20,7 +20,7 @@ export default function App() {
 
   usePacket("disconnect", (reason) => {
     console.warn("Disconnected:", reason);
-    openToast(`Disconnected: ${reason}`);
+    openToast(`Disconnected: ${reason}`, "error");
   });
 
   usePacket("error", (content) => {

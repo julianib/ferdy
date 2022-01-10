@@ -16,7 +16,6 @@ class Profile(DatabaseEntry):
         return {
             "avatar_external": True,
             "avatar_url": "<avatar_url>",
-            "created_unix": 0,
             "email": "<email>",
             "email_verified": False,
             "first_name": "<first_name>",
@@ -24,6 +23,7 @@ class Profile(DatabaseEntry):
             "is_online": False,
             "last_name": "<last_name>",
             "last_seen_unix": 0,
+            "first_seen_unix": 0,
             "locale": "<locale>",
             "log_in_count": 0,
             "name": "<name>",

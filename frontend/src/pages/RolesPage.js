@@ -10,11 +10,9 @@ import {
   ListItemText,
   Paper,
   TextField,
-  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
-import usePackets from "../hooks/usePackets";
 import usePacket from "../hooks/usePacket";
 import useToast from "../hooks/useToast";
 
@@ -22,10 +20,12 @@ export default function RolesPage() {
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+
   const { openToast } = useToast();
 
   function onClickRole(role) {
     setSelectedRole(role);
+    setUnsavedChanges(false);
   }
 
   function onClickCreateRole() {
@@ -38,16 +38,34 @@ export default function RolesPage() {
     });
   }
 
+  function onChangeRoleColor(event) {
+    setSelectedRole({ ...selectedRole, color_hex: event.target.value });
+    setUnsavedChanges(true);
+  }
+
   function onChangeRoleName(event) {
     setSelectedRole({ ...selectedRole, name: event.target.value });
     setUnsavedChanges(true);
-    console.debug("changed name", selectedRole);
   }
 
   function onClickSaveChanges() {
+    const originalRole = roles.find(
+      (role) => role.entry_id === selectedRole.entry_id
+    );
+
+    const updatedRole = {};
+
+    for (const key in originalRole) {
+      if (originalRole[key] !== selectedRole[key]) {
+        updatedRole[key] = selectedRole[key];
+      }
+    }
+
     sendPacket("role.update", {
-      role: selectedRole,
+      entry_id: originalRole.entry_id,
+      updated_role: updatedRole,
     });
+
     setUnsavedChanges(false);
   }
 
@@ -67,11 +85,11 @@ export default function RolesPage() {
     openToast(`Deleted role: ${content.role.name}`, "success");
   });
 
-  usePacket("Role.update.ok", (content) => {
+  usePacket("role.update.ok", (content) => {
     openToast(`Updated role: ${content.role.name}`, "success");
   });
 
-  usePackets(["role.list.ok"], (content) => {
+  usePacket("role.list.ok", (content) => {
     setRoles(content.roles);
   });
 
@@ -99,7 +117,7 @@ export default function RolesPage() {
               onClick={() => onClickRole(role)}
               key={role.entry_id}
             >
-              <ListItemText color={role.color_hex}>{role.name}</ListItemText>
+              <ListItemText>{role.name}</ListItemText>
             </ListItemButton>
           ))}
         </List>
@@ -108,7 +126,6 @@ export default function RolesPage() {
         {selectedRole && (
           <Paper sx={{ p: 1 }} variant="outlined">
             <Button
-              sx={{ display: "block" }}
               color="info"
               variant="outlined"
               disabled={!unsavedChanges}
@@ -118,18 +135,20 @@ export default function RolesPage() {
             </Button>
 
             <TextField
-              sx={{ mt: 1 }}
-              label="Test"
+              sx={{ mt: 1, display: "block" }}
+              label="Name"
               autoComplete="off"
               value={selectedRole.name || ""}
               onChange={onChangeRoleName}
             />
 
-            {/* <Typography variant="h5">{selectedRole.name}</Typography> */}
-
-            <Typography sx={{ mt: 1 }} variant="body1">
-              Color: {selectedRole.color_hex}
-            </Typography>
+            <TextField
+              sx={{ mt: 1, display: "block" }}
+              label="Color"
+              autoComplete="off"
+              value={selectedRole.color_hex || ""}
+              onChange={onChangeRoleColor}
+            />
 
             <Box sx={{ mt: 2 }}>
               <Button

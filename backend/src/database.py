@@ -102,7 +102,7 @@ class Database(ABC):
             for key, value in default_data.items():
                 if key not in kwargs:
                     entry_id = kwargs["entry_id"]
-                    Log.debug(f"Entry on disk was missing key, set default, "
+                    Log.debug(f"Disk data was missing key, set default, "
                               f"{entry_id=}, {key=}")
                     disk_was_missing_keys = True
 

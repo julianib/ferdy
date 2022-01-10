@@ -32,8 +32,13 @@ class User:
             raise ValueError("User object already has a profile set")
 
         self._profile = profile
-        self._profile["last_seen_unix"] = int(time.time())
+
+        if not self._profile["first_seen_unix"]:
+            self._profile["first_seen_unix"] = int(time.time())
+
         self._profile["is_online"] = True
+        self._profile["last_seen_unix"] = int(time.time())
+        self._profile["log_in_count"] += 1
 
         Log.info(f"{self} logged in")
 
@@ -41,8 +46,8 @@ class User:
         if not self._profile:
             raise ValueError("User object does not have a profile set")
 
-        self._profile["last_seen_unix"] = int(time.time())
         self._profile["is_online"] = False
+        self._profile["last_seen_unix"] = int(time.time())
         self._profile = None
 
         Log.info(f"{self} logged out")

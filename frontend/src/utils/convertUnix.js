@@ -1,8 +1,10 @@
 // convert a time in unix (seconds) to "x ago" string
 export default function timeAgo(unix) {
+  // if unix == 0 (1/1/1970), return something unique
+  if (unix === 0) return "never";
+
   let now = new Date();
   let date = new Date(unix * 1000);
-
   let seconds = Math.floor((now - date) / 1000);
 
   if (seconds < 1) return "just now";
@@ -37,6 +39,6 @@ export default function timeAgo(unix) {
   let years = Math.floor(months / 12);
 
   if (years < 2) return "1 year ago";
-  
+
   return `${years} years ago`;
 }

@@ -21,11 +21,13 @@ export const BACKEND = REACT_APP_BACKEND_CUSTOM
 // init and configure socket
 console.debug(`Connecting socket, backend=${BACKEND}`);
 
+// options src: https://socket.io/docs/v4/client-options
 export const SOCKET = io(BACKEND, {
   // reconnect every 3 seconds
   randomizationFactor: 0,
   reconnectionDelay: 3000,
   reconnectionDelayMax: 3000,
+  timeout: 3000,
 });
 
 SOCKET.onAny((name, content) => {

@@ -198,12 +198,6 @@ if __name__ == "__main__":
     while True:
         print("\n\n\n\tHey Vsauce, Michael here!\n\n\n")
 
-        Log.test("test")
-        Log.debug("debug")
-        Log.info("info")
-        Log.warning("warning")
-        Log.error("error")
-
         try:
             main()
         except Exception as ex:
