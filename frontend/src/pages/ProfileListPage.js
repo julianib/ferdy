@@ -1,3 +1,4 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Avatar,
   Box,
@@ -10,15 +11,14 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import usePacket from "../hooks/usePacket";
-import sendPacket from "../utils/sendPacket";
-import DeleteIcon from "@mui/icons-material/Delete";
-import timeAgo from "../utils/convertUnix";
 import useToast from "../hooks/useToast";
 import { BACKEND } from "../utils/backend";
+import timeAgo from "../utils/convertUnix";
+import sendPacket from "../utils/sendPacket";
 
 export default function ProfileListPage() {
   const [profiles, setProfiles] = useState([]);

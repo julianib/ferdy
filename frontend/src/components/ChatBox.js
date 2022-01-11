@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useChatMessages from "../hooks/useChatMessages";
-import ChatMessage from "./ChatMessage";
 import useProfile from "../hooks/useProfile";
+import ChatMessage from "./ChatMessage";
 
 export default function ChatBox() {
   // todo outdated

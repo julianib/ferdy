@@ -1,13 +1,11 @@
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Toolbar,
-  Typography,
-  Container,
-} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import {
+  AppBar,
+  Box, Container, IconButton,
+  Toolbar,
+  Typography
+} from "@mui/material";
 import OnlineUsersIconButton from "./OnlineUsersIconButton";
 import ProfileIconButton from "./ProfileIconButton";
 

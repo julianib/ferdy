@@ -1,6 +1,6 @@
 import { Tab } from "@mui/material";
 import { Link } from "react-router-dom";
-import { onCustomTabFocus } from "../utils/onCustomTabFocus";
+import onCustomTabFocus from "../utils/onCustomTabFocus";
 
 // todo currently broken
 // this doesn't work as MUI doesn't apply "active" orange css color

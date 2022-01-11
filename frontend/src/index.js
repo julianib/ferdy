@@ -1,17 +1,15 @@
-// execute backend script (connects to backend)
-import "./utils/backend";
-
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
-import { darkTheme } from "./themes/darkTheme";
 import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 import { OnlineUsersContextProvider } from "./contexts/OnlineUsersContext";
 import { ProfileContextProvider } from "./contexts/ProfileContext";
 import { ToastContextProvider } from "./contexts/ToastContext";
+import "./index.css";
+import { darkTheme } from "./themes/darkTheme";
+import "./utils/backend"; // execute backend script (connects to backend)
 
 ReactDOM.render(
   <React.StrictMode>

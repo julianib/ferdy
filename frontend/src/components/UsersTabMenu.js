@@ -1,13 +1,12 @@
-import { useState } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
-import CustomTabPanel from "./CustomTabPanel";
+import { Tab, Tabs } from "@mui/material";
+import { useState } from "react";
+import PendingUsersPage from "../pages/PendingUsersPage";
 import ProfileListPage from "../pages/ProfileListPage";
 import RolesPage from "../pages/RolesPage";
-import PendingUsersPage from "../pages/PendingUsersPage";
+import CustomTabPanel from "./CustomTabPanel";
 
 export default function UsersTabMenu() {
   const [selectedUsersTab, setSelectedUsersTab] = useState(0);

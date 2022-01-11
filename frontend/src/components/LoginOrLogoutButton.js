@@ -1,9 +1,9 @@
-import LogoutButton from "./LogoutButton";
-import LoginButton from "./LoginButton";
-import useProfile from "../hooks/useProfile";
 import usePacket from "../hooks/usePacket";
+import useProfile from "../hooks/useProfile";
 import useToast from "../hooks/useToast";
 import FakeLoginForm from "./FakeLoginForm";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
 
 export default function LoginOrLogoutButton() {
   const { profile } = useProfile();

@@ -10,11 +10,11 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
-  TextField,
+  TextField
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import sendPacket from "../utils/sendPacket";
 import usePacket from "../hooks/usePacket";
+import sendPacket from "../utils/sendPacket";
 
 export default function RolesPage() {
   const [permissions, setPermissions] = useState([]);

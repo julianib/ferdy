@@ -1,7 +1,7 @@
-import { Badge, IconButton } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
-import usePackets from "../hooks/usePackets";
+import { Badge, IconButton } from "@mui/material";
 import useOnlineUsers from "../hooks/useOnlineUsers";
+import usePackets from "../hooks/usePackets";
 
 export default function OnlineUsersIconButton() {
   const { setOnlineProfiles, setLoggedInUserCount, userCount, setUserCount } =

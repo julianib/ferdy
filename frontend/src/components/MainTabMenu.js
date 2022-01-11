@@ -1,11 +1,10 @@
-import Tabs from "@mui/material/Tabs";
 import PeopleIcon from "@mui/icons-material/People";
-import UsersTabMenu from "./UsersTabMenu";
-import HomePage from "../pages/HomePage";
-import useRouteMatch from "../hooks/useRouteMatch";
+import { Tab, Tabs } from "@mui/material";
 import { Link, Route, Routes } from "react-router-dom";
-import { Tab } from "@mui/material";
-import { onCustomTabFocus } from "../utils/onCustomTabFocus";
+import useRouteMatch from "../hooks/useRouteMatch";
+import HomePage from "../pages/HomePage";
+import onCustomTabFocus from "../utils/onCustomTabFocus";
+import UsersTabMenu from "./UsersTabMenu";
 
 export default function MainTabMenu() {
   const selectedMainTab = useRouteMatch(["/", "/users"]);
