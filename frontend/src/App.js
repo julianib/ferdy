@@ -5,8 +5,11 @@ import MainTabMenu from "./components/MainTabMenu";
 import LoginOrLogoutButton from "./components/LoginOrLogoutButton";
 import useToast from "./hooks/useToast";
 import usePacket from "./hooks/usePacket";
+import useProfile from "./hooks/useProfile";
 
 export default function App() {
+  const { setProfile } = useProfile();
+
   const { openToast } = useToast();
 
   usePacket("connect", () => {
@@ -21,6 +24,9 @@ export default function App() {
   usePacket("disconnect", (reason) => {
     console.log("Disconnected:", reason);
     openToast(`Disconnected: ${reason}`, "error", 1000);
+
+    // clear profile if we get disconnected
+    setProfile(null);
   });
 
   usePacket("error", (content) => {
