@@ -1,7 +1,7 @@
 from convenience import *
 from ferdy import Ferdy
 from user import User
-import verify_google_token_id
+import verify_jwt
 
 
 # TODO split up different handlers into different files, roles, user, etc.
@@ -216,10 +216,10 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
             return "user.log_in.error", error_content("already_logged_in")
         # todo share profile data across users if logged in from 2 SIDs
 
-        token_id = content["token_id"]
-        google_data = verify_google_token_id.verify(token_id)
+        jwt = content["jwt"]
+        google_data = verify_jwt.verify(jwt)
         if not google_data:
-            return "user.log_in.error", error_content("invalid_google_token")
+            return "user.log_in.error", error_content("invalid_jwt")
 
         google_id = google_data["sub"]
 
@@ -228,7 +228,7 @@ def handle_packet(ferdy: Ferdy, user: User, name: str,
         profile = ferdy.profiles.match_single(google_id=google_id)
 
         # if profile does not exist in db, create it
-        # fields src: https://stackoverflow.com/a/31099850/13216113
+        # fields src: https://stackoverflow.com/a/59166759/13216113
         if not profile:
             email = google_data["email"]
             email_verified = google_data["email_verified"]

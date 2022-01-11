@@ -15,9 +15,9 @@ export default function LoginButton() {
   function onGoogleLoginSuccess(res) {
     // TODO login request again after socket lost connection
 
-    console.debug("Google log in OK, sending token");
+    console.debug("Google log in OK, sending JWT");
     sendPacket("user.log_in", {
-      token_id: res.tokenId,
+      jwt: res.tokenId,
     });
   }
 
