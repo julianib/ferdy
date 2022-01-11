@@ -70,6 +70,7 @@ class DatabaseEntry(ABC):
             Log.error(f"Invalid data key, {key=}")
             raise
 
+        Log.debug(f"Set {key=} to {value=} of entry {self}")
         self.trigger_db_write()
 
     def delete(self):

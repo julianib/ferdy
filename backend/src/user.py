@@ -23,9 +23,11 @@ class User:
         return self._profile.get_data_copy()
 
     def has_permission(self, permission: str, raise_if_not: bool) -> bool:
+        Log.debug(f"Checking if user has permission: {permission}")
+
         if not self.is_logged_in():
             if raise_if_not:
-                raise Unauthorized
+                raise UserUnauthorized
 
             return False
 
@@ -37,7 +39,7 @@ class User:
                 return True
 
         if raise_if_not:
-            raise Unauthorized
+            raise UserUnauthorized
 
         return False
 
@@ -49,6 +51,10 @@ class User:
 
     def log_in(self, profile):
         assert not self._profile, "user object already has a profile"
+
+        # todo share profile data across users if logged in from 2 SIDs
+        if profile["is_online"]:
+            raise ProfileAlreadyOnline
 
         self._profile = profile
 

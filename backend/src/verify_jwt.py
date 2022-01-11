@@ -21,4 +21,4 @@ def verify(token_id: str, raise_if_invalid: bool) -> Optional[dict]:
         Log.debug(f"Google token id was invalid")
 
         if raise_if_invalid:
-            raise JWTInvalid
+            raise InvalidJWT

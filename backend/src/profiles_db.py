@@ -7,6 +7,9 @@ class Profiles(Database):
     def __init__(self):
         super().__init__(Profile, "profiles.json")
 
+        for profile in self.find_many(is_online=True):
+            profile["is_online"] = False
+
     def create(self, google_id, **kwargs) -> Profile:
 
         Log.debug(f"Creating profile")

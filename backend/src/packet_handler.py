@@ -122,7 +122,6 @@ def handle_packet(ferdy: Ferdy, user: User,
                 Log.debug(f"Data is the same, not updating, {key=}, {value=}")
             else:
                 profile[key] = value
-                Log.debug(f"Updated data of {profile}, {key=}, {value=}")
 
         ferdy.send_packet_to_all("profile.list", {
             "profiles": ferdy.profiles.get_entries_data_copy()
@@ -134,7 +133,7 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     if name == "role.create":
         user.has_permission("role.create", raise_if_not=True)
-        role = ferdy.roles.create()
+        ferdy.roles.create()
 
         ferdy.send_packet_to_all("role.list", {
             "roles": ferdy.roles.get_entries_data_copy()
@@ -172,7 +171,6 @@ def handle_packet(ferdy: Ferdy, user: User,
                 Log.debug(f"Data is the same, not updating, {key=}, {value=}")
             else:
                 role[key] = value
-                Log.debug(f"Updated data of {role}, {key=}, {value=}")
 
         ferdy.send_packet_to_all("role.list", {
             "roles": ferdy.roles.get_entries_data_copy()
@@ -215,9 +213,7 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     if name == "user.log_in":
         if user.is_logged_in():
-            raise AlreadyLoggedIn
-
-        # todo share profile data across users if logged in from 2 SIDs
+            raise UserAlreadyLoggedIn
 
         fake = content["fake"]
         if fake:
@@ -271,7 +267,7 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     if name == "user.log_out":
         if not user.is_logged_in():
-            raise NotLoggedIn
+            raise UserNotLoggedIn
 
         ferdy.handle_log_out(user)
 
@@ -279,7 +275,7 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     if name == "user.message":
         if not user.is_logged_in():
-            raise NotLoggedIn
+            raise UserNotLoggedIn
 
         ferdy.send_packet_to_all("user.message", {
             "author": user.get_profile_data_copy(),
