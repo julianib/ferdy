@@ -25,8 +25,8 @@ class Ferdy:
         return user
 
     def handle_connect(self, sid, address) -> User:
+        Log.debug(f"Handling connect, {sid=}, {address=}")
         assert (sid and address), "no sid and address given"
-
         user = self.create_user_from_sid(sid)
 
         self.send_packet_to(user, "user.connect", {
@@ -46,10 +46,12 @@ class Ferdy:
         return user
 
     def handle_disconnect(self, user):
+        Log.debug(f"Handling disconnect, {user=}")
         profile_data = None
+
         if user.is_logged_in():
             profile_id = user.get_profile_data_copy()["entry_id"]
-            user.log_out()
+            self.handle_log_out(user)
             profile_data = self.profiles.find_single(entry_id=profile_id) \
                 .get_data_copy()
 
@@ -62,8 +64,9 @@ class Ferdy:
             "user_count": self.get_user_count(),
         })
 
+    # TODO provide a session token for the user (for fetch() and session)
     def handle_log_in(self, user, profile):
-        # TODO provide a session token for the user (for fetch() and session)
+        Log.debug(f"Handling log in, {user=}, {profile=}")
         user.log_in(profile)
 
         self.send_packet_to(user, "user.log_in", {
@@ -81,6 +84,7 @@ class Ferdy:
         })
 
     def handle_log_out(self, user):
+        Log.debug(f"Handling log out, {user=}")
         profile_id = user.get_profile_data_copy()["entry_id"]
         profile_data = self.profiles.find_single(entry_id=profile_id) \
             .get_data_copy()
