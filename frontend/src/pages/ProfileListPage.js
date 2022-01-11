@@ -18,6 +18,7 @@ import sendPacket from "../utils/sendPacket";
 import DeleteIcon from "@mui/icons-material/Delete";
 import timeAgo from "../utils/convertUnix";
 import useToast from "../hooks/useToast";
+import { BACKEND } from "../utils/backend";
 
 export default function ProfileListPage() {
   const [profiles, setProfiles] = useState([]);
@@ -29,6 +30,7 @@ export default function ProfileListPage() {
 
   function onClickProfile(profile) {
     setSelectedProfile(profile);
+    setUnsavedChanges(false);
   }
 
   function onClickDeleteProfile() {
@@ -66,6 +68,11 @@ export default function ProfileListPage() {
       (profile) => profile.entry_id === selectedProfile.entry_id
     );
 
+    if (originalProfile === undefined) {
+      openToast("Profile does not exist anymore", "error");
+      return;
+    }
+
     const updatedProfile = {};
 
     // only update the properties that have actually been modified by the USER
@@ -77,21 +84,17 @@ export default function ProfileListPage() {
 
     sendPacket("profile.update", {
       entry_id: originalProfile.entry_id,
-      updated_profile: updatedProfile,
+      updated_data: updatedProfile,
     });
 
     setUnsavedChanges(false);
   }
 
-  usePacket("profile.list.ok", (content) => {
+  usePacket("profile.list", (content) => {
     setProfiles(content.profiles);
   });
 
-  usePacket("profile.update.ok", (content) => {
-    openToast(`Updated profile: ${content.profile.name}`, "success");
-  });
-
-  usePacket("role.list.ok", (content) => {
+  usePacket("role.list", (content) => {
     setRoles(content.roles);
   });
 
@@ -101,7 +104,7 @@ export default function ProfileListPage() {
   }, []);
 
   return (
-    <Grid container spacing={1}>
+    <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
         <List dense>
           {profiles.map((profile) => {
@@ -119,11 +122,20 @@ export default function ProfileListPage() {
                     },
                   }}
                 >
-                  <Avatar src={profile.avatar_url} />
+                  <Avatar
+                    src={
+                      profile.avatar_external
+                        ? profile.avatar_url
+                        : `${BACKEND}/avatars/${profile.avatar_url}`
+                    }
+                  />
                 </ListItemAvatar>
 
                 <ListItemText
                   primary={profile.name}
+                  secondaryTypographyProps={
+                    profile.is_online ? { sx: { color: "success.dark" } } : null
+                  }
                   secondary={
                     profile.is_online
                       ? "Online"
@@ -137,8 +149,14 @@ export default function ProfileListPage() {
       </Grid>
       <Grid item xs={5}>
         {selectedProfile && (
-          <Paper sx={{ mt: 1, p: 1 }} variant="outlined">
-            <Avatar src={selectedProfile.avatar_url} />
+          <Paper sx={{ p: 1 }} variant="outlined">
+            <Avatar
+              src={
+                selectedProfile.avatar_external
+                  ? selectedProfile.avatar_url
+                  : `${BACKEND}/avatars/${selectedProfile.avatar_url}`
+              }
+            />
 
             <Typography sx={{ mt: 1 }} variant="h5">
               {selectedProfile.name}
@@ -163,8 +181,10 @@ export default function ProfileListPage() {
                 ))}
             </Box>
 
-            <Typography sx={{ mt: 2 }} variant="body1">
+            <Typography sx={{ mt: 2 }} variant="body2">
               Email: {selectedProfile.email}
+              <br />
+              Google ID: {selectedProfile.google_id}
             </Typography>
 
             <Box sx={{ mt: 2 }}>
@@ -183,7 +203,7 @@ export default function ProfileListPage() {
       </Grid>
       <Grid item xs={3}>
         {selectedProfile && (
-          <Paper sx={{ mt: 1, p: 1 }} variant="outlined">
+          <Paper sx={{ p: 1 }} variant="outlined">
             <Button
               sx={{ display: "block" }}
               color="info"

@@ -80,7 +80,7 @@ def setup_folders():
     for folder in create_folders:
         if not os.path.exists(folder):
             os.mkdir(folder)
-            Log.debug(f"Created folder {folder}")
+            Log.debug(f"Created folder: {folder}")
 
     # TODO move this to songs db initialization
     # removed_songs_trash = 0
@@ -93,7 +93,17 @@ def setup_folders():
     #     print(f"Removed {removed_songs_trash} file(s) from songs folder")
 
 
-def error_content(error: str):
-    return {
-        "error": error
+def error_packet(error: str, response_to_name: str, response_to_content: dict) \
+        -> tuple:
+    return "error", {
+        "error": error,
+        "response_to_name": response_to_name,
+        "response_to_content": response_to_content,
+    }
+
+
+def ok_packet(response_to_name: str, response_to_content: dict) -> tuple:
+    return "ok", {
+        "response_to_name": response_to_name,
+        "response_to_content": response_to_content,
     }

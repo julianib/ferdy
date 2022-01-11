@@ -17,6 +17,7 @@ export default function LoginButton() {
 
     console.debug("Google log in OK, sending JWT");
     sendPacket("user.log_in", {
+      fake: false,
       jwt: res.tokenId,
     });
   }
@@ -25,6 +26,7 @@ export default function LoginButton() {
     <GoogleLogin
       render={(renderProps) => (
         <Button
+          sx={{ display: "block" }}
           variant="outlined"
           disabled={renderProps.disabled}
           onClick={renderProps.onClick}

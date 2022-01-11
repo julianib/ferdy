@@ -12,6 +12,7 @@ const classes = {
 
 export default function ChatMessage({ author, text }) {
   // todo outdated
+  // todo rename to Message
 
   return (
     <li style={classes.container}>

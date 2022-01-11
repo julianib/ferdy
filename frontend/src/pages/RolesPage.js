@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Checkbox,
   Grid,
   List,
   ListItemButton,
@@ -14,14 +15,12 @@ import {
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
 import usePacket from "../hooks/usePacket";
-import useToast from "../hooks/useToast";
 
 export default function RolesPage() {
+  const [permissions, setPermissions] = useState([]);
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-
-  const { openToast } = useToast();
 
   function onClickRole(role) {
     setSelectedRole(role);
@@ -48,6 +47,34 @@ export default function RolesPage() {
     setUnsavedChanges(true);
   }
 
+  function onClickPermission(permission) {
+    if (selectedRole.permissions.includes(permission)) {
+      // remove permission from role
+
+      let oldPermissions = selectedRole.permissions;
+      let newPermissions = oldPermissions.filter(
+        (oldPermission) => oldPermission !== permission
+      );
+
+      setSelectedRole({
+        ...selectedRole,
+        permissions: newPermissions,
+      });
+    } else {
+      // add permission to role
+
+      let oldPermissions = selectedRole.permissions;
+      let newPermissions = [...oldPermissions, permission];
+
+      setSelectedRole({
+        ...selectedRole,
+        permissions: newPermissions,
+      });
+    }
+
+    setUnsavedChanges(true);
+  }
+
   function onClickSaveChanges() {
     const originalRole = roles.find(
       (role) => role.entry_id === selectedRole.entry_id
@@ -63,42 +90,27 @@ export default function RolesPage() {
 
     sendPacket("role.update", {
       entry_id: originalRole.entry_id,
-      updated_role: updatedRole,
+      updated_data: updatedRole,
     });
 
     setUnsavedChanges(false);
   }
 
-  usePacket("role.create.error", (content) => {
-    openToast(`Couldn't create role: ${content.error}`, "error");
+  usePacket("permission.list", (content) => {
+    setPermissions(content.permissions);
   });
 
-  usePacket("role.create.ok", (content) => {
-    openToast(`Created role: ${content.role.name}`, "success");
-  });
-
-  usePacket("role.delete.error", (content) => {
-    openToast(`Couldn't delete role: ${content.error}`, "error");
-  });
-
-  usePacket("role.delete.ok", (content) => {
-    openToast(`Deleted role: ${content.role.name}`, "success");
-  });
-
-  usePacket("role.update.ok", (content) => {
-    openToast(`Updated role: ${content.role.name}`, "success");
-  });
-
-  usePacket("role.list.ok", (content) => {
+  usePacket("role.list", (content) => {
     setRoles(content.roles);
   });
 
   useEffect(() => {
     sendPacket("role.list");
+    sendPacket("permission.list");
   }, []);
 
   return (
-    <Grid sx={{ mt: 1 }} container>
+    <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
         <Button
           sx={{ mr: 1 }}
@@ -122,7 +134,7 @@ export default function RolesPage() {
           ))}
         </List>
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={5}>
         {selectedRole && (
           <Paper sx={{ p: 1 }} variant="outlined">
             <Button
@@ -166,6 +178,35 @@ export default function RolesPage() {
                 <Button>test</Button>
               </ButtonGroup>
             </Box>
+          </Paper>
+        )}
+      </Grid>
+      <Grid item xs={3}>
+        {selectedRole && (
+          <Paper sx={{ p: 1 }} variant="outlined">
+            <Button
+              sx={{ display: "block" }}
+              color="info"
+              variant="outlined"
+              disabled={!unsavedChanges}
+              onClick={onClickSaveChanges}
+            >
+              Save changes
+            </Button>
+
+            <List sx={{ mt: 1 }} dense>
+              {permissions.map((permission) => (
+                <ListItemButton
+                  onClick={() => onClickPermission(permission)}
+                  key={permission}
+                >
+                  <Checkbox
+                    checked={selectedRole.permissions.includes(permission)}
+                  />
+                  <ListItemText>{permission}</ListItemText>
+                </ListItemButton>
+              ))}
+            </List>
           </Paper>
         )}
       </Grid>

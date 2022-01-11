@@ -3,7 +3,8 @@ from profile_dbe import Profile
 
 
 class User:
-    def __init__(self, sid):
+    def __init__(self, ferdy, sid):
+        self.ferdy = ferdy
         self.sid = sid
         self._profile: Optional[Profile] = None
 
@@ -21,6 +22,25 @@ class User:
     def get_profile_data_copy(self) -> dict:
         return self._profile.get_data_copy()
 
+    def has_permission(self, permission: str, raise_if_not: bool) -> bool:
+        if not self.is_logged_in():
+            if raise_if_not:
+                raise Unauthorized
+
+            return False
+
+        role_ids = self.get_profile_data_copy()["role_ids"]
+
+        for role_id in role_ids:
+            role = self.ferdy.roles.find_single(entry_id=role_id)
+            if permission in role["permissions"]:
+                return True
+
+        if raise_if_not:
+            raise Unauthorized
+
+        return False
+
     def is_logged_in(self) -> bool:
         if self._profile:
             return True
@@ -28,8 +48,7 @@ class User:
         return False
 
     def log_in(self, profile):
-        if self._profile:
-            raise ValueError("User object already has a profile set")
+        assert not self._profile, "user object already has a profile"
 
         self._profile = profile
 
@@ -40,14 +59,13 @@ class User:
         self._profile["last_seen_unix"] = int(time.time())
         self._profile["log_in_count"] += 1
 
-        Log.info(f"{self} logged in")
+        Log.info(f"User logged in: {self}")
 
     def log_out(self):
-        if not self._profile:
-            raise ValueError("User object does not have a profile set")
+        assert self._profile, "user object does not have a profile"
 
         self._profile["is_online"] = False
         self._profile["last_seen_unix"] = int(time.time())
         self._profile = None
 
-        Log.info(f"{self} logged out")
+        Log.info(f"User logged out: {self}")

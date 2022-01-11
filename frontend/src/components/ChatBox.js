@@ -1,21 +1,14 @@
 import { useState } from "react";
 import useChatMessages from "../hooks/useChatMessages";
 import ChatMessage from "./ChatMessage";
-import sendPacket from "../utils/sendPacket";
-import useUser from "../hooks/useUser";
-import usePacket from "../hooks/usePacket";
-import useToast from "../hooks/useToast";
-
-const classes = {
-  messagesList: {},
-};
+import useProfile from "../hooks/useProfile";
 
 export default function ChatBox() {
   // todo outdated
+  // todo rename to MessageBox
 
-  const { chatMessages } = useChatMessages();
-  const { user } = useUser();
-  const { openToast } = useToast();
+  const { chatMessages, sendChatMessage } = useChatMessages();
+  const { profile } = useProfile();
 
   const [messageInput, setMessageInput] = useState("");
 
@@ -24,26 +17,19 @@ export default function ChatBox() {
   }
 
   function onSubmit(e) {
-    sendPacket("user.send_message", {
-      author: user.name,
-      text: messageInput,
-    });
+    sendChatMessage(profile.name, messageInput);
     setMessageInput("");
     e.preventDefault();
   }
 
-  usePacket("user.send_message.error", (content) => {
-    openToast(`Couldn't send message: ${content.error}`, "error");
-  });
-
   return (
     <div>
-      <ul styles={classes.messagesList}>
+      <ul>
         {chatMessages.map((message, i) => {
           return <ChatMessage key={i} {...message} />;
         })}
       </ul>
-      {user && (
+      {profile && (
         <form onSubmit={onSubmit}>
           <input
             type="textarea"

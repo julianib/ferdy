@@ -1,15 +1,17 @@
 import { useState } from "react";
 import usePacket from "../hooks/usePacket";
+import sendPacket from "../utils/sendPacket";
 
 const MAX_CHAT_MESSAGES = 5;
 
 export default function useChatMessages() {
   // todo should use context
-  
+  // todo rename to useMessages()
+
   const [chatMessages, setChatMessages] = useState([]);
 
   // packet handler to add incoming messages to the list of messages
-  usePacket("user.receive_message", (content) => {
+  usePacket("user.message", (content) => {
     addChatMessage(content);
   });
 
@@ -41,5 +43,12 @@ export default function useChatMessages() {
     });
   }
 
-  return { chatMessages, addChatMessage, removeChatMessage };
+  function sendChatMessage(author, text) {
+    sendPacket("user.message", {
+      author,
+      text,
+    });
+  }
+
+  return { chatMessages, addChatMessage, removeChatMessage, sendChatMessage };
 }

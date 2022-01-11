@@ -8,7 +8,7 @@ from convenience import *
 
 # source https://developers.google.com/identity/sign-in/web/backend-auth
 
-def verify(token_id: str) -> Optional[dict]:
+def verify(token_id: str, raise_if_invalid: bool) -> Optional[dict]:
     try:
         Log.debug("Verifying google token id")
         id_info = id_token.verify_oauth2_token(token_id, requests.Request(),
@@ -17,6 +17,8 @@ def verify(token_id: str) -> Optional[dict]:
         Log.debug(f"Verified google token id OK")
         return id_info
 
-    except ValueError as ex:
-        Log.debug(f"Google token id was invalid", ex=ex)
-        return
+    except ValueError:
+        Log.debug(f"Google token id was invalid")
+
+        if raise_if_invalid:
+            raise JWTInvalid

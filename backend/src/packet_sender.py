@@ -19,13 +19,9 @@ def send_packets_loop(ferdy):
         try:
             sent_to = send_packet(ferdy.sio, users, name, content, skip)
 
-        except TypeError as ex:
-            Log.error(f"Could not send packet: {ex}")
-            return
-
         except Exception as ex:
             Log.error("Unhandled exception on send_packet", ex=ex)
-            return
+            continue
 
         if sent_to:
             Log.debug(f"Sent packet to {len(sent_to)} user(s)")

@@ -39,11 +39,9 @@ ferdy: Union[Ferdy, None] = None
 
 # flask routes
 
-@app.get(f"/{AVATARS_FOLDER}/<filename>")
+@app.get(f"/avatars/<filename>")
 def get_avatar(filename):
-    set_greenlet_name("app/get_avatar")
-
-    # TODO implement check if user is authorized
+    set_greenlet_name("app/GET/avatars")
 
     # file_type = filename.split(".")[-1]
     # if file_type not in ["png", "jpg"]:
@@ -51,25 +49,25 @@ def get_avatar(filename):
 
     if os.path.exists(f"{AVATARS_FOLDER}/{filename}"):
         return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}", filename)
-    else:
-        Log.warning(f"Requested file not found, using default, {filename=}")
-        if os.path.exists(f"{AVATARS_FOLDER}/default.png"):
-            return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}",
-                                       "default.png")
-        else:
-            Log.warning("Fallback avatar file default.png does not exist")
-            return error_content("backend")
+
+    Log.warning(f"Requested file not found, using default, {filename=}")
+    if os.path.exists(f"{AVATARS_FOLDER}/default.png"):
+        return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}",
+                                   "default.png")
+
+    Log.warning("Fallback avatar file default.png does not exist")
+    return "error", 500
 
 
 @app.get("/")
 def get():
-    set_greenlet_name("app/get")
+    set_greenlet_name("app/GET")
     return "GET root!"
 
 
 @app.post("/")
 def post():
-    set_greenlet_name("app/post")
+    set_greenlet_name("app/POST")
     body = request.json
     Log.test(f"post, {body=}")
     return "POST root!"
@@ -80,7 +78,7 @@ def app_errorhandler(e):
     set_greenlet_name("app/error")
     path = request.path
     Log.warning(f"Exception on flask app, {path=}", ex=e)
-    return error_content("backend")
+    return "error", 500
 
 
 # socketio events
@@ -98,7 +96,7 @@ def on_connect():
         Log.error("Refusing connect attempt, failed to create user object")
         return False
 
-    Log.info(f"{user} connected")
+    Log.info(f"User connected: {user}")
 
 
 @sio.on("disconnect")
@@ -114,7 +112,7 @@ def on_disconnect():
 
     Log.debug(f"Handling disconnect of {user}")
     ferdy.handle_disconnect(user)
-    Log.info(f"{user} disconnected")
+    Log.info(f"User disconnected: {user}")
 
 
 @sio.on("message")  # anything that is not connect or disconnect
@@ -123,7 +121,7 @@ def on_packet(name, content):
     sid = request.sid
     user = ferdy.get_user_by_sid(sid)
     if not user:
-        Log.warning(f"Couldn't handle packet: no user object, {sid=}")
+        Log.error(f"Couldn't handle packet: sid has no user object, {sid=}")
         return
 
     # TODO check max size of name and content
@@ -146,7 +144,7 @@ def main():
         return
 
     if os.path.split(os.getcwd())[-1] != "backend":
-        Log.error(f"Cwd is not equal to 'backend', aborting, {os.getcwd()=}")
+        Log.error(f"CWD is not equal to 'backend', aborting, {os.getcwd()=}")
         return
 
     setup_folders()

@@ -226,7 +226,7 @@ class Log:
 
         # set and clear the latest log
         latest_log = f"{LOGS_FOLDER}/.latest.txt"
-        Log.debug(f"Emptying latest log, {latest_log=}")
+        Log.debug(f"Emptying latest log: {latest_log}")
         open(latest_log, "w").close()
 
         Log.debug("Log writer loop ready")

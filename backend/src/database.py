@@ -8,18 +8,17 @@ class Database(ABC):
         Abstract class representing a db that can be saved as a json file
         """
 
-        Log.debug("Initializing db")
+        Log.debug(f"Initializing DB, type='{type(self).__name__}'")
 
         self._entries: List[entry_class] = []
-        self._entry_class = entry_class
-        self._filename: str = filename
+        self._entry_class: entry_class = entry_class
         self._file_path: str = f"{DATABASES_FOLDER}/{filename}"
-        self._last_entry_id: int = 0
+        self._next_entry_id: int = 1
         self._has_read_from_file: bool = False
 
         self._read_from_disk()
 
-        Log.debug(f"Initialized db: {self}")
+        Log.debug(f"Initialized DB: {self}")
         # TODO calc and print MB used
         # TODO compare size in memory with size on disk
 
@@ -28,17 +27,20 @@ class Database(ABC):
         return f"<DB '{type(self).__name__}', {entries_count=}>"
 
     def _get_next_entry_id(self) -> int:
-        self._last_entry_id += 1
-        Log.debug(f"Next db entry id: {self._last_entry_id}")
-        return self._last_entry_id
+        old = self._next_entry_id
+        Log.debug(f"Next DB entry id: {old}")
+        self._next_entry_id += 1
+        return old
 
     def _read_from_disk(self):
         """
         Read from disk, only called on startup
         """
 
+        Log.debug(f"DB reading from disk: {self}")
+
         if self._has_read_from_file:
-            Log.warning(f"{self} already read from disk, ignoring call")
+            Log.warning(f"DB already read from disk, ignoring call: {self}")
             return
 
         # create db json file if it doesn't exist and no need to read it
@@ -54,28 +56,22 @@ class Database(ABC):
 
         with open(self._file_path, "r") as f:
             data = json.load(f)
-            self._last_entry_id = data.get("last_entry_id", 0)
+
+            # read, and if newly created db
+            self._next_entry_id = data.get("next_entry_id", 1)
             entries_data = data.get("entries_data", [])
 
-        file_entries_missing_keys = 0
         for entry_data in entries_data:
-            entry = self.initialize_new_entry(from_disk=True, **entry_data)
-            if entry.disk_was_missing_keys:
-                file_entries_missing_keys += 1
-
-        if file_entries_missing_keys:
-            Log.debug(f"{file_entries_missing_keys} entries were missing keys, "
-                      "writing to disk")
-            self.write_to_disk()
+            self.initialize_new_entry(from_disk=True, **entry_data)
 
         # prevent reading twice (could cause data loss)
         self._has_read_from_file = True
 
-        Log.debug(f"{self} read from disk")
+        Log.debug(f"DB read from disk: {self}")
 
     def delete_entry(self, entry):
         if entry not in self._entries:
-            raise ValueError("Entry is not in db")
+            raise ValueError("Entry is not in DB")
 
         self._entries.remove(entry)
         self.write_to_disk()
@@ -86,36 +82,24 @@ class Database(ABC):
         type's default data. Returns the created entry.
         """
 
-        Log.debug(f"Starting initialization of new entry for {self}")
+        Log.debug(f"Initializing new entry for DB: {self}")
 
         if "entry_id" in kwargs:
             if not from_disk:
-                raise ValueError("entry_id not allowed in kwargs if creating "
-                                 "during runtime")
+                raise ValueError("entry_id only allowed in kwargs if reading "
+                                 "from disk")
         else:
             kwargs["entry_id"] = self._get_next_entry_id()
 
-        # check if entry was missing keys (outdated) if read from disk
-        disk_was_missing_keys = False
-        if from_disk:
-            default_data = self._entry_class.get_default_data()
-            for key, value in default_data.items():
-                if key not in kwargs:
-                    entry_id = kwargs["entry_id"]
-                    Log.debug(f"Disk data was missing key, set default, "
-                              f"{entry_id=}, {key=}")
-                    disk_was_missing_keys = True
+        if "parent_database" in kwargs:
+            raise ValueError("parent_database not allowed in kwargs")
 
         # actually init the entry object
-        new_entry = self._entry_class(
-            in_database=self, disk_was_missing_keys=disk_was_missing_keys,
-            **kwargs
-        )
+        new_entry = self._entry_class(parent_database=self, **kwargs)
         self._entries.append(new_entry)
 
-        # if created during runtime, update db on disk
-        if not from_disk:
-            self.write_to_disk()
+        # update db on disk in case data was missing/outdated
+        self.write_to_disk()
 
         return new_entry
 
@@ -138,10 +122,11 @@ class Database(ABC):
         return [entry.get_data_copy(filter_values=filter_values)
                 for entry in self.get_entries_copy()]
 
-    def match_many(self, raise_no_match=False, match_casing=False, **kwargs) \
-            -> List[DatabaseEntry]:
+    def find_many(self, raise_found=False, raise_missing=False,
+                  match_casing=False, **kwargs) -> List[DatabaseEntry]:
 
-        Log.debug(f"Matching entries with kwargs, {kwargs=}, {match_casing=}")
+        Log.debug(f"Matching many entries, {raise_found=}, {raise_missing=}, "
+                  f"{match_casing=}, {kwargs=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")
@@ -149,36 +134,45 @@ class Database(ABC):
         matches = []
         for entry in self.get_entries_copy():
             if entry.matches_kwargs(match_casing, **kwargs):
+                # todo optimize: if found and raise_found is True, abort search
+
                 matches.append(entry)
 
+        Log.debug(f"Match(es) found: {len(matches)}")
+
         if matches:
-            Log.debug(f"{len(matches)} match(es) found")
+            if raise_found:
+                raise EntryFound
+
             return matches
-        elif raise_no_match:
-            raise NoEntriesMatch
+
+        elif raise_missing:
+            raise EntryMissing
         else:
-            Log.debug("No entries match")
             return []
 
-    def match_single(self, raise_no_match=False, match_casing=False, **kwargs) \
-            -> DatabaseEntry:
+    def find_single(self, raise_found=False, raise_missing=False,
+                    match_casing=False, **kwargs) -> DatabaseEntry:
 
-        Log.debug(f"Matching entry with kwargs, {kwargs=}, {match_casing=}")
+        Log.debug(f"Matching single entry, {raise_found=}, {raise_missing=}, "
+                  f"{match_casing=}, {kwargs=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")
 
         for entry in self.get_entries_copy():
             if entry.matches_kwargs(match_casing, **kwargs):
+                Log.debug("Match found")
+
+                if raise_found:
+                    raise EntryFound
+
                 return entry
 
-        if raise_no_match:
-            raise NoEntriesMatch
+        if raise_missing:
+            raise EntryMissing
         else:
-            Log.debug("No entries match")
-
-    # def remove_entry(self, entry):
-    # TODO implement removing entries from db
+            Log.debug("No match found")
 
     def write_to_disk(self):
         entries_data = self.get_entries_data_copy(
@@ -186,8 +180,8 @@ class Database(ABC):
         )
 
         to_dump = {
-            "last_entry_id": self._last_entry_id,
             "entries_data": entries_data,
+            "next_entry_id": self._next_entry_id,
         }
 
         with open(self._file_path, "w") as f:

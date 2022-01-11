@@ -17,27 +17,26 @@ class Ferdy:
         self.roles = Roles()
 
     def create_user_from_sid(self, sid) -> User:
-        if sid in [user.sid for user in self.get_users_copy()]:
-            raise ValueError(f"Given sid is taken by user, {sid=}")
+        assert sid not in [user.sid for user in self.get_users_copy()], \
+            f"given sid is taken by user, {sid=}"
 
-        user = User(sid)
+        user = User(self, sid)
         self._users.append(user)
         return user
 
     def handle_connect(self, sid, address) -> User:
-        if not (sid and address):
-            raise ValueError(f"No sid or address given")
+        assert (sid and address), "no sid and address given"
 
         user = self.create_user_from_sid(sid)
 
-        self.send_packet_to(user, "user.connected", {
+        self.send_packet_to(user, "user.connect", {
             "you": True,
             "online_profiles": self.get_online_profiles_data_copy(),
             "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         })
 
-        self.send_packet_to_all("user.connected", {
+        self.send_packet_to_all("user.connect", {
             "you": False,
             "online_profiles": self.get_online_profiles_data_copy(),
             "logged_in_user_count": self.get_logged_in_user_count(),
@@ -47,45 +46,59 @@ class Ferdy:
         return user
 
     def handle_disconnect(self, user):
+        profile_data = None
         if user.is_logged_in():
+            profile_id = user.get_profile_data_copy()["entry_id"]
             user.log_out()
+            profile_data = self.profiles.find_single(entry_id=profile_id) \
+                .get_data_copy()
 
         self._users.remove(user)
 
-        self.send_packet_to_all("user.disconnected", {
-            "profile":
-                user.get_profile_data() if user.is_logged_in() else None,
+        self.send_packet_to_all("user.disconnect", {
+            "profile": profile_data,
             "online_profiles": self.get_online_profiles_data_copy(),
             "logged_in_user_count": self.get_logged_in_user_count(),
             "user_count": self.get_user_count(),
         })
 
     def handle_log_in(self, user, profile):
-        # TODO provide a session token for the user (for get/post requests)
+        # TODO provide a session token for the user (for fetch() and session)
         user.log_in(profile)
 
-        self.send_packet_to(user, "user.logged_in", {
+        self.send_packet_to(user, "user.log_in", {
             "you": True,
             "profile": profile.get_data_copy(),
         })
 
-        self.send_packet_to_all("user.logged_in", {
+        self.send_packet_to_all("user.log_in", {
             "you": False,
             "profile": profile.get_data_copy(),
         }, skip=user)
+
+        self.send_packet_to_all("profile.list", {
+            "profiles": self.profiles.get_entries_data_copy()
+        })
 
     def handle_log_out(self, user):
-        self.send_packet_to(user, "user.logged_out", {
+        profile_id = user.get_profile_data_copy()["entry_id"]
+        profile_data = self.profiles.find_single(entry_id=profile_id) \
+            .get_data_copy()
+        user.log_out()
+
+        self.send_packet_to(user, "user.log_out", {
             "you": True,
-            "profile": user.get_profile_data_copy(),
+            "profile": profile_data,
         })
 
-        self.send_packet_to_all("user.logged_out", {
+        self.send_packet_to_all("user.log_out", {
             "you": False,
-            "profile": user.get_profile_data_copy(),
+            "profile": profile_data,
         }, skip=user)
 
-        user.log_out()
+        self.send_packet_to_all("profile.list", {
+            "profiles": self.profiles.get_entries_data_copy()
+        })
 
     def get_logged_in_user_count(self):
         return len([user for user in self.get_users_copy() if user.is_logged_in()])

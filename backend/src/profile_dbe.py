@@ -3,8 +3,8 @@ from convenience import *
 
 
 class Profile(DatabaseEntry):
-    def __init__(self, in_database, **kwargs):
-        super().__init__(in_database, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def __repr__(self):
         entry_id = self["entry_id"]
@@ -14,8 +14,8 @@ class Profile(DatabaseEntry):
     @staticmethod
     def get_default_data() -> dict:
         return {
-            "avatar_external": True,
-            "avatar_url": "<avatar_url>",
+            "avatar_external": False,
+            "avatar_url": "default.png",
             "email": "<email>",
             "email_verified": False,
             "first_name": "<first_name>",

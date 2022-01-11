@@ -13,7 +13,11 @@ export default function LogoutButton() {
   return (
     <GoogleLogout
       render={(renderProps) => (
-        <Button variant="outlined" onClick={renderProps.onClick}>
+        <Button
+          sx={{ display: "block" }}
+          variant="outlined"
+          onClick={renderProps.onClick}
+        >
           Log out
         </Button>
       )}

@@ -2,66 +2,73 @@ from convenience import *
 
 
 class DatabaseEntry(ABC):
-    def __init__(self, parent_database, disk_was_missing_keys, **kwargs):
+    def __init__(self, parent_database, **kwargs):
         """
-        Create a DB entry instance of the correct type
+        Create a DB entry instance
         """
 
-        Log.debug("Initializing db entry")
-
-        if not parent_database:
-            raise ValueError("No db given")
-        if "entry_id" not in kwargs:
-            raise ValueError("No entry_id in kwargs")
+        Log.debug(f"Initializing DB entry, type='{type(self).__name__}'")
 
         default_data = self.get_default_data()
 
-        if not default_data:
-            raise ValueError("Entry's default data not set")
+        assert parent_database, "parent_database missing"
+        assert "entry_id" in kwargs, "entry_id missing from kwargs"
+        assert default_data, "Entry has no default data"
+        assert "entry_id" not in default_data, "entry_id key not allowed in " \
+                                               "entry's default data"
 
-        if "entry_id" in default_data:
-            raise ValueError("entry_id can not be in db entry default data")
-
-        entry_type = type(self).__name__
-
-        for key in kwargs.copy():
+        for key, value in kwargs.copy().items():
             if key not in default_data and key != "entry_id":
-                Log.warning(f"Skipping invalid data key, {key=}, {entry_type=}")
+                Log.warning(f"Removed unsupported kwargs key, {key=}")
                 del kwargs[key]
 
-        self._parent_database = parent_database  # the containing db
-        self._entry_type = entry_type
-        self.disk_was_missing_keys = disk_was_missing_keys
+            elif value is None:
+                Log.debug(f"Removed kwargs key as it's value was None, {key=}")
+                del kwargs[key]
+
+        # check if entry kwargs is missing keys, if so, use default value
+        for key in default_data:
+            if key not in kwargs:
+                Log.debug(f"kwargs is missing key, using default value, {key=}")
+
+        self._parent_database = parent_database
 
         default_data.update(kwargs)
         self._data = default_data
 
-        Log.debug(f"Initialized db entry: {self}")
+        Log.debug(f"Initialized DB entry, {self}")
 
     def __getitem__(self, key):
         try:
             return self._data[key]
 
-        except AttributeError as ex:
-            Log.error(f"Attempted to get data before initialization", ex=ex)
+        except AttributeError:
+            Log.error(f"Attempted to get data before entry's data is set")
+            raise
 
-        except KeyError as ex:
-            Log.error(f"Invalid data key, {key=}", ex=ex)
+        except KeyError:
+            Log.error(f"Unsupported data key, {key=}")
+            raise
 
     def __repr__(self):
-        return f"<DB entry '{type(self).__name__}'>"
+        return f"<DB entry '{type(self).__name__}' #{self['entry_id']}>"
 
     def __setitem__(self, key, value):
-        # todo make sure entry_id is never modified
+        if key == "entry_id":
+            Log.error("Key entry_id can't be modified after entry is created, "
+                      f"{key=}, {value=}")
+            return
 
         try:
             self._data[key] = value
 
-        except AttributeError as ex:
-            Log.error(f"Attempted to set data before initialization", ex=ex)
+        except AttributeError:
+            Log.error(f"Attempted to update data before entry's data is set")
+            raise
 
-        except KeyError as ex:
-            Log.error(f"Invalid data key, {key=}", ex=ex)
+        except KeyError:
+            Log.error(f"Invalid data key, {key=}")
+            raise
 
         self.trigger_db_write()
 
@@ -70,13 +77,13 @@ class DatabaseEntry(ABC):
         Delete this entry from its parent DB
         """
 
-        Log.debug(f"Deleting {self}")
+        Log.debug(f"Deleting entry from DB, {self}")
         self._parent_database.delete_entry(self)
-        Log.debug(f"Deleted {self} from DB {self._parent_database}")
+        Log.debug(f"Deleted entry from DB, {self}")
 
     def get_data_copy(self, filter_values=True) -> Optional[dict]:
         """
-        Get a copy of this entry's data dict (JSON-compatible)
+        Get a copy of this entry's data (JSON-compatible dict)
         """
 
         try:
@@ -110,7 +117,6 @@ class DatabaseEntry(ABC):
                     if self[key] != value:
                         return False
 
-        Log.debug(f"{self} matches kwargs")
         return True
 
     def trigger_db_write(self):

@@ -12,7 +12,7 @@ export default function Toast() {
   }
 
   return (
-    <Snackbar open={toast.open} autoHideDuration={2000} onClose={onClose}>
+    <Snackbar open={toast.open} autoHideDuration={toast.duration} onClose={onClose}>
       <Alert severity={toast.severity} onClose={onClose}>
         {toast.message}
       </Alert>

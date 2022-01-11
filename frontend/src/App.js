@@ -11,20 +11,35 @@ export default function App() {
 
   usePacket("connect", () => {
     console.log("Connected");
-    openToast("Connected");
+    openToast("Connected", "info", 2000);
   });
 
   usePacket("connect_error", (error) => {
-    openToast(`Couldn't connect: ${error.message}`, "error");
+    openToast(`Couldn't connect: ${error.message}`, "error", 2000);
   });
 
   usePacket("disconnect", (reason) => {
     console.warn("Disconnected:", reason);
-    openToast(`Disconnected: ${reason}`, "error");
+    openToast(`Disconnected: ${reason}`, "error", 2000);
   });
 
   usePacket("error", (content) => {
-    openToast(`Error: ${content.error}`, "error");
+    if (content.response_to_name) {
+      openToast(
+        `Error on ${content.response_to_name}: ${content.error}`,
+        "error"
+      );
+    } else {
+      openToast(`Error: ${content.error}`, "error");
+    }
+  });
+
+  usePacket("ok", (content) => {
+    if (content.response_to_name) {
+      openToast(`Success: ${content.response_to_name}`, "success");
+    } else {
+      openToast(`Success`, "success");
+    }
   });
 
   return (

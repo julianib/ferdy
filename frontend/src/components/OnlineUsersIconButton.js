@@ -7,7 +7,7 @@ export default function OnlineUsersIconButton() {
   const { setOnlineProfiles, setLoggedInUserCount, userCount, setUserCount } =
     useOnlineUsers();
 
-  usePackets(["user.connected", "user.disconnected"], (content) => {
+  usePackets(["user.connect", "user.disconnect"], (content) => {
     setOnlineProfiles(content.online_profiles);
     setLoggedInUserCount(content.logged_in_user_count);
     setUserCount(content.user_count);

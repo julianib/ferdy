@@ -13,10 +13,10 @@ export function ToastContextProvider({ children }) {
     setToast({ ...toast, open: false });
   }
 
-  function openToast(message, severity = "info") {
-    // first close to reset autoHideDuration
-    setToast({ ...toast, open: false });
-    setToast({ open: true, message, severity });
+  function openToast(message, severity = "info", duration = 4000) {
+    // first set open to false to reset autoHideDuration
+    setToast({ ...toast, open: false, duration: 0 });
+    setToast({ open: true, message, severity, duration });
   }
 
   return (
