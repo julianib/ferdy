@@ -25,7 +25,7 @@ def handle_packets_loop(ferdy: Ferdy):
         try:
             response_packet = handle_packet(ferdy, user, name, content)
 
-        except PacketHandlingError as ex:
+        except BasePacketError as ex:
             Log.debug(f"Packet handling error caught: {ex.error}")
             response_packet = error_packet(ex.error, name, content)
 
@@ -108,7 +108,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         return True
 
     if name == "profile.data":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "profile.delete":
         user.has_permission("profile.delete", raise_if_not=True)
@@ -214,33 +214,33 @@ def handle_packet(ferdy: Ferdy, user: User,
     # room
 
     if name == "room.data":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "room.join":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "room.leave":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "room.list":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     # song
 
     if name == "song.play":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "song.queue":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "song.rate":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "song.search":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     if name == "song.skip":
-        raise PacketNotImplemented
+        raise BasePacketNotImplemented
 
     # user
 
@@ -322,4 +322,4 @@ def handle_packet(ferdy: Ferdy, user: User,
         return
 
     # if packet name didn't match with any known names, raise error
-    raise PacketNotImplemented
+    raise BasePacketNotImplemented

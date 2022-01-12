@@ -10,26 +10,27 @@ class Ok(Exception):
 
 # packet handling errors
 
-class PacketHandlingError(Exception):
+class BasePacketError(Exception):
     error = "error_not_specified"
 
-class EntryFound(PacketHandlingError):
+
+class EntryFound(BasePacketError):
     error = "entry_found"
 
 
-class EntryMissing(PacketHandlingError):
+class EntryMissing(BasePacketError):
     error = "entry_missing"
 
 
-class InvalidJWT(PacketHandlingError):
+class InvalidJWT(BasePacketError):
     error = "invalid_jwt"
 
 
-class PacketNotImplemented(PacketHandlingError):
+class BasePacketNotImplemented(BasePacketError):
     error = "packet_not_implemented"
 
 
-class ProfileAlreadyOnline(PacketHandlingError):
+class ProfileAlreadyOnline(BasePacketError):
     error = "profile_already_online"
 
 
@@ -38,13 +39,13 @@ class ProfileAlreadyOnline(PacketHandlingError):
 #     error = "profile_not_pending_approval"
 
 
-class UserAlreadyLoggedIn(PacketHandlingError):
+class UserAlreadyLoggedIn(BasePacketError):
     error = "user_already_logged_in"
 
 
-class UserNotLoggedIn(PacketHandlingError):
+class UserNotLoggedIn(BasePacketError):
     error = "user_not_logged_in"
 
 
-class UserUnauthorized(PacketHandlingError):
+class UserUnauthorized(BasePacketError):
     error = "user_unauthorized"

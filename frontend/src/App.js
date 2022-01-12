@@ -3,11 +3,15 @@ import LoginOrLogoutButton from "./components/LoginOrLogoutButton";
 import MainAppBar from "./components/MainAppBar";
 import MainTabMenu from "./components/MainTabMenu";
 import Toast from "./components/Toast";
+import useOnlineUsers from "./hooks/useOnlineUsers";
 import usePacket from "./hooks/usePacket";
+import usePackets from "./hooks/usePackets";
 import useProfile from "./hooks/useProfile";
 import useToast from "./hooks/useToast";
 
 export default function App() {
+  const { setOnlineProfiles, setLoggedInUserCount, setUserCount } =
+    useOnlineUsers();
   const { profile, setProfile } = useProfile();
   const { openToast } = useToast();
 
@@ -47,6 +51,12 @@ export default function App() {
     }
   });
 
+  usePackets(["user.connect", "user.disconnect"], (content) => {
+    setOnlineProfiles(content.online_profiles);
+    setLoggedInUserCount(content.logged_in_user_count);
+    setUserCount(content.user_count);
+  });
+
   return (
     <>
       {profile?.is_approved ? (
@@ -57,7 +67,6 @@ export default function App() {
             <br />
             <LoginOrLogoutButton />
           </Container>
-          <Toast />
         </>
       ) : (
         <>
@@ -65,6 +74,7 @@ export default function App() {
           INSERT LOGO
         </>
       )}
+      <Toast />
     </>
   );
 }
