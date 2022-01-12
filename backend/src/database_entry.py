@@ -11,14 +11,14 @@ class DatabaseEntry(ABC):
 
         default_data = self.get_default_data()
 
-        assert parent_database, "parent_database missing"
-        assert "entry_id" in kwargs, "entry_id missing from kwargs"
+        assert parent_database, "'parent_database' missing"
+        assert "id" in kwargs, "'id' missing from kwargs"
         assert default_data, "Entry has no default data"
-        assert "entry_id" not in default_data, "entry_id key not allowed in " \
-                                               "entry's default data"
+        assert "id" not in default_data, "'id' key not allowed in entry's " \
+                                         "default data"
 
         for key, value in kwargs.copy().items():
-            if key not in default_data and key != "entry_id":
+            if key not in default_data and key != "id":
                 Log.warning(f"Removed unsupported kwargs key, {key=}")
                 del kwargs[key]
 
@@ -52,13 +52,14 @@ class DatabaseEntry(ABC):
             raise
 
     def __repr__(self):
-        return f"<DB entry '{type(self).__name__}' #{self['entry_id']}>"
+        return f"<DB entry '{type(self).__name__}' #{self['id']}>"
 
     def __setitem__(self, key, value):
-        if key == "entry_id":
-            Log.error("Key entry_id can't be modified after entry is created, "
-                      f"{key=}, {value=}")
-            return
+        assert key != "id", \
+            "key 'id' can't be modified after entry is created"
+
+        if not isinstance(value, type(self.get_default_data()[key])):
+            raise ValueError("Invalid value type, must be same as default type")
 
         try:
             self._data[key] = value

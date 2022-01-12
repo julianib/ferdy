@@ -35,7 +35,7 @@ class User:
         role_ids = self.get_profile()["role_ids"]
 
         for role_id in role_ids:
-            role = self.ferdy.roles.find_single(entry_id=role_id)
+            role = self.ferdy.roles.find_single(id=role_id)
             if "administrator" in role["permissions"] \
                     or permission in role["permissions"]:
                 return True

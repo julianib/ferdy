@@ -26,7 +26,7 @@ export default function ProfilesPending() {
   function onClickApproval(approved) {
     sendPacket("profile.approval", {
       approved,
-      entry_id: selectedProfile.entry_id,
+      id: selectedProfile.id,
     });
   }
 
@@ -35,9 +35,7 @@ export default function ProfilesPending() {
   }
 
   usePacket("profile.list", (content) => {
-    const profiles = content.profiles.filter(
-      (profile) => profile.pending_approval
-    );
+    const profiles = content.data.filter((profile) => profile.pending_approval);
     setProfiles(profiles);
   });
 
@@ -53,9 +51,9 @@ export default function ProfilesPending() {
           {profiles.length ? (
             profiles.map((profile) => (
               <ListItemButton
-                selected={selectedProfile?.entry_id === profile.entry_id}
+                selected={selectedProfile?.id === profile.id}
                 onClick={() => onClickProfile(profile)}
-                key={profile.entry_id}
+                key={profile.id}
               >
                 <ListItemAvatar
                   sx={{

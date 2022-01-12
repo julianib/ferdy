@@ -28,7 +28,7 @@ class Database(ABC):
 
     def _get_next_entry_id(self) -> int:
         old = self._next_entry_id
-        Log.debug(f"Next DB entry id: {old}")
+        Log.debug(f"Next DB entry ID: {old}")
         self._next_entry_id += 1
         return old
 
@@ -58,8 +58,8 @@ class Database(ABC):
             data = json.load(f)
 
             # read, and if newly created db
-            self._next_entry_id = data.get("next_entry_id", 1)
-            entries_data = data.get("entries_data", [])
+            self._next_entry_id = data.get("next_id", 1)
+            entries_data = data.get("data", [])
 
         for entry_data in entries_data:
             self.initialize_new_entry(from_disk=True, **entry_data)
@@ -82,12 +82,12 @@ class Database(ABC):
 
         Log.debug(f"Initializing new entry for DB: {self}")
 
-        if "entry_id" in kwargs:
+        if "id" in kwargs:
             if not from_disk:
-                raise ValueError("entry_id only allowed in kwargs if reading "
+                raise ValueError("'id' is only allowed in kwargs if reading "
                                  "from disk")
         else:
-            kwargs["entry_id"] = self._get_next_entry_id()
+            kwargs["id"] = self._get_next_entry_id()
 
         if "parent_database" in kwargs:
             raise ValueError("parent_database not allowed in kwargs")
@@ -171,12 +171,12 @@ class Database(ABC):
 
     def write_to_disk(self):
         entries_data = self.get_entries_data_copy(
-            filter_values=False, key=lambda entry: entry["entry_id"]
+            filter_values=False, key=lambda entry: entry["id"]
         )
 
         to_dump = {
-            "entries_data": entries_data,
-            "next_entry_id": self._next_entry_id,
+            "data": entries_data,
+            "next_id": self._next_entry_id,
         }
 
         with open(self._file_path, "w") as f:

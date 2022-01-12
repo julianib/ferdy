@@ -6,15 +6,18 @@ import usePackets from "./hooks/usePackets";
 import useProfile from "./hooks/useProfile";
 import useToast from "./hooks/useToast";
 import Accies from "./routes/Accies";
+import Chat from "./routes/Chat";
 import Home from "./routes/Home";
 import Polls from "./routes/Polls";
-import PollsAdd from "./routes/PollsAdd";
 import PollsAll from "./routes/PollsAll";
+import PollsCreate from "./routes/PollsCreate";
 import Profiles from "./routes/Profiles";
 import ProfilesAll from "./routes/ProfilesAll";
 import ProfilesPending from "./routes/ProfilesPending";
 import ProfilesRoles from "./routes/ProfilesRoles";
 import Root from "./routes/Root";
+import Settings from "./routes/Settings";
+import Smoelenboek from "./routes/Smoelenboek";
 import Wildcard from "./routes/Wildcard";
 
 export default function App() {
@@ -71,23 +74,20 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Root />}>
             <Route index element={<Home />} />
-
             <Route path="accies" element={<Accies />} />
-
+            <Route path="chat" element={<Chat />} />
             <Route path="polls" element={<Polls />}>
               <Route index element={<PollsAll />} />
-              <Route path="add" element={<PollsAdd />} />
+              <Route path="create" element={<PollsCreate />} />
             </Route>
-
             <Route path="profiles" element={<Profiles />}>
               <Route index element={<ProfilesAll />} />
-
               <Route path="pending" element={<ProfilesPending />} />
-
               <Route path="roles" element={<ProfilesRoles />} />
             </Route>
+            <Route path="settings" element={<Settings />} />
+            <Route path="smoelenboek" element={<Smoelenboek />} />
           </Route>
-
           <Route path="*" element={<Wildcard />} />
         </Routes>
       ) : (

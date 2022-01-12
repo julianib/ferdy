@@ -82,16 +82,40 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     if name == "permission.list":
         return "permission.list", {
-            "permissions": ferdy.roles.get_permissions()
+            "data": ferdy.get_permissions()
+        }
+
+    # poll
+
+    if name == "poll.create":
+        user.has_permission("polls.create", raise_if_not=True)
+        allow_multiple_choices = content["allow_multiple_choices"]
+        body = content["body"]
+        title = content["title"]
+
+        ferdy.polls.create(
+            allow_multiple_choices=allow_multiple_choices,
+            body=body,
+            title=title,
+        )
+
+        ferdy.broadcast("poll.list", {
+            "data": ferdy.polls.get_entries_data_copy()
+        })
+
+        return True
+
+    if name == "poll.list":
+        return "poll.list", {
+            "data": ferdy.polls.get_entries_data_copy()
         }
 
     # profile
 
     if name == "profile.approval":
         user.has_permission("profile.approval", raise_if_not=True)
-        entry_id = content["entry_id"]
-        profile = ferdy.profiles.find_single(entry_id=entry_id,
-                                             raise_missing=True)
+        profile_id = content["id"]
+        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
 
         # todo add special permission for force setting approval status
         # if not profile["pending_approval"]:
@@ -102,7 +126,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         profile["pending_approval"] = False
 
         ferdy.broadcast("profile.list", {
-            "profiles": ferdy.profiles.get_entries_data_copy()
+            "data": ferdy.profiles.get_entries_data_copy()
         })
 
         return True
@@ -112,9 +136,8 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     if name == "profile.delete":
         user.has_permission("profile.delete", raise_if_not=True)
-        entry_id = content["entry_id"]
-        profile: Profile = ferdy.profiles.find_single(entry_id=entry_id,
-                                                      raise_missing=True)
+        profile_id = content["id"]
+        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
 
         # log out user that is logged in using the specified profile
         if profile["is_online"]:
@@ -123,30 +146,27 @@ def handle_packet(ferdy: Ferdy, user: User,
                 if not online_profile:
                     continue
 
-                if online_profile["entry_id"] == profile["entry_id"]:
+                if online_profile["id"] == profile["id"]:
                     ferdy.handle_log_out(online_user, broadcast=False)
 
         profile.delete()
 
         ferdy.broadcast("profile.list", {
-            "profiles": ferdy.profiles.get_entries_data_copy()
+            "data": ferdy.profiles.get_entries_data_copy()
         })
 
         return True
 
     if name == "profile.list":
-        profiles = ferdy.profiles.get_entries_data_copy()
-
         return "profile.list", {
-            "profiles": profiles,
+            "data": ferdy.profiles.get_entries_data_copy(),
         }
 
     if name == "profile.update":  # todo make db entry method for updating
         user.has_permission("profile.update", raise_if_not=True)
         updated_data = content["updated_data"]
-        entry_id = content["entry_id"]
-        profile = ferdy.profiles.find_single(entry_id=entry_id,
-                                             raise_missing=True)
+        profile_id = content["id"]
+        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
 
         for key, value in updated_data.items():
             # only update date if necessary
@@ -156,7 +176,7 @@ def handle_packet(ferdy: Ferdy, user: User,
                 profile[key] = value
 
         ferdy.broadcast("profile.list", {
-            "profiles": ferdy.profiles.get_entries_data_copy()
+            "data": ferdy.profiles.get_entries_data_copy()
         })
 
         return True
@@ -168,7 +188,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         ferdy.roles.create()
 
         ferdy.broadcast("role.list", {
-            "roles": ferdy.roles.get_entries_data_copy()
+            "data": ferdy.roles.get_entries_data_copy()
         })
 
         return True
@@ -177,28 +197,26 @@ def handle_packet(ferdy: Ferdy, user: User,
     # todo remove role from all users before deleting
     if name == "role.delete":
         user.has_permission("role.delete", raise_if_not=True)
-        entry_id = content["entry_id"]
-        role = ferdy.roles.find_single(entry_id=entry_id, raise_missing=True)
+        role_id = content["id"]
+        role = ferdy.roles.find_single(id=role_id, raise_missing=True)
         role.delete()
 
         ferdy.broadcast("role.list", {
-            "roles": ferdy.roles.get_entries_data_copy()
+            "data": ferdy.roles.get_entries_data_copy()
         })
 
         return True
 
     if name == "role.list":
-        roles = ferdy.roles.get_entries_data_copy()
-
         return "role.list", {
-            "roles": roles
+            "data": ferdy.roles.get_entries_data_copy()
         }
 
     if name == "role.update":
         user.has_permission("role.update", raise_if_not=True)
-        entry_id = content["entry_id"]
+        role_id = content["id"]
         updated_data = content["updated_data"]
-        role = ferdy.roles.find_single(entry_id=entry_id, raise_missing=True)
+        role = ferdy.roles.find_single(id=role_id, raise_missing=True)
 
         for key, value in updated_data.items():
             if role[key] == value:
@@ -207,7 +225,7 @@ def handle_packet(ferdy: Ferdy, user: User,
                 role[key] = value
 
         ferdy.broadcast("role.list", {
-            "roles": ferdy.roles.get_entries_data_copy()
+            "data": ferdy.roles.get_entries_data_copy()
         })
 
         return True
@@ -261,7 +279,7 @@ def handle_packet(ferdy: Ferdy, user: User,
                 Log.debug("Creating fake profile")
                 # profile creation makes sure google_id is not taken
                 profile = ferdy.profiles.create(google_id=google_id)
-                profile["name"] = f"New profile #{profile['entry_id']}"
+                profile["name"] = f"New profile #{profile['id']}"
             
         else:
             jwt = content["jwt"]

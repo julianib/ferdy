@@ -7,9 +7,8 @@ class Profile(DatabaseEntry):
         super().__init__(**kwargs)
 
     def __repr__(self):
-        entry_id = self["entry_id"]
         name = self["name"]
-        return f"<Profile #{entry_id}, {name=}>"
+        return f"<Profile #{self['id']}, {name=}>"
 
     @staticmethod
     def get_default_data() -> dict:

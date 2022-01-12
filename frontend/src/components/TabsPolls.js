@@ -23,9 +23,9 @@ export default function TabsPolls() {
         component={Link}
       />
       <Tab
-        label="Add"
-        value="/add"
-        to="/polls/add"
+        label="Create"
+        value="/create"
+        to="/polls/create"
         icon={<AddIcon />}
         onFocus={onCustomTabFocus}
         component={Link}

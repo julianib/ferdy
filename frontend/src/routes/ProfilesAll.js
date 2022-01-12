@@ -33,7 +33,7 @@ export default function ProfileList() {
 
   function onClickApproval(approved) {
     const originalProfile = profiles.find(
-      (profile) => profile.entry_id === selectedProfile.entry_id
+      (profile) => profile.id === selectedProfile.id
     );
 
     if (originalProfile === undefined) {
@@ -43,13 +43,13 @@ export default function ProfileList() {
 
     sendPacket("profile.approval", {
       approved,
-      entry_id: selectedProfile.entry_id,
+      id: selectedProfile.id,
     });
   }
 
   function onClickDeleteProfile() {
     const originalProfile = profiles.find(
-      (profile) => profile.entry_id === selectedProfile.entry_id
+      (profile) => profile.id === selectedProfile.id
     );
 
     if (originalProfile === undefined) {
@@ -58,7 +58,7 @@ export default function ProfileList() {
     }
 
     sendPacket("profile.delete", {
-      entry_id: selectedProfile.entry_id,
+      id: selectedProfile.id,
     });
   }
 
@@ -68,10 +68,10 @@ export default function ProfileList() {
   }
 
   function onClickRole(role) {
-    if (selectedProfile.role_ids.includes(role.entry_id)) {
+    if (selectedProfile.role_ids.includes(role.id)) {
       // remove role from profile
       let role_ids = selectedProfile.role_ids;
-      role_ids = role_ids.filter((role_id) => role_id !== role.entry_id);
+      role_ids = role_ids.filter((role_id) => role_id !== role.id);
 
       setSelectedProfile({
         ...selectedProfile,
@@ -80,7 +80,7 @@ export default function ProfileList() {
     } else {
       // add role to profile
       let role_ids = selectedProfile.role_ids;
-      role_ids = [...role_ids, role.entry_id];
+      role_ids = [...role_ids, role.id];
 
       setSelectedProfile({
         ...selectedProfile,
@@ -93,7 +93,7 @@ export default function ProfileList() {
 
   function onClickSaveChanges() {
     const originalProfile = profiles.find(
-      (profile) => profile.entry_id === selectedProfile.entry_id
+      (profile) => profile.id === selectedProfile.id
     );
 
     if (originalProfile === undefined) {
@@ -111,7 +111,7 @@ export default function ProfileList() {
     }
 
     sendPacket("profile.update", {
-      entry_id: originalProfile.entry_id,
+      id: originalProfile.id,
       updated_data: updatedProfile,
     });
 
@@ -119,11 +119,11 @@ export default function ProfileList() {
   }
 
   usePacket("profile.list", (content) => {
-    setProfiles(content.profiles);
+    setProfiles(content.data);
   });
 
   usePacket("role.list", (content) => {
-    setRoles(content.roles);
+    setRoles(content.data);
   });
 
   useEffect(() => {
@@ -140,9 +140,9 @@ export default function ProfileList() {
           {profiles.map((profile) => {
             return (
               <ListItemButton
-                selected={selectedProfile?.entry_id === profile.entry_id}
+                selected={selectedProfile?.id === profile.id}
                 onClick={() => onClickProfile(profile)}
-                key={profile.entry_id}
+                key={profile.id}
               >
                 <ListItemAvatar
                   sx={{
@@ -195,9 +195,7 @@ export default function ProfileList() {
 
             <Box sx={{ mt: 1 }}>
               {roles
-                ?.filter((role) =>
-                  selectedProfile.role_ids.includes(role.entry_id)
-                )
+                ?.filter((role) => selectedProfile.role_ids.includes(role.id))
                 .map((role) => (
                   <Chip
                     sx={{
@@ -207,7 +205,7 @@ export default function ProfileList() {
                     variant="outlined"
                     size="small"
                     label={role.name}
-                    key={role.entry_id}
+                    key={role.id}
                   />
                 ))}
             </Box>
@@ -291,7 +289,7 @@ export default function ProfileList() {
                 <ListItemButton
                   sx={{ color: role.color_hex }}
                   onClick={() => onClickRole(role)}
-                  key={role.entry_id}
+                  key={role.id}
                 >
                   <Checkbox
                     sx={{
@@ -300,7 +298,7 @@ export default function ProfileList() {
                         color: role.color_hex,
                       },
                     }}
-                    checked={selectedProfile.role_ids.includes(role.entry_id)}
+                    checked={selectedProfile.role_ids.includes(role.id)}
                   />
                   <ListItemText>{role.name}</ListItemText>
                 </ListItemButton>

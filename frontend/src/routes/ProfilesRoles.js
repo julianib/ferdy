@@ -32,7 +32,7 @@ export default function ProfilesRoles() {
 
   function onClickDeleteRole() {
     sendPacket("role.delete", {
-      entry_id: selectedRole.entry_id,
+      id: selectedRole.id,
     });
   }
 
@@ -75,9 +75,7 @@ export default function ProfilesRoles() {
   }
 
   function onClickSaveChanges() {
-    const originalRole = roles.find(
-      (role) => role.entry_id === selectedRole.entry_id
-    );
+    const originalRole = roles.find((role) => role.id === selectedRole.id);
 
     const updatedRole = {};
 
@@ -88,7 +86,7 @@ export default function ProfilesRoles() {
     }
 
     sendPacket("role.update", {
-      entry_id: originalRole.entry_id,
+      id: originalRole.id,
       updated_data: updatedRole,
     });
 
@@ -96,11 +94,11 @@ export default function ProfilesRoles() {
   }
 
   usePacket("permission.list", (content) => {
-    setPermissions(content.permissions);
+    setPermissions(content.data);
   });
 
   usePacket("role.list", (content) => {
-    setRoles(content.roles);
+    setRoles(content.data);
   });
 
   useEffect(() => {
@@ -125,9 +123,9 @@ export default function ProfilesRoles() {
           {roles.map((role) => (
             <ListItemButton
               sx={{ color: role.color_hex }}
-              selected={selectedRole?.entry_id === role.entry_id}
+              selected={selectedRole?.id === role.id}
               onClick={() => onClickRole(role)}
-              key={role.entry_id}
+              key={role.id}
             >
               <ListItemText>{role.name}</ListItemText>
             </ListItemButton>

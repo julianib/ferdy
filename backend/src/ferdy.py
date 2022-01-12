@@ -1,4 +1,5 @@
 from convenience import *
+from polls_db import Polls
 from profile_dbe import Profile
 from user import User
 from profiles_db import Profiles
@@ -14,6 +15,7 @@ class Ferdy:
         self._last_packet_id = 0
         self._users = []
 
+        self.polls = Polls()
         self.profiles = Profiles()
         self.roles = Roles()
 
@@ -141,6 +143,20 @@ class Ferdy:
     def get_next_packet_id(self) -> int:
         self._last_packet_id += 1
         return self._last_packet_id
+
+    @staticmethod
+    def get_permissions() -> List[str]:
+        return [
+            "administrator",
+            "poll.create",
+            "poll.delete",
+            "profile.approval",
+            "profile.delete",
+            "profile.update",
+            "role.create",
+            "role.delete",
+            "role.update",
+        ]
 
     def get_user_by_sid(self, sid) -> User:
         for user in self.get_users_copy():

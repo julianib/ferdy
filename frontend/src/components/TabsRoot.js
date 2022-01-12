@@ -1,6 +1,9 @@
+import ChatIcon from "@mui/icons-material/Chat";
+import FaceIcon from "@mui/icons-material/Face";
 import HomeIcon from "@mui/icons-material/Home";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import PeopleIcon from "@mui/icons-material/People";
+import SettingsIcon from "@mui/icons-material/Settings";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import { Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -34,6 +37,14 @@ export default function TabsRoot() {
         component={Link}
       />
       <Tab
+        label="Chat"
+        value="/chat"
+        to="/chat"
+        icon={<ChatIcon />}
+        onFocus={onCustomTabFocus}
+        component={Link}
+      />
+      <Tab
         label="Polls"
         value="/polls"
         to="/polls"
@@ -46,6 +57,22 @@ export default function TabsRoot() {
         value="/profiles"
         to="/profiles"
         icon={<PeopleIcon />}
+        onFocus={onCustomTabFocus}
+        component={Link}
+      />
+      <Tab
+        label="Settings"
+        value="/settings"
+        to="/settings"
+        icon={<SettingsIcon />}
+        onFocus={onCustomTabFocus}
+        component={Link}
+      />
+      <Tab
+        label="Smoelenboek"
+        value="/smoelenboek"
+        to="/smoelenboek"
+        icon={<FaceIcon />}
         onFocus={onCustomTabFocus}
         component={Link}
       />

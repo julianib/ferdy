@@ -15,16 +15,9 @@ export default function Wildcard() {
       alignItems="center"
       minHeight="100vh"
     >
-      <Box>
-        <Button
-          variant="outlined"
-          size="large"
-          display="block"
-          onClick={onClick}
-        >
-          404!
-        </Button>
-      </Box>
+      <Button variant="outlined" size="large" display="block" onClick={onClick}>
+        404!
+      </Button>
     </Box>
   );
 }
