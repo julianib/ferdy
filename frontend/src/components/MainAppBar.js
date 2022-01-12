@@ -2,12 +2,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import {
   AppBar,
-  Box, Container, IconButton,
+  Box,
+  Container,
+  IconButton,
   Toolbar,
-  Typography
+  Typography,
 } from "@mui/material";
+import GitHubIconButton from "./GitHubIconButton";
 import OnlineUsersIconButton from "./OnlineUsersIconButton";
 import ProfileIconButton from "./ProfileIconButton";
+import TrelloIconButton from "./TrelloIconButton";
 
 export default function MainAppBar() {
   return (
@@ -39,6 +43,8 @@ export default function MainAppBar() {
 
           <Box>
             <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+              <GitHubIconButton />
+              <TrelloIconButton />
               <OnlineUsersIconButton />
               <ProfileIconButton />
             </Box>

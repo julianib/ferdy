@@ -1,0 +1,14 @@
+import GitHubIcon from "@mui/icons-material/GitHub";
+import { IconButton } from "@mui/material";
+
+export default function GitHubIconButton() {
+  return (
+    <IconButton
+      size="large"
+      color="inherit"
+      onClick={() => window.open("https://github.com/julianib/ferdy")}
+    >
+      <GitHubIcon />
+    </IconButton>
+  );
+}
