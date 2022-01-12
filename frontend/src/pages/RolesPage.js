@@ -3,14 +3,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Button,
-  ButtonGroup,
   Checkbox,
   Grid,
   List,
   ListItemButton,
   ListItemText,
   Paper,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import usePacket from "../hooks/usePacket";
@@ -121,6 +120,7 @@ export default function RolesPage() {
         >
           Create
         </Button>
+
         <List dense>
           {roles.map((role) => (
             <ListItemButton
@@ -164,7 +164,6 @@ export default function RolesPage() {
 
             <Box sx={{ mt: 2 }}>
               <Button
-                sx={{ mr: 1 }}
                 startIcon={<DeleteIcon />}
                 variant="contained"
                 color="error"
@@ -172,11 +171,6 @@ export default function RolesPage() {
               >
                 Delete
               </Button>
-
-              <ButtonGroup variant="outlined">
-                <Button>test</Button>
-                <Button>test</Button>
-              </ButtonGroup>
             </Box>
           </Paper>
         )}

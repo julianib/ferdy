@@ -10,6 +10,7 @@ class Roles(Database):
     @staticmethod
     def get_permissions() -> List[str]:
         return [
+            "profile.approval",
             "profile.delete",
             "profile.update",
             "role.create",

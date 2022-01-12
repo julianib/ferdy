@@ -86,6 +86,26 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     # profile
 
+    if name == "profile.approval":
+        user.has_permission("profile.approval", raise_if_not=True)
+        entry_id = content["entry_id"]
+        profile = ferdy.profiles.find_single(entry_id=entry_id,
+                                             raise_missing=True)
+
+        # todo add special permission for force setting approval status
+        # if not profile["pending_approval"]:
+        #     raise ProfileNotPendingApproval
+
+        approved = content["approved"]
+        profile["is_approved"] = approved
+        profile["pending_approval"] = False
+
+        ferdy.send_packet_to_all("profile.list", {
+            "profiles": ferdy.profiles.get_entries_data_copy()
+        })
+
+        return True
+
     if name == "profile.data":
         raise PacketNotImplemented
 

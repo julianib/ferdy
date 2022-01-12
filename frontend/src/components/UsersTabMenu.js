@@ -3,7 +3,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import { Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import PendingUsersPage from "../pages/PendingUsersPage";
+import PendingProfilesPage from "../pages/PendingProfilesPage";
 import ProfileListPage from "../pages/ProfileListPage";
 import RolesPage from "../pages/RolesPage";
 import CustomTabPanel from "./CustomTabPanel";
@@ -32,7 +32,7 @@ export default function UsersTabMenu() {
         <ProfileListPage />
       </CustomTabPanel>
       <CustomTabPanel current={selectedUsersTab} index={1}>
-        <PendingUsersPage />
+        <PendingProfilesPage />
       </CustomTabPanel>
       <CustomTabPanel current={selectedUsersTab} index={2}>
         <RolesPage />

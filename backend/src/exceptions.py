@@ -33,6 +33,11 @@ class ProfileAlreadyOnline(PacketHandlingError):
     error = "profile_already_online"
 
 
+# unused
+# class ProfileNotPendingApproval(PacketHandlingError):
+#     error = "profile_not_pending_approval"
+
+
 class UserAlreadyLoggedIn(PacketHandlingError):
     error = "user_already_logged_in"
 

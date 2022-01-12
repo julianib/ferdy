@@ -8,8 +8,7 @@ import useProfile from "./hooks/useProfile";
 import useToast from "./hooks/useToast";
 
 export default function App() {
-  const { setProfile } = useProfile();
-
+  const { profile, setProfile } = useProfile();
   const { openToast } = useToast();
 
   usePacket("connect", () => {
@@ -50,13 +49,22 @@ export default function App() {
 
   return (
     <>
-      <MainAppBar />
-      <Container>
-        <MainTabMenu />
-        <br />
-        <LoginOrLogoutButton />
-      </Container>
-      <Toast />
+      {profile?.is_approved ? (
+        <>
+          <MainAppBar />
+          <Container sx={{ mb: 20 }}>
+            <MainTabMenu />
+            <br />
+            <LoginOrLogoutButton />
+          </Container>
+          <Toast />
+        </>
+      ) : (
+        <>
+          <LoginOrLogoutButton />
+          INSERT LOGO
+        </>
+      )}
     </>
   );
 }

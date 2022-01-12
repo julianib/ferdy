@@ -20,6 +20,7 @@ class Profile(DatabaseEntry):
             "email_verified": False,
             "first_name": "<first_name>",
             "google_id": "<google_id>",  # str because too big for JS number
+            "is_approved": False,
             "is_online": False,
             "last_name": "<last_name>",
             "last_seen_unix": 0,
@@ -27,6 +28,7 @@ class Profile(DatabaseEntry):
             "locale": "<locale>",
             "log_in_count": 0,
             "name": "<name>",
+            "pending_approval": True,
             "role_ids": [],
         }
 

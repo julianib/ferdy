@@ -1,8 +1,11 @@
+import ClearIcon from "@mui/icons-material/Clear";
+import DoneIcon from "@mui/icons-material/Done";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Checkbox,
   Chip,
   Grid,
@@ -11,7 +14,7 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import usePacket from "../hooks/usePacket";
@@ -25,8 +28,14 @@ export default function ProfileListPage() {
   const [roles, setRoles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-
   const { openToast } = useToast();
+
+  function onClickApproval(approved) {
+    sendPacket("profile.approval", {
+      approved,
+      entry_id: selectedProfile.entry_id,
+    });
+  }
 
   function onClickProfile(profile) {
     setSelectedProfile(profile);
@@ -91,6 +100,8 @@ export default function ProfileListPage() {
   }
 
   usePacket("profile.list", (content) => {
+    // todo ux: update info of selected profile (or clear selection if deleted)
+
     setProfiles(content.profiles);
   });
 
@@ -181,15 +192,45 @@ export default function ProfileListPage() {
                 ))}
             </Box>
 
-            <Typography sx={{ mt: 2 }} variant="body2">
+            <Typography sx={{ mt: 1 }} variant="body2">
+              Approved:
+              {selectedProfile.is_approved ? (
+                <DoneIcon size="small" />
+              ) : (
+                <ClearIcon size="small" />
+              )}
+              <br />
               Email: {selectedProfile.email}
               <br />
               Google ID: {selectedProfile.google_id}
             </Typography>
 
             <Box sx={{ mt: 2 }}>
+              <ButtonGroup
+                sx={{ display: "block" }}
+                variant="contained"
+                component={Box}
+              >
+                <Button
+                  disabled={selectedProfile.is_approved}
+                  color="success"
+                  startIcon={<DoneIcon />}
+                  onClick={() => onClickApproval(true)}
+                >
+                  Approve
+                </Button>
+                <Button
+                  disabled={!selectedProfile.is_approved}
+                  color="error"
+                  startIcon={<ClearIcon />}
+                  onClick={() => onClickApproval(false)}
+                >
+                  Refuse
+                </Button>
+              </ButtonGroup>
+
               <Button
-                sx={{ mr: 1 }}
+                sx={{ mt: 1 }}
                 startIcon={<DeleteIcon />}
                 variant="contained"
                 color="error"

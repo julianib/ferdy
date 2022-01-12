@@ -27,9 +27,10 @@ class DatabaseEntry(ABC):
                 del kwargs[key]
 
         # check if entry kwargs is missing keys, if so, use default value
-        for key in default_data:
+        for key, value in default_data.items():
             if key not in kwargs:
-                Log.debug(f"kwargs is missing key, using default value, {key=}")
+                Log.debug("kwargs is missing key, using default, "
+                          f"{key=}, {value=}")
 
         self._parent_database = parent_database
 

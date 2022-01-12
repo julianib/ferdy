@@ -8,6 +8,7 @@ class Profiles(Database):
         super().__init__(Profile, "profiles.json")
 
         # on db creation, make sure all profiles are set to offline
+        Log.debug("Making sure all profiles are set as offline")
         for profile in self.find_many(is_online=True):
             profile["is_online"] = False
 
