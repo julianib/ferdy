@@ -19,7 +19,7 @@ import { BACKEND } from "../utils/backend";
 import timeAgo from "../utils/convertUnix";
 import sendPacket from "../utils/sendPacket";
 
-export default function PendingProfilesPage() {
+export default function ProfilesPending() {
   const [profiles, setProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
@@ -94,7 +94,7 @@ export default function PendingProfilesPage() {
           )}
         </List>
       </Grid>
-      
+
       <Grid item xs={8}>
         {selectedProfile && (
           <Paper sx={{ p: 1 }} variant="outlined">

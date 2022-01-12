@@ -2,7 +2,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Avatar,
   Box,
@@ -25,9 +24,8 @@ import { BACKEND } from "../utils/backend";
 import timeAgo from "../utils/convertUnix";
 import sendPacket from "../utils/sendPacket";
 
-export default function ProfileListPage() {
+export default function ProfileList() {
   const [profiles, setProfiles] = useState([]);
-  const [cachedProfiles, setCachedProfiles] = useState(null);
   const [roles, setRoles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -67,27 +65,6 @@ export default function ProfileListPage() {
   function onClickProfile(profile) {
     setSelectedProfile(profile);
     setUnsavedChanges(false);
-  }
-
-  function onClickRefresh() {
-    if (!cachedProfiles) return;
-
-    if (selectedProfile) {
-      const cachedSelection = cachedProfiles.find(
-        (profile) => profile.entry_id === selectedProfile.entry_id
-      );
-
-      if (cachedSelection) {
-        setSelectedProfile(cachedSelection);
-      } else {
-        setSelectedProfile(null);
-      }
-
-      setUnsavedChanges(false);
-    }
-
-    setProfiles(cachedProfiles);
-    setCachedProfiles(null);
   }
 
   function onClickRole(role) {
@@ -142,11 +119,7 @@ export default function ProfileListPage() {
   }
 
   usePacket("profile.list", (content) => {
-    if (profiles.length) {
-      setCachedProfiles(content.profiles);
-    } else {
-      setProfiles(content.profiles);
-    }
+    setProfiles(content.profiles);
   });
 
   usePacket("role.list", (content) => {
@@ -159,19 +132,10 @@ export default function ProfileListPage() {
   }, []);
 
   // todo make profile list component for more DRY
+  // todo refresh selected profile after updating
   return (
     <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
-        <Button
-          disabled={!cachedProfiles}
-          startIcon={<RefreshIcon />}
-          variant="outlined"
-          color="info"
-          onClick={onClickRefresh}
-        >
-          Refresh
-        </Button>
-
         <List dense>
           {profiles.map((profile) => {
             return (

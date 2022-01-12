@@ -1,13 +1,21 @@
-import { Container } from "@mui/material";
-import LoginOrLogoutButton from "./components/LoginOrLogoutButton";
-import MainAppBar from "./components/MainAppBar";
-import MainTabMenu from "./components/MainTabMenu";
-import Toast from "./components/Toast";
+import { Typography } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
 import useOnlineUsers from "./hooks/useOnlineUsers";
 import usePacket from "./hooks/usePacket";
 import usePackets from "./hooks/usePackets";
 import useProfile from "./hooks/useProfile";
 import useToast from "./hooks/useToast";
+import Accies from "./routes/Accies";
+import Home from "./routes/Home";
+import Polls from "./routes/Polls";
+import PollsAdd from "./routes/PollsAdd";
+import PollsAll from "./routes/PollsAll";
+import Profiles from "./routes/Profiles";
+import ProfilesAll from "./routes/ProfilesAll";
+import ProfilesPending from "./routes/ProfilesPending";
+import ProfilesRoles from "./routes/ProfilesRoles";
+import Root from "./routes/Root";
+import Wildcard from "./routes/Wildcard";
 
 export default function App() {
   const { setOnlineProfiles, setLoggedInUserCount, setUserCount } =
@@ -59,22 +67,32 @@ export default function App() {
 
   return (
     <>
-      {profile?.is_approved ? (
-        <>
-          <MainAppBar />
-          <Container sx={{ mb: 20 }}>
-            <MainTabMenu />
-            <br />
-            <LoginOrLogoutButton />
-          </Container>
-        </>
+      {true ? (
+        <Routes>
+          <Route path="/" element={<Root />}>
+            <Route index element={<Home />} />
+
+            <Route path="accies" element={<Accies />} />
+
+            <Route path="polls" element={<Polls />}>
+              <Route index element={<PollsAll />} />
+              <Route path="add" element={<PollsAdd />} />
+            </Route>
+
+            <Route path="profiles" element={<Profiles />}>
+              <Route index element={<ProfilesAll />} />
+
+              <Route path="pending" element={<ProfilesPending />} />
+
+              <Route path="roles" element={<ProfilesRoles />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<Wildcard />} />
+        </Routes>
       ) : (
-        <>
-          <LoginOrLogoutButton />
-          INSERT LOGO
-        </>
+        <Typography>Logo {profile?.name}</Typography>
       )}
-      <Toast />
     </>
   );
 }

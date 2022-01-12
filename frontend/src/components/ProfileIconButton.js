@@ -1,3 +1,4 @@
+import NoAccountsIcon from "@mui/icons-material/NoAccounts";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import useProfile from "../hooks/useProfile";
 import { BACKEND } from "../utils/backend";
@@ -19,7 +20,7 @@ export default function ProfileIconButton() {
         </Tooltip>
       ) : (
         <Tooltip title="Not logged in">
-          <Avatar />
+          <NoAccountsIcon />
         </Tooltip>
       )}
     </IconButton>

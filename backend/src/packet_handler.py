@@ -174,6 +174,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         return True
 
     # todo be DRY and move existence check to db
+    # todo remove role from all users before deleting
     if name == "role.delete":
         user.has_permission("role.delete", raise_if_not=True)
         entry_id = content["entry_id"]
