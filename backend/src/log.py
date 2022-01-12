@@ -1,7 +1,7 @@
 from convenience import *
 
 import colorama
-from colorama import Fore, Style
+from colorama import Style
 
 import traceback
 
@@ -22,7 +22,8 @@ def get_level_int_from_str(level_str: str) -> int:
     raise ValueError(f"Unknown log level, {level_str=}")
 
 
-def filter_content(content, abbreviate_keys=True) -> Optional[Union[dict, list]]:
+def filter_content(content, abbreviate_keys=True) \
+        -> Optional[Union[dict, list]]:
     """
     Recursively abbreviate values in packets
     """
@@ -50,11 +51,11 @@ def filter_content(content, abbreviate_keys=True) -> Optional[Union[dict, list]]
                      f"{content_type=}")
 
 
+# TODO test on negative numbers, also in frontend JS version
 def abbreviate(number: int) -> str:
     """
     Return a human-readable string of the given number (supports [0, 1e32]).
     Should usually just be done by the frontend.
-    TODO test on negative numbers, also in frontend JS version
     """
 
     try:
@@ -97,6 +98,7 @@ def abbreviate(number: int) -> str:
     return abbreviated_number
 
 
+# TODO implement sounds
 class Log:
     FILE_WRITING_QUEUE = Queue()
     WRITE_FILE_LOOP_CALLED = False
@@ -140,8 +142,8 @@ class Log:
         cutoff: bool = kwargs.pop("cutoff", True)
 
         # get sound related kwargs
-        skip_sound: bool = kwargs.pop("skip_sound", False)
-        force_sound: bool = kwargs.pop("force_sound", False)
+        # skip_sound: bool = kwargs.pop("skip_sound", False)
+        # force_sound: bool = kwargs.pop("force_sound", False)
 
         # get the current greenlet's name
         greenlet_name: str = get_greenlet_name()
@@ -195,17 +197,17 @@ class Log:
                 (now, level, greenlet_name, raw_message, ex, content))
 
         # play sound if adequate level
-        if SOUND_LEVEL and not skip_sound and \
-                (level[0] >= SOUND_LEVEL or force_sound):
-
-            try:
-                # winsound.MessageBeep(-1)  # TODO implement sounds
-                pass
-            except Exception as ex:
-                Log.error(
-                    "Unhandled exception on playing logging sound",
-                    ex=ex, skip_sound=True
-                )
+        # if SOUND_LEVEL and not skip_sound and \
+        #         (level[0] >= SOUND_LEVEL or force_sound):
+        #
+        #     try:
+        #         # winsound.MessageBeep(-1)
+        #         pass
+        #     except Exception as ex:
+        #         Log.error(
+        #             "Unhandled exception on playing logging sound",
+        #             ex=ex, skip_sound=True
+        #         )
 
     @staticmethod
     def log_writer_loop():

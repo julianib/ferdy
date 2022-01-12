@@ -20,9 +20,6 @@ class Roles(Database):
 
     def create(self) -> Role:
         Log.debug(f"Creating role")
-
         role = self.initialize_new_entry()
-
         role["name"] = f"New role #{role['entry_id']}"
-
         return role

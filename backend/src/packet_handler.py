@@ -70,12 +70,11 @@ def handle_packet(ferdy: Ferdy, user: User,
 
     assert name, "no packet name given"
 
-    # prevent NoneType AttributeErrors
     if content is None:
         content = {}
 
     assert type(content) == dict, \
-        f"invalid content type: {type(content).__name__}"
+        f"invalid 'content' type: {type(content).__name__}"
 
     # permission
 
@@ -100,7 +99,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         profile["is_approved"] = approved
         profile["pending_approval"] = False
 
-        ferdy.send_packet_to_all("profile.list", {
+        ferdy.broadcast("profile.list", {
             "profiles": ferdy.profiles.get_entries_data_copy()
         })
 
@@ -116,7 +115,7 @@ def handle_packet(ferdy: Ferdy, user: User,
                                              raise_missing=True)
         profile.delete()
 
-        ferdy.send_packet_to_all("profile.list", {
+        ferdy.broadcast("profile.list", {
             "profiles": ferdy.profiles.get_entries_data_copy()
         })
 
@@ -143,7 +142,7 @@ def handle_packet(ferdy: Ferdy, user: User,
             else:
                 profile[key] = value
 
-        ferdy.send_packet_to_all("profile.list", {
+        ferdy.broadcast("profile.list", {
             "profiles": ferdy.profiles.get_entries_data_copy()
         })
 
@@ -155,19 +154,20 @@ def handle_packet(ferdy: Ferdy, user: User,
         user.has_permission("role.create", raise_if_not=True)
         ferdy.roles.create()
 
-        ferdy.send_packet_to_all("role.list", {
+        ferdy.broadcast("role.list", {
             "roles": ferdy.roles.get_entries_data_copy()
         })
 
         return True
 
-    if name == "role.delete":  # todo be DRY and move existence check to db
+    # todo be DRY and move existence check to db
+    if name == "role.delete":
         user.has_permission("role.delete", raise_if_not=True)
         entry_id = content["entry_id"]
         role = ferdy.roles.find_single(entry_id=entry_id, raise_missing=True)
         role.delete()
 
-        ferdy.send_packet_to_all("role.list", {
+        ferdy.broadcast("role.list", {
             "roles": ferdy.roles.get_entries_data_copy()
         })
 
@@ -186,13 +186,13 @@ def handle_packet(ferdy: Ferdy, user: User,
         updated_data = content["updated_data"]
         role = ferdy.roles.find_single(entry_id=entry_id, raise_missing=True)
 
-        for key, value in updated_data.items():  # todo NOT DRY
+        for key, value in updated_data.items():
             if role[key] == value:
                 Log.debug(f"Data is the same, not updating, {key=}, {value=}")
             else:
                 role[key] = value
 
-        ferdy.send_packet_to_all("role.list", {
+        ferdy.broadcast("role.list", {
             "roles": ferdy.roles.get_entries_data_copy()
         })
 
@@ -297,12 +297,12 @@ def handle_packet(ferdy: Ferdy, user: User,
         if not user.is_logged_in():
             raise UserNotLoggedIn
 
-        ferdy.send_packet_to_all("user.message", {
-            "author": user.get_profile_data_copy(),
+        ferdy.broadcast("user.message", {
+            "author": user.get_profile().get_data_copy(),
             "text": content["text"],
         })
 
         return
 
-    # packet name didn't match with any known names, so raise error
+    # if packet name didn't match with any known names, raise error
     raise PacketNotImplemented

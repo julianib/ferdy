@@ -102,23 +102,18 @@ class DatabaseEntry(ABC):
 
         return data_copy
 
-    def matches_kwargs(self, match_casing=False, **kwargs) -> bool:
-        if match_casing:
-            for key, value in kwargs.items():
+    def matches_kwargs(self, **kwargs) -> bool:
+        for key, value in kwargs.items():
+            # check if we're dealing with a string
+            if type(self[key]) == type(value) == str:
+                if self[key].lower() != value.lower():
+                    return False
+
+            else:
                 if self[key] != value:
                     return False
 
-        else:
-            for key, value in kwargs.items():
-                # check if we're dealing with a string
-                if type(self[key]) == type(value) == str:
-                    if self[key].lower() != value.lower():
-                        return False
-
-                else:
-                    if self[key] != value:
-                        return False
-
+        Log.debug(f"Entry matched with kwargs: {self}")
         return True
 
     def trigger_db_write(self):

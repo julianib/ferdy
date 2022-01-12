@@ -11,13 +11,13 @@ def send_packets_loop(ferdy):
     Log.debug("Send packets loop ready")
 
     while True:
-        users, name, content, packet_id, skip = \
+        users, name, content, packet_id, skip_users = \
             ferdy.outgoing_packets_queue.get()
         set_greenlet_name(f"PacketSender/#{packet_id}")
         Log.debug(f"Sending packet, {name=}", content=content)
 
         try:
-            sent_to = send_packet(ferdy.sio, users, name, content, skip)
+            sent_to = send_packet(ferdy.sio, users, name, content, skip_users)
 
         except Exception as ex:
             Log.error("Unhandled exception on send_packet", ex=ex)
@@ -26,33 +26,29 @@ def send_packets_loop(ferdy):
         if sent_to:
             Log.debug(f"Sent packet to {len(sent_to)} user(s)")
         else:
-            Log.debug("Did not send packet: no recipients")
+            Log.debug("No recipients for packet, didn't send")
 
 
-def send_packet(sio, users: Union[User, list], name, content, skip) -> list:
+def send_packet(sio, users: Union[User, list], name, content, skip_users) \
+        -> list:
     """
     Send the packet
     """
 
     if type(users) == User:
         users = [users]
-    elif type(users) == list:
-        pass
-    else:
-        users_type = type(users).__name__
-        raise ValueError(f"Invalid 'users' type, {users_type=}")
 
-    if skip:
-        if type(skip) == User:
-            skip = [skip]
-        elif type(skip) == list:
-            pass
-        else:
-            skip_type = type(skip).__name__
-            raise ValueError(f"Invalid 'skip' type, {skip_type=}")
+    assert type(users) == list, f"invalid 'users' type: {type(users).__name__}"
+
+    if skip_users:
+        if type(skip_users) == User:
+            skip_users = [skip_users]
+
+        assert type(skip_users) == list, \
+            f"invalid 'skip_users' type: {type(skip_users).__name__}"
 
         for user in users.copy():
-            if user in skip:
+            if user in skip_users:
                 users.remove(user)
 
     for user in users:

@@ -30,8 +30,9 @@ sio = SocketIO(
     async_mode="eventlet",
     cors_allowed_origins='*',
     logger=LOG_SOCKETIO,  # socketio logger
-    engineio_logger=LOG_ENGINEIO  # engineio logger
+    engineio_logger=LOG_ENGINEIO,  # engineio logger
 )
+
 
 # setup ferdy
 ferdy: Union[Ferdy, None] = None
@@ -74,10 +75,10 @@ def post():
 
 
 @app.errorhandler(404)
-def app_errorhandler(e):
+def app_errorhandler(ex_):
     set_greenlet_name("app/error")
     path = request.path
-    Log.warning(f"Exception on flask app, {path=}", ex=e)
+    Log.warning(f"Exception on flask app, {path=}", ex=ex_)
     return "error", 500
 
 
@@ -88,48 +89,24 @@ def on_connect():
     set_greenlet_name("sio/on_connect")
     sid = request.sid
     address = request.environ["REMOTE_ADDR"]
-    Log.debug(f"Handling connect, {sid=}, {address=}")
-    user = ferdy.handle_connect(sid, address)
-
-    # refuse the connection if user object was not created
-    if not user:
-        Log.error("Refusing connect attempt, failed to create user object")
-        return False
-
-    Log.info(f"User connected: {user}")
+    return ferdy.handle_connect(sid, address)
 
 
 @sio.on("disconnect")
 def on_disconnect():
     set_greenlet_name("sio/on_disconnect")
     sid = request.sid
-    user = ferdy.get_user_by_sid(sid)
-
-    if not user:
-        Log.error(f"Couldn't handle disconnect: could not find user object, "
-                  f"{sid=}")
-        return
-
-    Log.debug(f"Handling disconnect of {user}")
-    ferdy.handle_disconnect(user)
-    Log.info(f"User disconnected: {user}")
+    ferdy.handle_disconnect(sid)
 
 
 @sio.on("message")  # anything that is not connect or disconnect
 def on_packet(name, content):
     set_greenlet_name("sio/on_packet")
     sid = request.sid
-    user = ferdy.get_user_by_sid(sid)
-    if not user:
-        Log.error(f"Couldn't handle packet: sid has no user object, {sid=}")
-        return
+    ferdy.handle_packet(sid, name, content)
 
-    # TODO check max size of name and content
 
-    packet_id = ferdy.get_next_packet_id()
-    Log.info(f"Received packet #{packet_id}, {name=}, {user=}")
-    ferdy.incoming_packets_queue.put((user, name, content, packet_id))
-
+# main function
 
 def main():
     set_greenlet_name("MAIN")

@@ -3,6 +3,8 @@ from database_entry import DatabaseEntry
 
 
 class Database(ABC):
+    # TODO calc and print MB used
+    # TODO compare size in memory with size on disk
     def __init__(self, entry_class, filename: str):
         """
         Abstract class representing a db that can be saved as a json file
@@ -19,8 +21,6 @@ class Database(ABC):
         self._read_from_disk()
 
         Log.debug(f"Initialized DB: {self}")
-        # TODO calc and print MB used
-        # TODO compare size in memory with size on disk
 
     def __repr__(self):
         entries_count = self.get_entries_count()
@@ -70,9 +70,7 @@ class Database(ABC):
         Log.debug(f"DB read from disk: {self}")
 
     def delete_entry(self, entry):
-        if entry not in self._entries:
-            raise ValueError("Entry is not in DB")
-
+        assert entry in self._entries, "entry is not in DB"
         self._entries.remove(entry)
         self.write_to_disk()
 
@@ -122,23 +120,22 @@ class Database(ABC):
         return [entry.get_data_copy(filter_values=filter_values)
                 for entry in self.get_entries_copy()]
 
-    def find_many(self, raise_found=False, raise_missing=False,
-                  match_casing=False, **kwargs) -> List[DatabaseEntry]:
+    # todo optimize: if found and raise_found is True, abort search
+    def find_many(self, raise_found=False, raise_missing=False, **kwargs) \
+            -> List[DatabaseEntry]:
 
-        Log.debug(f"Matching many entries, {raise_found=}, {raise_missing=}, "
-                  f"{match_casing=}, {kwargs=}")
+        Log.debug(f"Finding entries in DB {self}, {raise_found=}, "
+                  f"{raise_missing=}, {kwargs=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")
 
         matches = []
         for entry in self.get_entries_copy():
-            if entry.matches_kwargs(match_casing, **kwargs):
-                # todo optimize: if found and raise_found is True, abort search
-
+            if entry.matches_kwargs(**kwargs):
                 matches.append(entry)
 
-        Log.debug(f"Match(es) found: {len(matches)}")
+        Log.debug(f"Entries found: {len(matches)}")
 
         if matches:
             if raise_found:
@@ -151,19 +148,17 @@ class Database(ABC):
         else:
             return []
 
-    def find_single(self, raise_found=False, raise_missing=False,
-                    match_casing=False, **kwargs) -> DatabaseEntry:
+    def find_single(self, raise_found=False, raise_missing=False, **kwargs) \
+            -> DatabaseEntry:
 
-        Log.debug(f"Matching single entry, {raise_found=}, {raise_missing=}, "
-                  f"{match_casing=}, {kwargs=}")
+        Log.debug(f"Finding entry in DB {self}, {raise_found=}, "
+                  f"{raise_missing=}, {kwargs=}")
 
         if not kwargs:
             raise ValueError("No kwargs given")
 
         for entry in self.get_entries_copy():
-            if entry.matches_kwargs(match_casing, **kwargs):
-                Log.debug("Match found")
-
+            if entry.matches_kwargs(**kwargs):
                 if raise_found:
                     raise EntryFound
 
@@ -172,7 +167,7 @@ class Database(ABC):
         if raise_missing:
             raise EntryMissing
         else:
-            Log.debug("No match found")
+            Log.debug("No entry found")
 
     def write_to_disk(self):
         entries_data = self.get_entries_data_copy(
