@@ -9,17 +9,19 @@ class User:
         self._profile: Optional[Profile] = None
 
     def __repr__(self):
-        name = self.get_name() if self.is_logged_in() else None
+        name = self.get_name()
         sid = self.sid
         return f"<User {sid=}, {name=}>"
 
     def get_name(self) -> str:
-        assert self.is_logged_in(), "user not logged in"
-        return self._profile["name"]
+        # assumes user is logged in
+        if self.is_logged_in():
+            return self._profile["name"]
 
     def get_profile(self) -> Profile:
-        assert self.is_logged_in(), "user not logged in"
-        return self._profile
+        # assumes user is logged in
+        if self.is_logged_in():
+            return self._profile
 
     def has_permission(self, permission: str, raise_if_not: bool) -> bool:
         Log.debug(f"Checking if user has permission: {permission}")
@@ -34,7 +36,8 @@ class User:
 
         for role_id in role_ids:
             role = self.ferdy.roles.find_single(entry_id=role_id)
-            if permission in role["permissions"]:
+            if "administrator" in role["permissions"] \
+                    or permission in role["permissions"]:
                 return True
 
         if raise_if_not:

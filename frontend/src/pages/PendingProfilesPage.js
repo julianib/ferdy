@@ -89,11 +89,12 @@ export default function PendingProfilesPage() {
             ))
           ) : (
             <ListItemButton>
-              <ListItemText primary="No pending profiles" />
+              <ListItemText primary="No profiles pending approval" />
             </ListItemButton>
           )}
         </List>
       </Grid>
+      
       <Grid item xs={8}>
         {selectedProfile && (
           <Paper sx={{ p: 1 }} variant="outlined">

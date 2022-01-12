@@ -1,6 +1,8 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Avatar,
   Box,
@@ -25,14 +27,39 @@ import sendPacket from "../utils/sendPacket";
 
 export default function ProfileListPage() {
   const [profiles, setProfiles] = useState([]);
+  const [cachedProfiles, setCachedProfiles] = useState(null);
   const [roles, setRoles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const { openToast } = useToast();
 
   function onClickApproval(approved) {
+    const originalProfile = profiles.find(
+      (profile) => profile.entry_id === selectedProfile.entry_id
+    );
+
+    if (originalProfile === undefined) {
+      openToast("Profile does not exist anymore", "error");
+      return;
+    }
+
     sendPacket("profile.approval", {
       approved,
+      entry_id: selectedProfile.entry_id,
+    });
+  }
+
+  function onClickDeleteProfile() {
+    const originalProfile = profiles.find(
+      (profile) => profile.entry_id === selectedProfile.entry_id
+    );
+
+    if (originalProfile === undefined) {
+      openToast("Profile does not exist anymore", "error");
+      return;
+    }
+
+    sendPacket("profile.delete", {
       entry_id: selectedProfile.entry_id,
     });
   }
@@ -42,10 +69,25 @@ export default function ProfileListPage() {
     setUnsavedChanges(false);
   }
 
-  function onClickDeleteProfile() {
-    sendPacket("profile.delete", {
-      entry_id: selectedProfile.entry_id,
-    });
+  function onClickRefresh() {
+    if (!cachedProfiles) return;
+
+    if (selectedProfile) {
+      const cachedSelection = cachedProfiles.find(
+        (profile) => profile.entry_id === selectedProfile.entry_id
+      );
+
+      if (cachedSelection) {
+        setSelectedProfile(cachedSelection);
+      } else {
+        setSelectedProfile(null);
+      }
+
+      setUnsavedChanges(false);
+    }
+
+    setProfiles(cachedProfiles);
+    setCachedProfiles(null);
   }
 
   function onClickRole(role) {
@@ -100,9 +142,11 @@ export default function ProfileListPage() {
   }
 
   usePacket("profile.list", (content) => {
-    // todo ux: update info of selected profile (or clear selection if deleted)
-
-    setProfiles(content.profiles);
+    if (profiles.length) {
+      setCachedProfiles(content.profiles);
+    } else {
+      setProfiles(content.profiles);
+    }
   });
 
   usePacket("role.list", (content) => {
@@ -114,9 +158,20 @@ export default function ProfileListPage() {
     sendPacket("role.list");
   }, []);
 
+  // todo make profile list component for more DRY
   return (
     <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
+        <Button
+          disabled={!cachedProfiles}
+          startIcon={<RefreshIcon />}
+          variant="outlined"
+          color="info"
+          onClick={onClickRefresh}
+        >
+          Refresh
+        </Button>
+
         <List dense>
           {profiles.map((profile) => {
             return (
@@ -158,6 +213,7 @@ export default function ProfileListPage() {
           })}
         </List>
       </Grid>
+
       <Grid item xs={5}>
         {selectedProfile && (
           <Paper sx={{ p: 1 }} variant="outlined">
@@ -196,6 +252,8 @@ export default function ProfileListPage() {
               Approved:
               {selectedProfile.is_approved ? (
                 <DoneIcon size="small" />
+              ) : selectedProfile.pending_approval ? (
+                <HourglassBottomIcon />
               ) : (
                 <ClearIcon size="small" />
               )}
@@ -206,13 +264,16 @@ export default function ProfileListPage() {
             </Typography>
 
             <Box sx={{ mt: 2 }}>
-              <ButtonGroup
-                sx={{ display: "block" }}
-                variant="contained"
-                component={Box}
-              >
+              <ButtonGroup sx={{ display: "block" }} variant="outlined">
                 <Button
-                  disabled={selectedProfile.is_approved}
+                  // approve button should be enabled when:
+                  // pending approval is true OR not approved
+                  disabled={
+                    !(
+                      selectedProfile.pending_approval ||
+                      !selectedProfile.is_approved
+                    )
+                  }
                   color="success"
                   startIcon={<DoneIcon />}
                   onClick={() => onClickApproval(true)}
@@ -220,7 +281,12 @@ export default function ProfileListPage() {
                   Approve
                 </Button>
                 <Button
-                  disabled={!selectedProfile.is_approved}
+                  disabled={
+                    !(
+                      selectedProfile.pending_approval ||
+                      selectedProfile.is_approved
+                    )
+                  }
                   color="error"
                   startIcon={<ClearIcon />}
                   onClick={() => onClickApproval(false)}
@@ -242,6 +308,7 @@ export default function ProfileListPage() {
           </Paper>
         )}
       </Grid>
+
       <Grid item xs={3}>
         {selectedProfile && (
           <Paper sx={{ p: 1 }} variant="outlined">

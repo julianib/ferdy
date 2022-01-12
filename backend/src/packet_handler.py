@@ -1,5 +1,6 @@
 from convenience import *
 from ferdy import Ferdy
+from profile_dbe import Profile
 from user import User
 import verify_jwt
 
@@ -25,12 +26,13 @@ def handle_packets_loop(ferdy: Ferdy):
             response_packet = handle_packet(ferdy, user, name, content)
 
         except PacketHandlingError as ex:
-            Log.debug(f"PacketHandlingError caught: {ex.error}")
+            Log.debug(f"Packet handling error caught: {ex.error}")
             response_packet = error_packet(ex.error, name, content)
 
         except Exception as ex:
             Log.error("Unhandled exception on handle_packet", ex=ex)
-            response_packet = error_packet("unhandled_exception", name, content)
+            response_packet = error_packet(
+                "internal_backend_error", name, content)
 
         if response_packet:
             # prevent IndexError
@@ -111,8 +113,19 @@ def handle_packet(ferdy: Ferdy, user: User,
     if name == "profile.delete":
         user.has_permission("profile.delete", raise_if_not=True)
         entry_id = content["entry_id"]
-        profile = ferdy.profiles.find_single(entry_id=entry_id,
-                                             raise_missing=True)
+        profile: Profile = ferdy.profiles.find_single(entry_id=entry_id,
+                                                      raise_missing=True)
+
+        # log out user that is logged in using the specified profile
+        if profile["is_online"]:
+            for online_user in ferdy.get_users_copy():
+                online_profile: Profile = online_user.get_profile()
+                if not online_profile:
+                    continue
+
+                if online_profile["entry_id"] == profile["entry_id"]:
+                    ferdy.handle_log_out(online_user, broadcast=False)
+
         profile.delete()
 
         ferdy.broadcast("profile.list", {
@@ -239,11 +252,15 @@ def handle_packet(ferdy: Ferdy, user: User,
         if fake:
             google_id = content["google_id"]
 
-            Log.debug("Creating fake profile")
+            # lookup the profile matching the google id
+            Log.debug("Checking if profile exists")
+            profile = ferdy.profiles.find_single(google_id=google_id)
 
-            # profile creation makes sure google_id is not taken
-            profile = ferdy.profiles.create(google_id=google_id)
-            profile["name"] = f"New profile #{profile['entry_id']}"
+            if not profile:
+                Log.debug("Creating fake profile")
+                # profile creation makes sure google_id is not taken
+                profile = ferdy.profiles.create(google_id=google_id)
+                profile["name"] = f"New profile #{profile['entry_id']}"
             
         else:
             jwt = content["jwt"]
@@ -289,7 +306,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         if not user.is_logged_in():
             raise UserNotLoggedIn
 
-        ferdy.handle_log_out(user)
+        ferdy.handle_log_out(user, broadcast=True)
 
         return
 

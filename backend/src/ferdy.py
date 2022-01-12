@@ -1,5 +1,5 @@
 from convenience import *
-from database_entry import DatabaseEntry
+from profile_dbe import Profile
 from user import User
 from profiles_db import Profiles
 from roles_db import Roles
@@ -55,7 +55,7 @@ class Ferdy:
 
         return True
 
-    def handle_disconnect(self, sid):
+    def handle_disconnect(self, sid) -> None:
         Log.debug(f"Handling disconnect, {sid=}")
         user = self.get_user_by_sid(sid)
         assert user, "user object not found"
@@ -63,7 +63,7 @@ class Ferdy:
         # for broadcasting who logged out to users
         profile = None
         if user.is_logged_in():
-            profile = self.handle_log_out(user)
+            profile = self.handle_log_out(user, broadcast=False)
 
         self._users.remove(user)
 
@@ -77,7 +77,7 @@ class Ferdy:
         Log.info(f"User disconnected, {user=}, {profile=}")
 
     # TODO provide a session token for the user (for fetch() and session)
-    def handle_log_in(self, user, profile):
+    def handle_log_in(self, user, profile) -> None:
         Log.debug(f"Handling log in, {user=}, {profile=}")
         user.log_in(profile)
 
@@ -97,7 +97,7 @@ class Ferdy:
 
         Log.info(f"User logged in, {user=}, {profile=}")
 
-    def handle_log_out(self, user) -> DatabaseEntry:
+    def handle_log_out(self, user, broadcast) -> Profile:
         Log.debug(f"Handling log out, {user=}")
         profile = user.get_profile()
         user.log_out()
@@ -107,20 +107,21 @@ class Ferdy:
             "profile": profile.get_data_copy(),
         })
 
-        self.broadcast("user.log_out", {
-            "you": False,
-            "profile": profile.get_data_copy(),
-        }, skip_users=user)
+        if broadcast:
+            self.broadcast("user.log_out", {
+                "you": False,
+                "profile": profile.get_data_copy(),
+            }, skip_users=user)
 
-        self.broadcast("profile.list", {
-            "profiles": self.profiles.get_entries_data_copy()
-        })
+            self.broadcast("profile.list", {
+                "profiles": self.profiles.get_entries_data_copy()
+            })
 
         Log.info(f"User logged out, {user=}, {profile=}")
         return profile
 
     # TODO check max size of name and content
-    def handle_packet(self, sid, name, content):
+    def handle_packet(self, sid, name, content) -> None:
         Log.debug(f"Handling incoming packet, {name=}")
         user = self.get_user_by_sid(sid)
         assert user, "user object not found"
@@ -154,10 +155,10 @@ class Ferdy:
     def get_users_copy(self) -> List[User]:
         return self._users.copy()
 
-    def send(self, users, name, content, skip=None):
+    def send(self, users, name, content, skip=None) -> None:
         self.outgoing_packets_queue.put((users, name, content,
                                          self.get_next_packet_id(), skip))
 
-    def broadcast(self, name, content, skip_users=None):
+    def broadcast(self, name, content, skip_users=None) -> None:
         self.outgoing_packets_queue.put((self.get_users_copy(), name, content,
                                          self.get_next_packet_id(), skip_users))
