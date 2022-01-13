@@ -15,7 +15,7 @@ export default function PollsAll() {
   }, []);
 
   return (
-    <Grid container sx={{ mt: 0 }} spacing={2}>
+    <Grid container sx={{ mt: 0 }} spacing={1}>
       {polls.length ? (
         polls.map((poll) => (
           <Grid item xs={4} key={poll.id}>
@@ -29,7 +29,9 @@ export default function PollsAll() {
           </Grid>
         ))
       ) : (
-        <Typography>No polls</Typography>
+        <Grid item xs={12}>
+          <Typography>No polls</Typography>
+        </Grid>
       )}
     </Grid>
   );

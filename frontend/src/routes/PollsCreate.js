@@ -27,7 +27,7 @@ export default function PollsCreate() {
 
   return (
     <Paper sx={{ mt: 1, p: 1 }} variant="outlined">
-      <Typography>New poll</Typography>
+      <Typography>Create poll</Typography>
       <FormGroup sx={{ maxWidth: 300 }}>
         <TextField
           sx={{ mt: 1 }}
