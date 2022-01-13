@@ -55,11 +55,11 @@ class Database(ABC):
             return
 
         with open(self._file_path, "r") as f:
-            data = json.load(f)
+            db = json.load(f)
 
             # read, and if newly created db
-            self._next_entry_id = data.get("next_id", 1)
-            entries_data = data.get("data", [])
+            self._next_entry_id = db.get("next_entry_id", 1)
+            entries_data = db.get("data", [])
 
         for entry_data in entries_data:
             self.initialize_new_entry(from_disk=True, **entry_data)
@@ -176,7 +176,7 @@ class Database(ABC):
 
         to_dump = {
             "data": entries_data,
-            "next_id": self._next_entry_id,
+            "next_entry_id": self._next_entry_id,
         }
 
         with open(self._file_path, "w") as f:

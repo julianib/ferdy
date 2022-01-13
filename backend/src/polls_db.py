@@ -10,5 +10,4 @@ class Polls(Database):
     def create(self, **kwargs) -> Poll:
         Log.debug(f"Creating poll")
         poll = self.initialize_new_entry(**kwargs)
-        poll["title"] = f"New poll #{poll['id']}"
         return poll

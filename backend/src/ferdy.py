@@ -94,7 +94,7 @@ class Ferdy:
         }, skip_users=user)
 
         self.broadcast("profile.list", {
-            "profiles": self.profiles.get_entries_data_copy()
+            "data": self.profiles.get_entries_data_copy()
         })
 
         Log.info(f"User logged in, {user=}, {profile=}")
@@ -116,7 +116,7 @@ class Ferdy:
             }, skip_users=user)
 
             self.broadcast("profile.list", {
-                "profiles": self.profiles.get_entries_data_copy()
+                "data": self.profiles.get_entries_data_copy()
             })
 
         Log.info(f"User logged out, {user=}, {profile=}")

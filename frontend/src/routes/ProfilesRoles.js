@@ -120,16 +120,22 @@ export default function ProfilesRoles() {
         </Button>
 
         <List dense>
-          {roles.map((role) => (
-            <ListItemButton
-              sx={{ color: role.color_hex }}
-              selected={selectedRole?.id === role.id}
-              onClick={() => onClickRole(role)}
-              key={role.id}
-            >
-              <ListItemText>{role.name}</ListItemText>
+          {roles.length ? (
+            roles.map((role) => (
+              <ListItemButton
+                sx={{ color: role.color_hex }}
+                selected={selectedRole?.id === role.id}
+                onClick={() => onClickRole(role)}
+                key={role.id}
+              >
+                <ListItemText>{role.name}</ListItemText>
+              </ListItemButton>
+            ))
+          ) : (
+            <ListItemButton>
+              <ListItemText primary="No roles" />
             </ListItemButton>
-          ))}
+          )}
         </List>
       </Grid>
       <Grid item xs={5}>

@@ -35,8 +35,10 @@ export default function ProfilesPending() {
   }
 
   usePacket("profile.list", (content) => {
-    const profiles = content.data.filter((profile) => profile.pending_approval);
-    setProfiles(profiles);
+    const newProfiles = content.data.filter(
+      (profile) => profile.pending_approval
+    );
+    setProfiles(newProfiles);
   });
 
   useEffect(() => {

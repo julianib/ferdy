@@ -137,8 +137,8 @@ export default function ProfileList() {
     <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
         <List dense>
-          {profiles.map((profile) => {
-            return (
+          {profiles.length ? (
+            profiles.map((profile) => (
               <ListItemButton
                 selected={selectedProfile?.id === profile.id}
                 onClick={() => onClickProfile(profile)}
@@ -173,8 +173,12 @@ export default function ProfileList() {
                   }
                 />
               </ListItemButton>
-            );
-          })}
+            ))
+          ) : (
+            <ListItemButton>
+              <ListItemText primary="No profiles" />
+            </ListItemButton>
+          )}
         </List>
       </Grid>
 

@@ -18,10 +18,12 @@ export default function PollsAll() {
     <Grid container sx={{ mt: 0 }} spacing={2}>
       {polls.length ? (
         polls.map((poll) => (
-          <Grid item xs={3} key={poll.id}>
+          <Grid item xs={4} key={poll.id}>
             <Paper sx={{ p: 1 }} variant="outlined">
               <Typography variant="h5">{poll.title}</Typography>
-              <Typography variant="body2">{poll.body}</Typography>
+              <Typography variant="body2">
+                <pre style={{ fontFamily: "inherit" }}>{poll.body}</pre>
+              </Typography>
               <Button variant="outlined">View</Button>
             </Paper>
           </Grid>
