@@ -89,7 +89,7 @@ def handle_packet(ferdy: Ferdy, user: User,
     # poll
 
     if name == "poll.create":
-        user.has_permission("polls.create", raise_if_not=True)
+        user.has_permission("poll.create", raise_if_not=True)
         allow_multiple_choices = content["allow_multiple_choices"]
         body = content["body"]
         title = content["title"]

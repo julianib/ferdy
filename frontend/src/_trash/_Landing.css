@@ -1,0 +1,17 @@
+body {
+  color: #ff7e00;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#logo {
+  margin: 20px;
+  animation: spin 12s infinite linear;
+}
