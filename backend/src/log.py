@@ -127,7 +127,7 @@ class Log:
     @staticmethod
     def _log(raw_message, level, **kwargs):
         """
-        Internal logging function, don't use this
+        Internal logging function, use Log.info etc for proper logging
         """
 
         # print an exception and traceback

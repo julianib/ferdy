@@ -6,6 +6,7 @@ import verify_jwt
 
 
 # TODO split up different handlers into different files, roles, user, etc.
+# todo new greenlet thread for each individual packet to handle?
 
 
 def handle_packets_loop(ferdy: Ferdy):
@@ -132,7 +133,7 @@ def handle_packet(ferdy: Ferdy, user: User,
         return True
 
     if name == "profile.data":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "profile.delete":
         user.has_permission("profile.delete", raise_if_not=True)
@@ -193,7 +194,6 @@ def handle_packet(ferdy: Ferdy, user: User,
 
         return True
 
-    # todo be DRY and move existence check to db
     # todo remove role from all users before deleting
     if name == "role.delete":
         user.has_permission("role.delete", raise_if_not=True)
@@ -233,33 +233,33 @@ def handle_packet(ferdy: Ferdy, user: User,
     # room
 
     if name == "room.data":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "room.join":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "room.leave":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "room.list":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     # song
 
     if name == "song.play":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "song.queue":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "song.rate":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "song.search":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     if name == "song.skip":
-        raise BasePacketNotImplemented
+        raise PacketNotImplemented
 
     # user
 
@@ -341,4 +341,4 @@ def handle_packet(ferdy: Ferdy, user: User,
         return
 
     # if packet name didn't match with any known names, raise error
-    raise BasePacketNotImplemented
+    raise PacketNotImplemented

@@ -2,12 +2,6 @@
 Custom exceptions
 """
 
-# packet handling ok
-
-class Ok(Exception):
-    pass
-
-
 # packet handling errors
 
 class BasePacketError(Exception):
@@ -26,7 +20,7 @@ class InvalidJWT(BasePacketError):
     error = "invalid_jwt"
 
 
-class BasePacketNotImplemented(BasePacketError):
+class PacketNotImplemented(BasePacketError):
     error = "packet_not_implemented"
 
 

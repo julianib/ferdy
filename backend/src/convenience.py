@@ -1,5 +1,5 @@
 """
-Convenience file for easy importing
+Convenience file for easy importing of common things
 """
 
 # builtin modules
@@ -16,19 +16,20 @@ import time
 from typing import Dict, Iterable, List, Union, Optional
 
 # 3rd party modules
+import google
+
+# eventlet and greenlet-friendly modules
 import eventlet
-# greenlet friendly modules
 from eventlet.green import subprocess
 from eventlet.green.Queue import Queue
-import google
 import greenlet
 
 
-# log.Log uses this function, so define it before importing
+# log.Log uses this function, so define it before importing log.py
 def set_greenlet_name(name: str):  # nopep8
     """
     Set the name of the greenlet that called this function. This is pretty
-    dirty (current_thread.getName does work on greenlets).
+    dirty (current_thread.getName doesn't work on greenlets).
     """
 
     greenlet.getcurrent().__dict__["_greenlet_name"] = name
@@ -57,7 +58,7 @@ try:
     from secret_keys import *
     SECRET_KEYS_IMPORTED = True
 except ImportError:
-    Log.warning("Could not import scary_secrets.py")
+    Log.warning("Could not import secret keys")
     SECRET_KEYS_IMPORTED = False
 
 

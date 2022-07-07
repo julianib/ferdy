@@ -1,5 +1,6 @@
 import eventlet
 eventlet.monkey_patch()  # nopep8
+# eventlet.monkey_patch() fixes greenlet threading issues
 
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
@@ -151,10 +152,10 @@ def main():
     else:
         Log.warning("Running with HTTPS disabled")
 
-    if FLASK_DEBUG:
+    if FLASK_DEBUG_MODE:
         Log.warning("Running Flask in DEBUG MODE (insecure)")
 
-    Log.info(f"Starting, {PORT=}, {https_enabled=}, {FLASK_DEBUG=}")
+    Log.info(f"Starting, {PORT=}, {https_enabled=}, {FLASK_DEBUG_MODE=}")
 
     # suitable for deployment, see:
     # https://flask-socketio.readthedocs.io/en/latest/deployment.html
@@ -164,7 +165,7 @@ def main():
         port=PORT,
         certfile=CERTFILE if https_enabled else None,
         keyfile=KEYFILE if https_enabled else None,
-        debug=FLASK_DEBUG,
+        debug=FLASK_DEBUG_MODE,
         log_output=LOG_CONNECTIONS,
     )
 

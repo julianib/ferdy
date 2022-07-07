@@ -14,14 +14,16 @@ class User:
         return f"<User {sid=}, {name=}>"
 
     def get_name(self) -> str:
-        # assumes user is logged in
         if self.is_logged_in():
             return self._profile["name"]
 
+        raise UserNotLoggedIn
+
     def get_profile(self) -> Profile:
-        # assumes user is logged in
         if self.is_logged_in():
             return self._profile
+
+        raise UserNotLoggedIn
 
     def has_permission(self, permission: str, raise_if_not: bool) -> bool:
         Log.debug(f"Checking if user has permission: {permission}")
@@ -53,13 +55,15 @@ class User:
 
     # todo share profile data across users if logged in from 2 SIDs
     def log_in(self, profile):
-        assert not self._profile, "user object already has a profile"
+        if self.is_logged_in():
+            raise UserAlreadyLoggedIn
 
         if profile["is_online"]:
             raise ProfileAlreadyOnline
 
         self._profile = profile
 
+        # if user never logged in before, set first seen timestamp
         if not self._profile["first_seen_unix"]:
             self._profile["first_seen_unix"] = int(time.time())
 
@@ -68,7 +72,8 @@ class User:
         self._profile["log_in_count"] += 1
 
     def log_out(self):
-        assert self._profile, "user object does not have a profile"
+        if not self.is_logged_in():
+            raise UserNotLoggedIn
 
         self._profile["is_online"] = False
         self._profile["last_seen_unix"] = int(time.time())

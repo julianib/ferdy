@@ -2,6 +2,8 @@ from convenience import *
 from user import User
 
 
+# todo removing queueing for outgoing packets and just, send them right away?
+
 def send_packets_loop(ferdy):
     """
     Blocking loop for sending packets

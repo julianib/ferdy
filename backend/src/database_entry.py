@@ -11,7 +11,7 @@ class DatabaseEntry(ABC):
 
         default_data = self.get_default_data()
 
-        assert parent_database, "'parent_database' missing"
+        assert parent_database, "'parent_database' missing from init call"
         assert "id" in kwargs, "'id' missing from kwargs"
         assert default_data, "Entry has no default data"
         assert "id" not in default_data, "'id' key not allowed in entry's " \
@@ -59,7 +59,8 @@ class DatabaseEntry(ABC):
             "key 'id' can't be modified after entry is created"
 
         if not isinstance(value, type(self.get_default_data()[key])):
-            raise ValueError("Invalid value type, must be same as default type")
+            raise ValueError(
+                "Invalid value type, must be same as default type")
 
         try:
             self._data[key] = value
@@ -68,7 +69,7 @@ class DatabaseEntry(ABC):
             Log.error(f"Attempted to update data before entry's data is set")
             raise
 
-        except KeyError:
+        except KeyError:  # can this even occur during setitem?
             Log.error(f"Invalid data key, {key=}")
             raise
 
@@ -84,7 +85,7 @@ class DatabaseEntry(ABC):
         self._parent_database.delete_entry(self)
         Log.debug(f"Deleted entry from DB, {self}")
 
-    def get_data_copy(self, filter_values=True) -> Optional[dict]:
+    def get_data_copy(self, filter_values=True) -> dict:
         """
         Get a copy of this entry's data (JSON-compatible dict)
         """
@@ -92,10 +93,9 @@ class DatabaseEntry(ABC):
         try:
             data_copy = self._data.copy()
 
-        except AttributeError as ex:
-            Log.error(f"Attempted to copy data before initialization",
-                      ex=ex)
-            return
+        except AttributeError:
+            Log.error(f"Attempted to copy data before initialization")
+            raise
 
         if filter_values and self.get_keys_to_filter():
             for key in self.get_keys_to_filter():

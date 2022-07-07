@@ -12,7 +12,7 @@ class Ferdy:
         self.incoming_packets_queue = Queue()  # user name content p_id
         self.outgoing_packets_queue = Queue()  # users name content p_id skip
 
-        self._last_packet_id = 0
+        self._next_packet_id = 1
         self._users = []
 
         self.polls = Polls()
@@ -32,7 +32,7 @@ class Ferdy:
 
     def handle_connect(self, sid, address) -> bool:
         Log.debug(f"Handling connect, {sid=}, {address=}")
-        assert (sid and address), "no sid and address given"
+        assert sid and address, "no sid and address given"
         user = self.create_user_from_sid(sid)
 
         if not user:
@@ -79,7 +79,7 @@ class Ferdy:
         Log.info(f"User disconnected, {user=}, {profile=}")
 
     # TODO provide a session token for the user (for fetch() and session)
-    def handle_log_in(self, user, profile) -> None:
+    def handle_log_in(self, user: User, profile: Profile) -> None:
         Log.debug(f"Handling log in, {user=}, {profile=}")
         user.log_in(profile)
 
@@ -99,9 +99,9 @@ class Ferdy:
 
         Log.info(f"User logged in, {user=}, {profile=}")
 
-    def handle_log_out(self, user, broadcast) -> Profile:
+    def handle_log_out(self, user: User, broadcast) -> Profile:
         Log.debug(f"Handling log out, {user=}")
-        profile = user.get_profile()
+        profile: Profile = user.get_profile()
         user.log_out()
 
         self.send(user, "user.log_out", {
@@ -141,8 +141,9 @@ class Ferdy:
                 for user in self.get_users_copy() if user.is_logged_in()]
 
     def get_next_packet_id(self) -> int:
-        self._last_packet_id += 1
-        return self._last_packet_id
+        old = self._next_packet_id
+        self._next_packet_id += 1
+        return old
 
     @staticmethod
     def get_permissions() -> List[str]:
@@ -171,9 +172,9 @@ class Ferdy:
     def get_users_copy(self) -> List[User]:
         return self._users.copy()
 
-    def send(self, users, name, content, skip=None) -> None:
+    def send(self, users, name, content, skip_users=None) -> None:
         self.outgoing_packets_queue.put((users, name, content,
-                                         self.get_next_packet_id(), skip))
+                                         self.get_next_packet_id(), skip_users))
 
     def broadcast(self, name, content, skip_users=None) -> None:
         self.outgoing_packets_queue.put((self.get_users_copy(), name, content,

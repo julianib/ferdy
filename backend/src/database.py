@@ -7,7 +7,7 @@ class Database(ABC):
     # TODO compare size in memory with size on disk
     def __init__(self, entry_class, filename: str):
         """
-        Abstract class representing a db that can be saved as a json file
+        Abstract class representing a DB that can be saved as a JSON file
         """
 
         Log.debug(f"Initializing DB, type='{type(self).__name__}'")
@@ -16,7 +16,7 @@ class Database(ABC):
         self._entry_class: entry_class = entry_class
         self._file_path: str = f"{DATABASES_FOLDER}/{filename}"
         self._next_entry_id: int = 1
-        self._has_read_from_file: bool = False
+        self._has_read_from_disk: bool = False
 
         self._read_from_disk()
 
@@ -39,9 +39,8 @@ class Database(ABC):
 
         Log.debug(f"DB reading from disk: {self}")
 
-        if self._has_read_from_file:
-            Log.warning(f"DB already read from disk, ignoring call: {self}")
-            return
+        assert not self._has_read_from_disk, \
+            f"DB already read from disk: {self}"
 
         # create db json file if it doesn't exist and no need to read it
         if not os.path.exists(self._file_path):
@@ -49,7 +48,7 @@ class Database(ABC):
                 f.write("{}")
 
             # no need to read the disk anymore
-            self._has_read_from_file = True
+            self._has_read_from_disk = True
 
             print(f"Created empty db {self._file_path}, not reading")
             return
@@ -65,7 +64,7 @@ class Database(ABC):
             self.initialize_new_entry(from_disk=True, **entry_data)
 
         # prevent reading twice (could cause data loss)
-        self._has_read_from_file = True
+        self._has_read_from_disk = True
 
         Log.debug(f"DB read from disk: {self}")
 
