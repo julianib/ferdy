@@ -39,7 +39,7 @@ export default function LoginButton() {
       buttonText="Sign In with Google"
       onSuccess={onGoogleLoginSuccess}
       onFailure={onGoogleLoginFailure}
-      // isSignedIn
+      isSignedIn // auto sign in on page refresh
     />
   );
 }

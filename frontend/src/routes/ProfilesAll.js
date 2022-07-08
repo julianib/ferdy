@@ -127,10 +127,10 @@ export default function ProfileList() {
     setProfiles(content.data);
 
     // todo selectedProfile is always null here for some reason :)
-    // console.log("set profiles", selectedProfile);
-    // setSelectedProfile(
-    //   content.data.find((profile) => selectedProfile?.id === profile.id)
-    // );
+    console.log("set profiles", selectedProfile);
+    setSelectedProfile(
+      content.data.find((profile) => selectedProfile?.id === profile.id)
+    );
   });
 
   usePacket("role.list", (content) => {
