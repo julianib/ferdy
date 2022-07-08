@@ -28,6 +28,7 @@ export default function ProfileList() {
   const [profiles, setProfiles] = useState([]);
   const [roles, setRoles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [selectedProfileId, setSelectedProfileId] = useState(null);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const { openToast } = useToast();
 
@@ -67,8 +68,9 @@ export default function ProfileList() {
     });
   }
 
+  // selects specific profile id, useEffect(.., [id]) updates the rest
   function onClickProfile(profile) {
-    setSelectedProfile(profile);
+    setSelectedProfileId(profile.id);
     setUnsavedChanges(false);
   }
 
@@ -125,12 +127,6 @@ export default function ProfileList() {
 
   usePacket("profile.list", (content) => {
     setProfiles(content.data);
-
-    // todo selectedProfile is always null here for some reason :)
-    console.log("set profiles", selectedProfile);
-    setSelectedProfile(
-      content.data.find((profile) => selectedProfile?.id === profile.id)
-    );
   });
 
   usePacket("role.list", (content) => {
@@ -141,6 +137,15 @@ export default function ProfileList() {
     sendPacket("profile.list");
     sendPacket("role.list");
   }, []);
+
+  // update displayed selected profile when "profiles" array changes
+  useEffect(() => {
+    const newSelectedProfile = profiles.find(
+      (profile) => selectedProfileId === profile.id
+    );
+
+    setSelectedProfile(newSelectedProfile);
+  }, [profiles, selectedProfileId]);
 
   // todo make profile list component for more DRY
   return (
