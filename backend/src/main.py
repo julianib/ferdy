@@ -52,13 +52,8 @@ def get_avatar(filename):
     if os.path.exists(f"{AVATARS_FOLDER}/{filename}"):
         return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}", filename)
 
-    Log.warning(f"Requested file not found, using default, {filename=}")
-    if os.path.exists(f"{AVATARS_FOLDER}/default.png"):
-        return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}",
-                                   "default.png")
-
-    Log.warning("Fallback avatar file default.png does not exist")
-    return "error", 500
+    Log.warning(f"Requested file not found, {filename=}")
+    return "error", 404
 
 
 @app.get("/")

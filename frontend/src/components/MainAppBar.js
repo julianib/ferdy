@@ -45,6 +45,7 @@ export default function MainAppBar() {
             <Box sx={{ display: { xs: "none", sm: "flex" } }}>
               <GitHubIconButton />
               <TrelloIconButton />
+              {/* todo tooltip of these buttons moves slightly after hovering?? */}
               <OnlineUsersIconButton />
               <ProfileIconButton />
             </Box>

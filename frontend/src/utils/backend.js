@@ -19,7 +19,7 @@ export const BACKEND = REACT_APP_BACKEND_CUSTOM
   : `http://${HOSTNAME}:${REACT_APP_BACKEND_PORT}`;
 
 // init and configure socket
-console.debug(`Connecting socket, backend=${BACKEND}`);
+console.debug(`Connecting to backend: ${BACKEND}`);
 
 // options src: https://socket.io/docs/v4/client-options
 export const SOCKET = io(BACKEND, {
@@ -35,6 +35,7 @@ SOCKET.onAny((name, content) => {
 });
 
 // shorthand function for using fetch to send requests to backend
+// todo unused?
 export function fetchBackend(method, body) {
   fetch(BACKEND, {
     method: method,

@@ -11,7 +11,7 @@ export default function PollsAll() {
   });
 
   useEffect(() => {
-    sendPacket("poll.list");
+    sendPacket("poll.list", null, true);
   }, []);
 
   return (

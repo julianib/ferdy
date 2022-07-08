@@ -7,7 +7,7 @@ const { REACT_APP_CLIENT_ID } = process.env;
 export default function LogoutButton() {
   function onGoogleLogoutSuccess() {
     console.debug("google log out ok");
-    sendPacket("user.log_out");
+    sendPacket("user.log_out", null, true);
   }
 
   return (

@@ -9,17 +9,15 @@ export default function LoginButton() {
     console.debug("Google log in error, sending error", res);
 
     // notify backend of error
-    sendPacket("user.log_in.google_error", res);
+    sendPacket("user.log_in.google_error", res, true);
   }
 
   function onGoogleLoginSuccess(res) {
-    // TODO login request again after socket lost connection
-
     console.debug("Google log in OK, sending JWT");
     sendPacket("user.log_in", {
       fake: false,
       jwt: res.tokenId,
-    });
+    }, true);
   }
 
   return (

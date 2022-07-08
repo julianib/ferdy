@@ -1,7 +1,6 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import DoneIcon from "@mui/icons-material/Done";
 import {
-  Avatar,
   Box,
   Button,
   ButtonGroup,
@@ -14,8 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import ProfileAvatar from "../components/ProfileAvatar";
 import usePacket from "../hooks/usePacket";
-import { BACKEND } from "../utils/backend";
 import timeAgo from "../utils/convertUnix";
 import sendPacket from "../utils/sendPacket";
 
@@ -35,15 +34,14 @@ export default function ProfilesPending() {
   }
 
   usePacket("profile.list", (content) => {
-    const newProfiles = content.data.filter(
+    const pendingProfiles = content.data.filter(
       (profile) => profile.pending_approval
     );
-    setProfiles(newProfiles);
+    setProfiles(pendingProfiles);
   });
 
   useEffect(() => {
-    // todo optimize: filter on pending
-    sendPacket("profile.list");
+    sendPacket("profile.list", null, true);
   }, []);
 
   return (
@@ -65,13 +63,7 @@ export default function ProfilesPending() {
                     },
                   }}
                 >
-                  <Avatar
-                    src={
-                      profile.avatar_external
-                        ? profile.avatar_url
-                        : `${BACKEND}/avatars/${profile.avatar_url}`
-                    }
-                  />
+                  <ProfileAvatar profile={profile} />
                 </ListItemAvatar>
 
                 <ListItemText
@@ -98,13 +90,7 @@ export default function ProfilesPending() {
       <Grid item xs={8}>
         {selectedProfile && (
           <Paper sx={{ p: 1 }} variant="outlined">
-            <Avatar
-              src={
-                selectedProfile.avatar_external
-                  ? selectedProfile.avatar_url
-                  : `${BACKEND}/avatars/${selectedProfile.avatar_url}`
-              }
-            />
+            <ProfileAvatar profile={selectedProfile} />
 
             <Typography sx={{ mt: 1 }} variant="h5">
               {selectedProfile.name}

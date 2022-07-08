@@ -3,7 +3,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import {
-  Avatar,
   Box,
   Button,
   ButtonGroup,
@@ -20,9 +19,9 @@ import {
 import { useEffect, useState } from "react";
 import usePacket from "../hooks/usePacket";
 import useToast from "../hooks/useToast";
-import { BACKEND } from "../utils/backend";
 import timeAgo from "../utils/convertUnix";
 import sendPacket from "../utils/sendPacket";
+import ProfileAvatar from "../components/ProfileAvatar";
 
 export default function ProfileList() {
   const [profiles, setProfiles] = useState([]);
@@ -134,8 +133,8 @@ export default function ProfileList() {
   });
 
   useEffect(() => {
-    sendPacket("profile.list");
-    sendPacket("role.list");
+    sendPacket("profile.list", null, true);
+    sendPacket("role.list", null, true);
   }, []);
 
   // update displayed selected profile when "profiles" array changes
@@ -147,7 +146,6 @@ export default function ProfileList() {
     setSelectedProfile(newSelectedProfile);
   }, [profiles, selectedProfileId]);
 
-  // todo make profile list component for more DRY
   return (
     <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
@@ -167,14 +165,7 @@ export default function ProfileList() {
                     },
                   }}
                 >
-                  <Avatar
-                    src={
-                      profile.avatar_external
-                        ? profile.avatar_url
-                        : `${BACKEND}/avatars/${profile.avatar_url}`
-                    }
-                    alt={profile.name}
-                  />
+                  <ProfileAvatar profile={profile} />
                 </ListItemAvatar>
 
                 <ListItemText
@@ -201,18 +192,10 @@ export default function ProfileList() {
       <Grid item xs={5}>
         {selectedProfile && (
           <Paper sx={{ p: 1 }} variant="outlined">
-            <Avatar
-              src={
-                selectedProfile.avatar_external
-                  ? selectedProfile.avatar_url
-                  : `${BACKEND}/avatars/${selectedProfile.avatar_url}`
-              }
-            />
-
+            <ProfileAvatar profile={selectedProfile} />
             <Typography sx={{ mt: 1 }} variant="h5">
               {selectedProfile.name}
             </Typography>
-
             <Box sx={{ mt: 1 }}>
               {roles
                 ?.filter((role) => selectedProfile.role_ids.includes(role.id))
@@ -229,7 +212,6 @@ export default function ProfileList() {
                   />
                 ))}
             </Box>
-
             <Typography sx={{ mt: 1 }} variant="body2">
               Approved:
               {selectedProfile.is_approved ? (
@@ -246,7 +228,6 @@ export default function ProfileList() {
               <br />
               Google ID: {selectedProfile.google_id}
             </Typography>
-
             <Box sx={{ mt: 2 }}>
               <ButtonGroup sx={{ display: "block" }} variant="outlined">
                 <Button

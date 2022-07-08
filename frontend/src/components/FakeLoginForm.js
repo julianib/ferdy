@@ -13,7 +13,7 @@ export default function FakeLoginForm() {
     sendPacket("user.log_in", {
       fake: true,
       google_id: googleId,
-    });
+    }, true);
   }
 
   return (

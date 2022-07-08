@@ -1,17 +1,20 @@
 import { SOCKET } from "./backend";
 
 // send a packet to the backend
-export default function sendPacket(name, content) {
+export default function sendPacket(name, content, wait_for_connection = false) {
   if (SOCKET.disconnected) {
-    // if socket is disconnected and we try to send, packet will be put on hold
-    console.debug("Outgoing packet waiting for connection:", name);
-
-    // console.warn("Did not send packet: socket disconnected:", name, content);
-    // return;
+    if (wait_for_connection) {
+      // wait for connection and then send the packet instantly
+      console.debug("Waiting for connection for packet:", name);
+    } else {
+      // if socket is disconnected, packet will be DISCARDED
+      console.debug("Not waiting for connection for packet:", name);
+      return;
+    }
   }
 
   if (!name) {
-    console.warn("Did not send packet: no name given, content:", content);
+    console.error("Did not send packet: no name given, content:", content);
     return;
   }
 

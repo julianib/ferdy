@@ -4,7 +4,7 @@ import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import { Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
 import useTabsValue from "../hooks/useTabsValue";
-import onCustomTabFocus from "../utils/onCustomTabFocus";
+import onTabFocus from "../utils/onTabFocus";
 
 export default function TabsProfiles() {
   const tabsValue = useTabsValue(1);
@@ -20,7 +20,7 @@ export default function TabsProfiles() {
         value="/"
         to="/profiles"
         icon={<PeopleIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -28,7 +28,7 @@ export default function TabsProfiles() {
         value="/pending"
         to="/profiles/pending"
         icon={<PersonAddIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -36,7 +36,7 @@ export default function TabsProfiles() {
         value="/roles"
         to="/profiles/roles"
         icon={<ToggleOnOutlinedIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
     </Tabs>

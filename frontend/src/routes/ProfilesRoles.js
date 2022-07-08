@@ -102,8 +102,8 @@ export default function ProfilesRoles() {
   });
 
   useEffect(() => {
-    sendPacket("role.list");
-    sendPacket("permission.list");
+    sendPacket("role.list", null, true);
+    sendPacket("permission.list", null, true);
   }, []);
 
   return (

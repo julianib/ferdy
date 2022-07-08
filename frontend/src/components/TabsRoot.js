@@ -8,7 +8,7 @@ import SportsBarIcon from "@mui/icons-material/SportsBar";
 import { Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
 import useTabsValue from "../hooks/useTabsValue";
-import onCustomTabFocus from "../utils/onCustomTabFocus";
+import onTabFocus from "../utils/onTabFocus";
 
 export default function TabsRoot() {
   const tabsValue = useTabsValue(0);
@@ -25,7 +25,7 @@ export default function TabsRoot() {
         value="/"
         to="/"
         icon={<HomeIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -33,7 +33,7 @@ export default function TabsRoot() {
         value="/accies"
         to="/accies"
         icon={<SportsBarIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -41,7 +41,7 @@ export default function TabsRoot() {
         value="/chat"
         to="/chat"
         icon={<ChatIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -49,7 +49,7 @@ export default function TabsRoot() {
         value="/polls"
         to="/polls"
         icon={<HowToVoteIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -57,7 +57,7 @@ export default function TabsRoot() {
         value="/profiles"
         to="/profiles"
         icon={<PeopleIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -65,7 +65,7 @@ export default function TabsRoot() {
         value="/settings"
         to="/settings"
         icon={<SettingsIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
       <Tab
@@ -73,7 +73,7 @@ export default function TabsRoot() {
         value="/smoelenboek"
         to="/smoelenboek"
         icon={<FaceIcon />}
-        onFocus={onCustomTabFocus}
+        onFocus={onTabFocus}
         component={Link}
       />
     </Tabs>

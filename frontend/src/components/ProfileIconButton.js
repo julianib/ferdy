@@ -1,29 +1,16 @@
 import NoAccountsIcon from "@mui/icons-material/NoAccounts";
-import { Avatar, IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import useProfile from "../hooks/useProfile";
-import { BACKEND } from "../utils/backend";
+import ProfileAvatar from "./ProfileAvatar";
 
 export default function ProfileIconButton() {
   const { profile } = useProfile();
 
   return (
-    <IconButton edge="end" color="inherit">
-      {profile ? (
-        <Tooltip title={`Logged in as ${profile.name}`}>
-          <Avatar
-            src={
-              profile.avatar_external
-                ? profile.avatar_url
-                : `${BACKEND}/avatars/${profile.avatar_url}`
-            }
-            alt={profile.name}
-          />
-        </Tooltip>
-      ) : (
-        <Tooltip title="Not logged in">
-          <NoAccountsIcon />
-        </Tooltip>
-      )}
-    </IconButton>
+    <Tooltip title={profile ? `Logged in as ${profile.name}` : "Not logged in"}>
+      <IconButton edge="end" color="inherit">
+        {profile ? <ProfileAvatar profile={profile} /> : <NoAccountsIcon />}
+      </IconButton>
+    </Tooltip>
   );
 }
