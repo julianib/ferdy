@@ -9,7 +9,7 @@ import { ProfileContextProvider } from "./contexts/ProfileContext";
 import { ToastContextProvider } from "./contexts/ToastContext";
 import "./index.css";
 import { darkTheme } from "./themes/darkTheme";
-import "./utils/backend"; // execute backend script (connects to backend)
+import "./utils/backend"; // start backend connection script
 
 ReactDOM.render(
   <React.StrictMode>

@@ -28,16 +28,16 @@ export default function App() {
 
   usePacket("connect", () => {
     console.log("Connected");
-    openToast("Connected", "info", 1000);
+    openToast("Connected");
   });
 
   usePacket("connect_error", (error) => {
-    openToast(`Couldn't connect: ${error.message}`, "error", 1000);
+    openToast(`Couldn't connect: ${error.message}`, "error");
   });
 
   usePacket("disconnect", (reason) => {
     console.log("Disconnected:", reason);
-    openToast(`Disconnected: ${reason}`, "error", 1000);
+    openToast(`Disconnected: ${reason}`, "error");
 
     // clear profile if we get disconnected
     setProfile(null);
@@ -70,29 +70,32 @@ export default function App() {
 
   return (
     <>
-      {true ? (
-        <Routes>
-          <Route path="/" element={<Root />}>
-            <Route index element={<Home />} />
-            <Route path="accies" element={<Accies />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="polls" element={<Polls />}>
-              <Route index element={<PollsAll />} />
-              <Route path="create" element={<PollsCreate />} />
+      {
+        // if not allowed to see the page, set false instead of true
+        true ? (
+          <Routes>
+            <Route path="/" element={<Root />}>
+              <Route index element={<Home />} />
+              <Route path="accies" element={<Accies />} />
+              <Route path="chat" element={<Chat />} />
+              <Route path="polls" element={<Polls />}>
+                <Route index element={<PollsAll />} />
+                <Route path="create" element={<PollsCreate />} />
+              </Route>
+              <Route path="profiles" element={<Profiles />}>
+                <Route index element={<ProfilesAll />} />
+                <Route path="pending" element={<ProfilesPending />} />
+                <Route path="roles" element={<ProfilesRoles />} />
+              </Route>
+              <Route path="settings" element={<Settings />} />
+              <Route path="smoelenboek" element={<Smoelenboek />} />
             </Route>
-            <Route path="profiles" element={<Profiles />}>
-              <Route index element={<ProfilesAll />} />
-              <Route path="pending" element={<ProfilesPending />} />
-              <Route path="roles" element={<ProfilesRoles />} />
-            </Route>
-            <Route path="settings" element={<Settings />} />
-            <Route path="smoelenboek" element={<Smoelenboek />} />
-          </Route>
-          <Route path="*" element={<Wildcard />} />
-        </Routes>
-      ) : (
-        <Typography>Logo {profile?.name}</Typography>
-      )}
+            <Route path="*" element={<Wildcard />} />
+          </Routes>
+        ) : (
+          <Typography>Logo {profile?.name}</Typography>
+        )
+      }
     </>
   );
 }

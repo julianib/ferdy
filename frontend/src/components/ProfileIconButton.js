@@ -16,6 +16,7 @@ export default function ProfileIconButton() {
                 ? profile.avatar_url
                 : `${BACKEND}/avatars/${profile.avatar_url}`
             }
+            alt={profile.name}
           />
         </Tooltip>
       ) : (

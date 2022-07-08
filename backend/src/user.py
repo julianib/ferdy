@@ -17,13 +17,13 @@ class User:
         if self.is_logged_in():
             return self._profile["name"]
 
-        raise UserNotLoggedIn
+        # raise UserNotLoggedIn
 
     def get_profile(self) -> Profile:
         if self.is_logged_in():
             return self._profile
 
-        raise UserNotLoggedIn
+        # raise UserNotLoggedIn
 
     def has_permission(self, permission: str, raise_if_not: bool) -> bool:
         Log.debug(f"Checking if user has permission: {permission}")

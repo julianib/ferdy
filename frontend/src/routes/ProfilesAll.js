@@ -41,6 +41,11 @@ export default function ProfileList() {
       return;
     }
 
+    setSelectedProfile({
+      ...selectedProfile,
+      is_approved: approved,
+    });
+
     sendPacket("profile.approval", {
       approved,
       id: selectedProfile.id,
@@ -120,6 +125,12 @@ export default function ProfileList() {
 
   usePacket("profile.list", (content) => {
     setProfiles(content.data);
+
+    // todo selectedProfile is always null here for some reason :)
+    // console.log("set profiles", selectedProfile);
+    // setSelectedProfile(
+    //   content.data.find((profile) => selectedProfile?.id === profile.id)
+    // );
   });
 
   usePacket("role.list", (content) => {
@@ -132,7 +143,6 @@ export default function ProfileList() {
   }, []);
 
   // todo make profile list component for more DRY
-  // todo refresh selected profile after updating
   return (
     <Grid sx={{ mt: 0 }} container spacing={1}>
       <Grid item xs={4}>
@@ -158,6 +168,7 @@ export default function ProfileList() {
                         ? profile.avatar_url
                         : `${BACKEND}/avatars/${profile.avatar_url}`
                     }
+                    alt={profile.name}
                   />
                 </ListItemAvatar>
 
@@ -226,6 +237,8 @@ export default function ProfileList() {
               <br />
               Email: {selectedProfile.email}
               <br />
+              ID: {selectedProfile.id}
+              <br />
               Google ID: {selectedProfile.google_id}
             </Typography>
 
@@ -235,10 +248,8 @@ export default function ProfileList() {
                   // approve button should be enabled when:
                   // pending approval is true OR not approved
                   disabled={
-                    !(
-                      selectedProfile.pending_approval ||
-                      !selectedProfile.is_approved
-                    )
+                    !selectedProfile.pending_approval &&
+                    selectedProfile.is_approved
                   }
                   color="success"
                   startIcon={<DoneIcon />}
@@ -248,10 +259,8 @@ export default function ProfileList() {
                 </Button>
                 <Button
                   disabled={
-                    !(
-                      selectedProfile.pending_approval ||
-                      selectedProfile.is_approved
-                    )
+                    !selectedProfile.pending_approval &&
+                    !selectedProfile.is_approved
                   }
                   color="error"
                   startIcon={<ClearIcon />}
