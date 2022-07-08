@@ -207,6 +207,7 @@ export default function ProfileList() {
             <Typography sx={{ mt: 1 }} variant="h5">
               {selectedProfile.name}
             </Typography>
+            
 
             <Box sx={{ mt: 1 }}>
               {roles
