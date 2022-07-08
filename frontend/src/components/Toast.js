@@ -11,10 +11,16 @@ export default function Toast() {
   }
 
   return (
-    <Snackbar open={toast.open} autoHideDuration={toast.duration} onClose={onClose}>
-      <Alert severity={toast.severity} onClose={onClose}>
-        {toast.message}
-      </Alert>
-    </Snackbar>
+    <>
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={toast.duration}
+        onClose={onClose}
+      >
+        <Alert severity={toast.severity} onClose={onClose}>
+          {toast.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

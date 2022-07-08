@@ -13,7 +13,8 @@ export function ToastContextProvider({ children }) {
     setToast({ ...toast, open: false });
   }
 
-  function openToast(message, severity = "info", duration = 1000) {
+  // todo add multiple toasts popup (use array of messages)
+  function openToast(message, severity = "info", duration = 3000) {
     // first set open to false to reset autoHideDuration
     setToast({ ...toast, open: false, duration: 0 });
     setToast({ open: true, message, severity, duration });
