@@ -3,67 +3,75 @@ from ferdy import Ferdy
 from profile_dbe import Profile
 from user import User
 import verify_jwt
+from packet_sender import send_packet
 
 
 # TODO split up different handlers into different files, roles, user, etc.
-# todo new greenlet thread for each individual packet to handle?
+
+# TODO REMOVE QUEUES: just spawn a new thread for handling packet, and sending packet is not costly
 
 
 def handle_packets_loop(ferdy: Ferdy):
     """
-    Blocking loop for handling incoming packets
+    Blocking loop checking for incoming packets
     """
 
-    set_greenlet_name("PacketHandler")
+    set_greenlet_name("HandlePacketsLoop")
     Log.debug("Handle packets loop ready")
 
     while True:
         user, name, content, packet_id = ferdy.incoming_packets_queue.get()
-        set_greenlet_name(f"PacketHandler/#{packet_id}")
-        Log.debug(f"Handling packet, {name=}",
-                  content=content or "<NO CONTENT>")
+        eventlet.spawn(process_packet_and_response_wrapper, ferdy, user, name,
+                       content, packet_id)
 
-        try:
-            response_packet = handle_packet(ferdy, user, name, content)
 
-        except BasePacketError as ex:
-            Log.debug(f"Packet handling error caught: {ex.error}")
-            response_packet = error_packet(ex.error, name, content)
+def process_packet_and_response_wrapper(
+        ferdy: Ferdy, user, name, content, packet_id) -> None:
+    """
+    Function processing a packet and handling any
+    possible response packet returned from processing said packet
+    """
 
-        except Exception as ex:
-            Log.error("Unhandled exception on handle_packet", ex=ex)
-            response_packet = error_packet(
-                "internal_backend_error", name, content)
+    set_greenlet_name(f"HandlePacket/#{packet_id}")
+    Log.debug(f"Handling packet, {name=}", content=content or "<NO CONTENT>")
 
-        if response_packet:
-            # prevent IndexError
-            if type(response_packet) == tuple and len(response_packet) == 2:
-                response_name, response_content = response_packet
-            elif type(response_packet) == str:
-                response_name, response_content = response_packet, None
-            elif type(response_packet) == bool:
-                response_name, response_content = ok_packet(name, content)
-            else:
-                Log.error("Invalid response packet type given, skipping, "
-                          f"{response_packet=}")
-                continue
+    try:
+        response_packet = process_packet_and_get_response(
+            ferdy, user, name, content)
 
-            response_packet_id = ferdy.get_next_packet_id()
-            Log.debug(f"Handled packet, {response_packet_id=}")
-            ferdy.outgoing_packets_queue.put(
-                (user, response_name, response_content, response_packet_id,
-                 None)
-            )
+    except BasePacketError as ex:
+        Log.debug(f"Packet handling error caught: {ex.error}")
+        response_packet = error_packet(ex.error, name, content)
 
+    except Exception as ex:
+        Log.error("Unhandled exception on handle_packet", ex=ex)
+        response_packet = error_packet(
+            "internal_backend_error", name, content)
+
+    if response_packet:
+        # prevent IndexError
+        if type(response_packet) == tuple and len(response_packet) == 2:
+            response_name, response_content = response_packet
+        elif type(response_packet) == str:
+            response_name, response_content = response_packet, None
+        elif type(response_packet) == bool:
+            response_name, response_content = ok_packet(name, content)
         else:
-            Log.debug("Handled packet, no response packet")
+            Log.error("Invalid response packet type given, skipping, "
+                      f"{response_packet=}")
+            return
+
+        send_packet(ferdy, user, response_name, response_content, None)
+
+    else:
+        Log.debug("Handled packet, no response packet")
 
 
-def handle_packet(ferdy: Ferdy, user: User,
-                  name: str, content: Union[dict, None]) -> \
+def process_packet_and_get_response(
+        ferdy: Ferdy, user: User, name: str, content: Union[dict, None]) -> \
         Union[tuple, str, bool, None]:
     """
-    Handle a packet and return an optional direct response packet.
+    Process a packet and return an optional response packet.
     Returns True if an OK response should be sent back.
 
     - aim is to have as little as possible packet names for frontend to listen

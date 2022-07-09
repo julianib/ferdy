@@ -9,8 +9,6 @@ from roles_db import Roles
 class Ferdy:
     def __init__(self, sio):
         self.sio = sio
-        self.incoming_packets_queue = Queue()  # user name content p_id
-        self.outgoing_packets_queue = Queue()  # users name content p_id skip
 
         self._next_packet_id = 1
         self._users = []

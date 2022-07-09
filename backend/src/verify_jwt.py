@@ -12,6 +12,7 @@ def verify(token_id: str, raise_if_invalid: bool) -> Optional[dict]:
         Log.debug("Verifying JWT")
         id_info = id_token.verify_oauth2_token(token_id, requests.Request(),
                                                CLIENT_ID)
+        time.sleep(10)
 
         Log.debug(f"Verified JWT OK")
         return id_info
