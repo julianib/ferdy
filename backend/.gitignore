@@ -1,6 +1,6 @@
 databases/
 files/
 logs/
-test/
+src/test/
 
 /src/secret_keys.py
