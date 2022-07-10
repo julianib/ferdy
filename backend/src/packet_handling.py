@@ -1,5 +1,4 @@
 from convenience import *
-from ferdy import Ferdy
 from profile_dbe import Profile
 from user import User
 import verify_jwt
@@ -8,35 +7,20 @@ from packet_sender import send_packet
 
 # TODO split up different handlers into different files, roles, user, etc.
 
-# TODO REMOVE QUEUES: just spawn a new thread for handling packet, and sending packet is not costly
 
-
-def handle_packets_loop(ferdy: Ferdy):
+def handle_packet(ferdy, user, name, content, packet_id) -> None:
     """
-    Blocking loop checking for incoming packets
-    """
-
-    set_greenlet_name("HandlePacketsLoop")
-    Log.debug("Handle packets loop ready")
-
-    while True:
-        user, name, content, packet_id = ferdy.incoming_packets_queue.get()
-        eventlet.spawn(process_packet_and_response_wrapper, ferdy, user, name,
-                       content, packet_id)
-
-
-def process_packet_and_response_wrapper(
-        ferdy: Ferdy, user, name, content, packet_id) -> None:
-    """
-    Function processing a packet and handling any
-    possible response packet returned from processing said packet
+    Wrapper function for handling a packet and any possible response packet
+    returned from processing said packet. Should be run on separate greenlet
+    thread.
     """
 
     set_greenlet_name(f"HandlePacket/#{packet_id}")
-    Log.debug(f"Handling packet, {name=}", content=content or "<NO CONTENT>")
+    Log.info(f"Handling packet #{packet_id}, {name=}",
+             content=content or "<NO CONTENT>")
 
     try:
-        response_packet = process_packet_and_get_response(
+        response_packet = _handle_packet_actually(
             ferdy, user, name, content)
 
     except BasePacketError as ex:
@@ -44,7 +28,7 @@ def process_packet_and_response_wrapper(
         response_packet = error_packet(ex.error, name, content)
 
     except Exception as ex:
-        Log.error("Unhandled exception on handle_packet", ex=ex)
+        Log.error("Unhandled exception on _handle_packet_actually", ex=ex)
         response_packet = error_packet(
             "internal_backend_error", name, content)
 
@@ -67,8 +51,8 @@ def process_packet_and_response_wrapper(
         Log.debug("Handled packet, no response packet")
 
 
-def process_packet_and_get_response(
-        ferdy: Ferdy, user: User, name: str, content: Union[dict, None]) -> \
+def _handle_packet_actually(
+        ferdy, user: User, name: str, content: Union[dict, None]) -> \
         Union[tuple, str, bool, None]:
     """
     Process a packet and return an optional response packet.
