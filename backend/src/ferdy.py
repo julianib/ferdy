@@ -49,6 +49,7 @@ class Ferdy:
     def get_permissions() -> List[str]:
         return [
             "administrator",
+            "database",
             "poll.create",
             "poll.delete",
             "profile.approval",

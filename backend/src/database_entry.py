@@ -52,7 +52,7 @@ class DatabaseEntry(ABC):
             raise
 
     def __repr__(self):
-        return f"<DB entry '{type(self).__name__}' #{self['id']}>"
+        return f"<{type(self).__name__} #{self['id']}>"
 
     def __setitem__(self, key, value):
         assert key != "id", \

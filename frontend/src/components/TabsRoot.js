@@ -3,7 +3,7 @@ import FaceIcon from "@mui/icons-material/Face";
 import HomeIcon from "@mui/icons-material/Home";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import PeopleIcon from "@mui/icons-material/People";
-import SettingsIcon from "@mui/icons-material/Settings";
+// import SettingsIcon from "@mui/icons-material/Settings";
 import SportsBarIcon from "@mui/icons-material/SportsBar";
 import { Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -60,14 +60,14 @@ export default function TabsRoot() {
         onFocus={onTabFocus}
         component={Link}
       />
-      <Tab
+      {/* <Tab
         label="Settings"
         value="/settings"
         to="/settings"
         icon={<SettingsIcon />}
         onFocus={onTabFocus}
         component={Link}
-      />
+      /> */}
       <Tab
         label="Smoelenboek"
         value="/smoelenboek"

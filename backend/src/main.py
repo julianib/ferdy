@@ -200,6 +200,7 @@ if __name__ == "__main__":
             main()
         except Exception as ex:
             Log.error("Unhandled exception on main", ex=ex)
+            break
 
         if not CRASH_RESTART_DELAY:
             print("\n\n\n\tAnd as always, thanks for watching.\n\n\n")

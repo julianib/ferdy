@@ -12,6 +12,7 @@ import GitHubIconButton from "./GitHubIconButton";
 import OnlineUsersIconButton from "./OnlineUsersIconButton";
 import ProfileIconButton from "./ProfileIconButton";
 import TrelloIconButton from "./TrelloIconButton";
+import WriteDataToDiskButton from "./WriteDataToDiskButton";
 
 export default function MainAppBar() {
   return (
@@ -43,6 +44,7 @@ export default function MainAppBar() {
 
           <Box>
             <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+              <WriteDataToDiskButton />
               <GitHubIconButton />
               <TrelloIconButton />
               {/* todo tooltip of these buttons moves slightly after hovering?? */}

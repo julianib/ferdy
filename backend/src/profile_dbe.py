@@ -15,6 +15,10 @@ class Profile(DatabaseEntry):
         return {
             "avatar_external": False,
             "avatar_filename": "default.png",
+            # todo implement, decides fallback bg color if avatar doesnt load
+            # also check if color is too dark for black text foreground
+            # https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color
+            # "color": generate_hex_color()
             "email": "<email>",
             "email_verified": False,
             "first_name": "<first_name>",

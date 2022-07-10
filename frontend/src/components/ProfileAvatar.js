@@ -4,6 +4,7 @@ import { BACKEND } from "../utils/backend";
 export default function ProfileAvatar({ profile }) {
   return (
     <Avatar
+      sx={{ bgcolor: "#00dddd", color: "#fff" }}
       src={
         profile.avatar_external
           ? profile.avatar_filename

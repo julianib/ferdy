@@ -5,21 +5,16 @@ class Smoel(DatabaseEntry):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def __repr__(self):
+        name = self["name"]
+        return f"<Smoel #{self['id']}, {name=}>"
+
     @staticmethod
     def get_default_data() -> dict:
         return {
             "image_filename": "<image_filename>",
             "name": "<name>",
-            "votes": [
-                {
-                    "is_upvote": True,
-                    "user_id": 1
-                },
-                {
-                    "is_upvote": False,
-                    "user_id": 3
-                }
-            ],
+            "votes": []
         }
 
     @staticmethod

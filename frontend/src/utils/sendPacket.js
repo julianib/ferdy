@@ -8,7 +8,7 @@ export default function sendPacket(name, content, wait_for_connection = false) {
       console.debug("Waiting for connection for packet:", name);
     } else {
       // if socket is disconnected, packet will be DISCARDED
-      console.debug("Not waiting for connection for packet:", name);
+      console.debug("Discarding packet (no connection yet):", name);
       return;
     }
   }

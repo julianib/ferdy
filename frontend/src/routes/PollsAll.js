@@ -21,9 +21,7 @@ export default function PollsAll() {
           <Grid item xs={4} key={poll.id}>
             <Paper sx={{ p: 1 }} variant="outlined">
               <Typography variant="h5">{poll.title}</Typography>
-              <Typography variant="body2">
-                <pre style={{ fontFamily: "inherit" }}>{poll.body}</pre>
-              </Typography>
+              <pre style={{ fontFamily: "inherit" }}>{poll.body}</pre>
               <Button variant="outlined">View</Button>
             </Paper>
           </Grid>

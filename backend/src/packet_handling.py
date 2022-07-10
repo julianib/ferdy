@@ -16,7 +16,8 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
     """
 
     set_greenlet_name(f"HandlePacket/#{packet_id}")
-    Log.info(f"Handling packet #{packet_id}, {name=}", content=content)
+    Log.info(f"Handling packet #{packet_id}, {name=}",
+             content=content or "<NO CONTENT GIVEN>")
 
     try:
         response_packet = _handle_packet_actually(
@@ -46,7 +47,7 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
 
         send_packet(ferdy, user, response_name, response_content, None)
 
-    Log.debug("Handled packet")
+    Log.debug("Handled packet OK")
 
 
 def _handle_packet_actually(
@@ -68,6 +69,67 @@ def _handle_packet_actually(
 
     assert type(content) == dict, \
         f"invalid 'content' type: {type(content).__name__}"
+
+    # database
+
+    if name == "database.smoel.generate":
+        # todo check if user is approved instead of permission check
+        user.has_permission("database", raise_if_not=True)
+
+        Log.debug("Generating missing Smoelen entries for existing image files")
+
+        filenames_to_add = []
+        for filename in os.listdir(SMOELEN_FOLDER):
+            if not os.path.isfile(os.path.join(SMOELEN_FOLDER, filename)):
+                continue
+
+            file_type = filename.split(".")[-1]
+            if file_type not in ["png", "jpg"]:
+                Log.warning(
+                    f"Unsupported file type in {SMOELEN_FOLDER}: {filename},"
+                    " ignoring")
+                continue
+
+            filenames_to_add.append(filename)
+
+        Log.debug(f"Filenames in {SMOELEN_FOLDER}: {filenames_to_add}")
+
+        for smoel_data in ferdy.smoelen.get_entries_data_copy():
+            filename = smoel_data["image_filename"]
+            if filename in filenames_to_add:
+                # image file already used by an existing smoel in db
+                filenames_to_add.remove(filename)
+
+        if not filenames_to_add:
+            Log.debug("No new smoelen to generate (all images in use)")
+            return True
+
+        count = 0
+        for filename in filenames_to_add:
+            name = filename.split(".")[0]
+            ferdy.smoelen.create(image_filename=filename, name=name)
+            count += 1
+
+        Log.debug(f"Created {count} new smoelen")
+        ferdy.send(user, "smoel.list", {
+            "data": ferdy.smoelen.get_entries_data_copy()
+        })
+
+        return True
+
+    if name == "database.write":
+        # force write every database to disk (save everything in memory)
+
+        user.has_permission("database", raise_if_not=True)
+
+        Log.debug("Writing ALL databases in memory to disk")
+        ferdy.polls.write_to_disk()
+        ferdy.profiles.write_to_disk()
+        ferdy.roles.write_to_disk()
+        ferdy.smoelen.write_to_disk()
+        Log.debug("Written all databases in memory to disk")
+
+        return True
 
     # permission
 
@@ -236,7 +298,9 @@ def _handle_packet_actually(
     if name == "smoel.list":
         user.has_permission("smoel.list", raise_if_not=True)
 
-        raise PacketNotImplemented
+        return "smoel.list", {
+            "data": ferdy.smoelen.get_entries_data_copy()
+        }
 
     # song
 

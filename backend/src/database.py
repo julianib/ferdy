@@ -24,7 +24,7 @@ class Database(ABC):
 
     def __repr__(self):
         entries_count = self.get_entries_count()
-        return f"<DB '{type(self).__name__}', {entries_count=}>"
+        return f"<{type(self).__name__} DB, {entries_count} entries>"
 
     def _get_next_entry_id(self) -> int:
         old = self._next_entry_id
@@ -54,7 +54,7 @@ class Database(ABC):
             return
 
         with open(self._file_path, "r") as f:
-            db = json.load(f)
+            db: dict = json.load(f)
 
             # read, and if newly created db
             self._next_entry_id = db.get("next_entry_id", 1)
@@ -66,7 +66,7 @@ class Database(ABC):
         # prevent reading twice (could cause data loss)
         self._has_read_from_disk = True
 
-        Log.debug(f"DB read from disk: {self}")
+        Log.debug(f"DB done reading from disk: {self}")
 
     def delete_entry(self, entry):
         assert entry in self._entries, "entry is not in DB"
@@ -86,6 +86,8 @@ class Database(ABC):
                 raise ValueError("'id' is only allowed in kwargs if reading "
                                  "from disk")
         else:
+            # assign a new id to the new entry
+            # if it was missing from disk data, this adds the missing id key
             kwargs["id"] = self._get_next_entry_id()
 
         if "parent_database" in kwargs:
@@ -109,8 +111,8 @@ class Database(ABC):
     def get_entries_count(self) -> int:
         return len(self.get_entries_copy())
 
-    def get_entries_data_copy(
-            self, filter_values=True, key=None, reverse=False) -> List[dict]:
+    def get_entries_data_copy(self, filter_values=True, key=None,
+                              reverse=False) -> List[dict]:
 
         if key:
             return [entry.get_data_copy(filter_values=filter_values)
