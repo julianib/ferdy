@@ -34,7 +34,7 @@ ERROR = 4, "error", Fore.RED + Style.BRIGHT
 
 # logging
 ABBREVIATIONS = ["", "K", "M", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No"]
-CONSOLE_CUTOFF = 180  # falsy to disable
+CONSOLE_CUTOFF = 150  # falsy to disable
 CONSOLE_LOG_LEVEL = "test"  # falsy to disable
 CONSOLE_TIMESTAMP = True
 FILE_LOG_LEVEL = "debug"  # falsy to disable

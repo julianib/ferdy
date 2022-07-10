@@ -1,6 +1,6 @@
 import eventlet
 eventlet.monkey_patch()  # nopep8
-# eventlet.monkey_patch() fixes greenlet threading issues
+# function eventlet.monkey_patch() fixes greenlet threading problems
 
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
@@ -9,8 +9,6 @@ from flask_socketio import SocketIO
 from convenience import *
 from ferdy import Ferdy
 from log import Log
-from packet_handler import handle_packets_loop
-from packet_sender import send_packets_loop
 
 
 # setup flask
@@ -29,7 +27,7 @@ else:
 sio = SocketIO(
     app=app,
     async_mode="eventlet",
-    cors_allowed_origins='*',
+    cors_allowed_origins="*",
     logger=LOG_SOCKETIO,  # socketio logger
     engineio_logger=LOG_ENGINEIO,  # engineio logger
 )
@@ -43,17 +41,25 @@ ferdy: Union[Ferdy, None] = None
 
 @app.get(f"/avatars/<filename>")
 def get_avatar(filename):
+    """
+    Handle GET avatar requests
+    """
+
     set_greenlet_name("app/GET/avatars")
 
-    # file_type = filename.split(".")[-1]
-    # if file_type not in ["png", "jpg"]:
+    file_type = filename.split(".")[-1]
+    if file_type not in ["png", "jpg"]:
+        # invalid file type requested (not a supported image)
+        Log.warning(f"Request file type invalid: {file_type}")
+        return f"Avatar file type not supported: {file_type}", 400
+
     Log.debug(f"Reading avatar file, {filename=}")
 
     if os.path.exists(f"{AVATARS_FOLDER}/{filename}"):
         return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}", filename)
 
     Log.warning(f"Requested file not found, {filename=}")
-    return "error", 404
+    return "Avatar file not found", 404
 
 
 @app.get("/")
@@ -95,7 +101,8 @@ def on_disconnect():
     ferdy.handle_disconnect(sid)
 
 
-@sio.on("message")  # anything that is not connect or disconnect
+# TODO check max size of name and content
+@sio.on("message")  # anything that is not connect or disconnect (so, a packet)
 def on_packet(name, content):
     set_greenlet_name("sio/on_packet")
     sid = request.sid
@@ -127,8 +134,6 @@ def main():
 
     global ferdy
     ferdy = Ferdy(sio)
-    eventlet.spawn(send_packets_loop, ferdy)
-    eventlet.spawn(handle_packets_loop, ferdy)
 
     https_enabled = False
 

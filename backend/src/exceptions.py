@@ -28,11 +28,6 @@ class ProfileAlreadyOnline(BasePacketError):
     error = "profile_already_online"
 
 
-# unused
-# class ProfileNotPendingApproval(PacketHandlingError):
-#     error = "profile_not_pending_approval"
-
-
 class UserAlreadyLoggedIn(BasePacketError):
     error = "user_already_logged_in"
 

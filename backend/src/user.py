@@ -40,6 +40,7 @@ class User:
             role = self.ferdy.roles.find_single(id=role_id)
             if "administrator" in role["permissions"] \
                     or permission in role["permissions"]:
+                Log.debug("User has permission")
                 return True
 
         if raise_if_not:

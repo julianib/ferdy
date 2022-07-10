@@ -4,6 +4,8 @@ from profile_dbe import Profile
 from user import User
 from profiles_db import Profiles
 from roles_db import Roles
+from packet_handling import handle_packet
+from packet_sending import send_packet
 
 
 class Ferdy:
@@ -28,9 +30,50 @@ class Ferdy:
 
         return user
 
+    def get_logged_in_user_count(self) -> int:
+        return len([user for user in self.get_users_copy()
+                    if user.is_logged_in()])
+
+    def get_online_profiles_data_copy(self) -> List[dict]:
+        return [user.get_profile().get_data_copy()
+                for user in self.get_users_copy() if user.is_logged_in()]
+
+    def get_next_packet_id(self) -> int:
+        old = self._next_packet_id
+        self._next_packet_id += 1
+        return old
+
+    @staticmethod
+    def get_permissions() -> List[str]:
+        return [
+            "administrator",
+            "poll.create",
+            "poll.delete",
+            "profile.approval",
+            "profile.delete",
+            "profile.update",
+            "role.create",
+            "role.delete",
+            "role.update",
+        ]
+
+    def get_user_by_sid(self, sid) -> User:
+        for user in self.get_users_copy():
+            if user.sid == sid:
+                return user
+
+        raise ValueError(f"Could not find user by sid, {sid=}")
+
+    def get_user_count(self) -> int:
+        return len(self.get_users_copy())
+
+    def get_users_copy(self) -> List[User]:
+        return self._users.copy()
+
     def handle_connect(self, sid, address) -> bool:
         Log.debug(f"Handling connect, {sid=}, {address=}")
         assert sid and address, "no sid and address given"
+
         user = self.create_user_from_sid(sid)
 
         if not user:
@@ -120,60 +163,19 @@ class Ferdy:
         Log.info(f"User logged out, {user=}, {profile=}")
         return profile
 
-    # TODO check max size of name and content
     def handle_packet(self, sid, name, content) -> None:
-        Log.debug(f"Handling incoming packet, {name=}")
+        packet_id = self.get_next_packet_id()
+        Log.debug(f"Received packet #{packet_id}")
         user = self.get_user_by_sid(sid)
         assert user, "user object not found"
-        packet_id = self.get_next_packet_id()
 
-        Log.info(f"Queueing incoming packet #{packet_id}, {name=}, {user=}")
-        self.incoming_packets_queue.put((user, name, content, packet_id))
-
-    def get_logged_in_user_count(self) -> int:
-        return len([user for user in self.get_users_copy()
-                    if user.is_logged_in()])
-
-    def get_online_profiles_data_copy(self) -> List[dict]:
-        return [user.get_profile().get_data_copy()
-                for user in self.get_users_copy() if user.is_logged_in()]
-
-    def get_next_packet_id(self) -> int:
-        old = self._next_packet_id
-        self._next_packet_id += 1
-        return old
-
-    @staticmethod
-    def get_permissions() -> List[str]:
-        return [
-            "administrator",
-            "poll.create",
-            "poll.delete",
-            "profile.approval",
-            "profile.delete",
-            "profile.update",
-            "role.create",
-            "role.delete",
-            "role.update",
-        ]
-
-    def get_user_by_sid(self, sid) -> User:
-        for user in self.get_users_copy():
-            if user.sid == sid:
-                return user
-
-        raise ValueError(f"Could not find user by sid, {sid=}")
-
-    def get_user_count(self) -> int:
-        return len(self.get_users_copy())
-
-    def get_users_copy(self) -> List[User]:
-        return self._users.copy()
+        # hopefully this doesn't cause issues :)
+        eventlet.spawn(handle_packet, self, user, name, content, packet_id)
 
     def send(self, users, name, content, skip_users=None) -> None:
-        self.outgoing_packets_queue.put((users, name, content,
-                                         self.get_next_packet_id(), skip_users))
+        # hopefully doesn't break anything
+        send_packet(self, users, name, content, skip_users)
 
     def broadcast(self, name, content, skip_users=None) -> None:
-        self.outgoing_packets_queue.put((self.get_users_copy(), name, content,
-                                         self.get_next_packet_id(), skip_users))
+        # hopefully doesn't break anything either
+        send_packet(self, self.get_users_copy(), name, content, skip_users)

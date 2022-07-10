@@ -135,7 +135,8 @@ class Log:
 
         # hide values in packet content if present and necessary
         content = kwargs.pop("content", None)
-        if content:
+        if content and content != "<NO CONTENT GIVEN>":
+            # if packet contained content, filter certain keys
             content = filter_content(content)
 
         # skip cutting off the message if its too long

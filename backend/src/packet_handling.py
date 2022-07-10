@@ -2,7 +2,7 @@ from convenience import *
 from profile_dbe import Profile
 from user import User
 import verify_jwt
-from packet_sender import send_packet
+from packet_sending import send_packet
 
 
 # TODO split up different handlers into different files, roles, user, etc.
@@ -16,8 +16,7 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
     """
 
     set_greenlet_name(f"HandlePacket/#{packet_id}")
-    Log.info(f"Handling packet #{packet_id}, {name=}",
-             content=content or "<NO CONTENT>")
+    Log.info(f"Handling packet #{packet_id}, {name=}", content=content)
 
     try:
         response_packet = _handle_packet_actually(
@@ -47,8 +46,7 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
 
         send_packet(ferdy, user, response_name, response_content, None)
 
-    else:
-        Log.debug("Handled packet, no response packet")
+    Log.debug("Handled packet")
 
 
 def _handle_packet_actually(
@@ -110,10 +108,6 @@ def _handle_packet_actually(
         profile_id = content["id"]
         profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
 
-        # todo add special permission for force setting approval status
-        # if not profile["pending_approval"]:
-        #     raise ProfileNotPendingApproval
-
         approved = content["approved"]
         profile["is_approved"] = approved
         profile["pending_approval"] = False
@@ -155,7 +149,8 @@ def _handle_packet_actually(
             "data": ferdy.profiles.get_entries_data_copy(),
         }
 
-    if name == "profile.update":  # todo make db entry method for updating
+    if name == "profile.update":
+        # todo make db entry method for updating
         user.has_permission("profile.update", raise_if_not=True)
         updated_data = content["updated_data"]
         profile_id = content["id"]

@@ -8,27 +8,22 @@ def send_packet(ferdy, users, name, content, skip_users) -> None:
     error handling.
     """
 
-    Log.debug(f"Sending packet, {name=}", content=content)
+    Log.debug(f"Sending packet, {name=}",
+              content=content or "<NO CONTENT GIVEN>")
 
     try:
-        sent_to = _send_packet_actually(
-            ferdy.sio, users, name, content, skip_users)
+        _send_packet_actually(ferdy.sio, users, name, content, skip_users)
 
     except Exception as ex:
         Log.error("Unhandled exception on _send_packet_actually", ex=ex)
         return
-
-    if sent_to:
-        Log.debug(f"Sent packet to {len(sent_to)} user(s)")
-    else:
-        Log.debug("No recipients for packet, didn't send")
 
 
 def _send_packet_actually(sio, users: Union[User, list], name, content,
                           skip_users) -> list:
     """
     Actually send the packet over socket, return list of users the packet was
-    sent to.\
+    sent to.
     """
 
     if type(users) == User:
@@ -47,7 +42,10 @@ def _send_packet_actually(sio, users: Union[User, list], name, content,
             if user in skip_users:
                 users.remove(user)
 
-    for user in users:
-        sio.emit(name, content, to=user.sid)
+    if users:
+        for user in users:
+            sio.emit(name, content, to=user.sid)
 
-    return users
+        Log.debug(f"Sent packet to {len(users)} user(s)")
+    else:
+        Log.debug("No recipients for packet, didn't send")
