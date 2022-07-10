@@ -14,7 +14,7 @@ class Profile(DatabaseEntry):
     def get_default_data() -> dict:
         return {
             "avatar_external": False,
-            "avatar_url": "default.png",
+            "avatar_filename": "default.png",
             "email": "<email>",
             "email_verified": False,
             "first_name": "<first_name>",

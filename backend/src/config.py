@@ -20,6 +20,7 @@ CLIENT_ID = "179923541658-kfl4lp6lgd1nur0pk5vnqsb3d2hg49e6" \
 DATABASES_FOLDER = "databases"
 FILES_FOLDER = "files"
 AVATARS_FOLDER = "files/avatars"
+SMOELEN_FOLDER = "files/smoelen"
 SONGS_FOLDER = "files/songs"
 LOGS_FOLDER = "logs"
 
@@ -28,7 +29,7 @@ LOGS_FOLDER = "logs"
 TEST = 0, "test", Fore.MAGENTA + Style.NORMAL
 DEBUG = 1, "debug", Fore.WHITE + Style.DIM
 INFO = 2, "info", Fore.GREEN + Style.NORMAL
-WARNING = 3, "warning", Fore.YELLOW + Style.NORMAL
+WARNING = 3, "warn", Fore.YELLOW + Style.NORMAL
 ERROR = 4, "error", Fore.RED + Style.BRIGHT
 
 

@@ -231,6 +231,13 @@ def _handle_packet_actually(
     if name == "room.list":
         raise PacketNotImplemented
 
+    # smoel
+
+    if name == "smoel.list":
+        user.has_permission("smoel.list", raise_if_not=True)
+
+        raise PacketNotImplemented
+
     # song
 
     if name == "song.play":
@@ -282,7 +289,7 @@ def _handle_packet_actually(
             if not profile:
                 email = google_data["email"]
                 email_verified = google_data["email_verified"]
-                avatar_url = google_data["picture"]
+                avatar_filename = google_data["picture"]
                 name = google_data["name"]
                 first_name = google_data["given_name"]
                 last_name = google_data["family_name"]
@@ -293,7 +300,7 @@ def _handle_packet_actually(
                     email=email,
                     email_verified=email_verified,
                     avatar_external=True,
-                    avatar_url=avatar_url,
+                    avatar_filename=avatar_filename,
                     name=name,
                     first_name=first_name,
                     last_name=last_name,

@@ -6,8 +6,8 @@ export default function ProfileAvatar({ profile }) {
     <Avatar
       src={
         profile.avatar_external
-          ? profile.avatar_url
-          : `${BACKEND}/avatars/${profile.avatar_url}`
+          ? profile.avatar_filename
+          : `${BACKEND}/avatars/${profile.avatar_filename}`
       }
       alt={profile.name}
     />

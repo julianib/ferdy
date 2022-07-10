@@ -4,6 +4,7 @@ from profile_dbe import Profile
 from user import User
 from profiles_db import Profiles
 from roles_db import Roles
+from smoelen_db import Smoelen
 from packet_handling import handle_packet
 from packet_sending import send_packet
 
@@ -18,6 +19,7 @@ class Ferdy:
         self.polls = Polls()
         self.profiles = Profiles()
         self.roles = Roles()
+        self.smoelen = Smoelen()
 
     def create_user_from_sid(self, sid) -> User:
         Log.debug(f"Creating user from sid, {sid=}")
@@ -55,6 +57,9 @@ class Ferdy:
             "role.create",
             "role.delete",
             "role.update",
+            "smoel.comment",
+            "smoel.list",
+            "smoel.rate",
         ]
 
     def get_user_by_sid(self, sid) -> User:

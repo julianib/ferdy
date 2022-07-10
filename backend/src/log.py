@@ -174,12 +174,12 @@ class Log:
             if CONSOLE_TIMESTAMP:
                 now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
                 print(
-                    f"{color}[{now}][{level_text}][{greenlet_name}] "
+                    f"{color}[{now}][{level_text.ljust(5)}][{greenlet_name}] "
                     f"{Style.RESET_ALL}{message}"
                 )
             else:
                 print(
-                    f"{color}[{level_text}][{greenlet_name}] "
+                    f"{color}[{level_text.ljust(5)}][{greenlet_name}] "
                     f"{Style.RESET_ALL}{message}"
                 )
 
@@ -243,7 +243,7 @@ class Log:
 
             with open(latest_log, "a", encoding="utf-8") as f:
                 f.write(
-                    f"[{now_str}][{level[1].upper()}][{thread_name}] "
+                    f"[{now_str}][{level[1].upper().ljust(5)}][{thread_name}] "
                     f"{message}\n"
                 )
 

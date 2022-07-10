@@ -45,32 +45,54 @@ def get_avatar(filename):
     Handle GET avatar requests
     """
 
-    set_greenlet_name("app/GET/avatars")
+    set_greenlet_name("GET/avatars")
 
     file_type = filename.split(".")[-1]
     if file_type not in ["png", "jpg"]:
         # invalid file type requested (not a supported image)
         Log.warning(f"Request file type invalid: {file_type}")
-        return f"Avatar file type not supported: {file_type}", 400
+        return f"File type not supported: {file_type}", 400
 
-    Log.debug(f"Reading avatar file, {filename=}")
+    Log.debug(f"Checking file {request.path}")
 
     if os.path.exists(f"{AVATARS_FOLDER}/{filename}"):
         return send_from_directory(f"{os.getcwd()}/{AVATARS_FOLDER}", filename)
 
-    Log.warning(f"Requested file not found, {filename=}")
-    return "Avatar file not found", 404
+    Log.warning(f"Requested file not found: {request.path}")
+    return "File not found", 404
 
+
+@app.get("/smoelen/<filename>")
+def get_smoel(filename):
+    """
+    Handle GET smoel requests
+    """
+
+    set_greenlet_name("GET/smoelen")
+
+    file_type = filename.split(".")[-1]
+    if file_type not in ["png", "jpg"]:
+        # invalid file type requested (not a supported image)
+        Log.warning(f"Request file type invalid: {file_type}")
+        return f"File type not supported: {file_type}", 400
+
+    Log.debug(f"Checking file {request.path}")
+
+    if os.path.exists(f"{SMOELEN_FOLDER}/{filename}"):
+        return send_from_directory(f"{os.getcwd()}/{SMOELEN_FOLDER}", filename)
+
+    Log.warning(f"Requested file not found {request.path}")
+    return "File not found", 404
 
 @app.get("/")
 def get():
-    set_greenlet_name("app/GET")
+    set_greenlet_name("GET/")
     return "GET root!"
 
 
 @app.post("/")
 def post():
-    set_greenlet_name("app/POST")
+    set_greenlet_name("POST/")
     body = request.json
     Log.test(f"post, {body=}")
     return "POST root!"
