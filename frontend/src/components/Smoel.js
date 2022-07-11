@@ -3,34 +3,34 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { BACKEND } from "../utils/backend";
 import useProfile from "../hooks/useProfile";
-import sendPacket from "../utils/sendPacket"
+import sendPacket from "../utils/sendPacket";
 
 export default function Smoel({ smoel }) {
   const { profile } = useProfile();
 
-  function getDislikeCount(smoel) {
+  function getDislikeCount() {
     return smoel.votes.filter((vote) => !vote.is_like).length;
   }
 
-  function getLikeCount(smoel) {
+  function getLikeCount() {
     return smoel.votes.filter((vote) => vote.is_like).length;
   }
 
-  function getLikePercentage(smoel) {
-    const voteCount = getVoteCount(smoel);
+  function getLikePercentage() {
+    const voteCount = getVoteCount();
     if (voteCount === 0) {
       return 0;
     }
 
-    const ratio = getLikeCount(smoel) / voteCount;
+    const ratio = getLikeCount() / voteCount;
     return Math.round(ratio * 100);
   }
 
-  function getVoteCount(smoel) {
+  function getVoteCount() {
     return smoel.votes.length;
   }
 
-  function hasDisliked(smoel) {
+  function hasDisliked() {
     if (!profile) {
       return false;
     }
@@ -46,7 +46,7 @@ export default function Smoel({ smoel }) {
     return false;
   }
 
-  function hasLiked(smoel) {
+  function hasLiked() {
     if (!profile) {
       return false;
     }
@@ -60,9 +60,9 @@ export default function Smoel({ smoel }) {
     return false;
   }
 
-  function onClickVote(id, is_like) {
+  function onClickVote(is_like) {
     sendPacket("smoel.vote", {
-      id,
+      id: smoel.id,
       is_like,
     });
   }
@@ -79,22 +79,25 @@ export default function Smoel({ smoel }) {
         />
       </div>
       <Button
-        variant={hasLiked(smoel) ? "contained" : "outlined"}
+        variant={hasLiked() ? "contained" : "outlined"}
         color="success"
         startIcon={<ThumbUpIcon />}
-        onClick={() => onClickVote(smoel.id, true)}
+        onClick={() => onClickVote(true)}
       >
-        {getLikeCount(smoel)}
+        {getLikeCount()}
       </Button>
       <Button
-        variant={hasDisliked(smoel) ? "contained" : "outlined"}
+        variant={hasDisliked() ? "contained" : "outlined"}
         color="error"
         startIcon={<ThumbDownIcon />}
-        onClick={() => onClickVote(smoel.id, false)}
+        onClick={() => onClickVote(false)}
       >
-        {getDislikeCount(smoel)}
+        {getDislikeCount()}
       </Button>
-      <Typography>{`${getLikePercentage(smoel)}%`}</Typography>
+      <Typography>{`${getLikePercentage()}%`}</Typography>
+      <Typography>{`RoS: ${Math.round(
+        ((getLikeCount() + 1) / (getVoteCount() + 2)) * 100
+      )}`}</Typography>
     </Paper>
   );
 }

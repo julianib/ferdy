@@ -60,7 +60,7 @@ class Ferdy:
             "role.update",
             "smoel.comment",
             "smoel.list",
-            "smoel.rate",
+            "smoel.vote",
         ]
 
     def get_user_by_sid(self, sid) -> User:

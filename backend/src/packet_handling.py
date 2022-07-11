@@ -72,9 +72,196 @@ def _handle_packet_actually(
 
     # database
 
-    if name == "database.smoel.generate":
-        # todo check if user is approved instead of permission check
-        user.has_permission("database", raise_if_not=True)
+    if name == "database.write":
+        # force write every database to disk (save everything in memory)
+
+        user.require_permission("database")
+
+        Log.debug("Writing ALL databases in memory to disk")
+        ferdy.polls.write_to_disk()
+        ferdy.profiles.write_to_disk()
+        ferdy.roles.write_to_disk()
+        ferdy.smoelen.write_to_disk()
+        Log.debug("Written all databases in memory to disk")
+
+        return True
+
+    # permission
+
+    if name == "permission.list":
+        return "permission.list", {
+            "data": ferdy.get_permissions()
+        }
+
+    # poll
+
+    if name == "poll.create":
+        user.require_permission("poll.create")
+        allow_multiple_choices = content["allow_multiple_choices"]
+        body = content["body"]
+        title = content["title"]
+
+        ferdy.polls.create(
+            allow_multiple_choices=allow_multiple_choices,
+            body=body,
+            title=title,
+        )
+
+        ferdy.broadcast("poll.list", {
+            "data": ferdy.polls.get_entries_data_copy()
+        })
+
+        return True
+
+    if name == "poll.delete":
+        user.require_permission("poll.delete")
+
+        raise PacketNotImplemented
+
+    if name == "poll.list":
+        return "poll.list", {
+            "data": ferdy.polls.get_entries_data_copy()
+        }
+
+    # profile
+
+    if name == "profile.approval":
+        user.require_permission("profile.approval")
+        profile_id = content["id"]
+        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
+
+        approved = content["approved"]
+        profile["is_approved"] = approved
+        profile["pending_approval"] = False
+
+        ferdy.broadcast("profile.list", {
+            "data": ferdy.profiles.get_entries_data_copy()
+        })
+
+        return True
+
+    if name == "profile.data":
+        raise PacketNotImplemented
+
+    if name == "profile.delete":
+        user.require_permission("profile.delete")
+        profile_id = content["id"]
+        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
+
+        # log out user that is logged in using the specified profile
+        if profile["is_online"]:
+            for online_user in ferdy.get_users_copy():
+                online_profile: Profile = online_user.get_profile()
+                if not online_profile:
+                    continue
+
+                if online_profile["id"] == profile["id"]:
+                    ferdy.handle_log_out(online_user, broadcast=False)
+
+        profile.delete()
+
+        ferdy.broadcast("profile.list", {
+            "data": ferdy.profiles.get_entries_data_copy()
+        })
+
+        return True
+
+    if name == "profile.list":
+        return "profile.list", {
+            "data": ferdy.profiles.get_entries_data_copy(),
+        }
+
+    if name == "profile.update":
+        # todo make db entry method for updating
+        user.require_permission("profile.update")
+        updated_data = content["updated_data"]
+        profile_id = content["id"]
+        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
+
+        for key, value in updated_data.items():
+            # only update date if necessary
+            if profile[key] == value:
+                Log.debug(f"Data is the same, not updating, {key=}, {value=}")
+            else:
+                profile[key] = value
+
+        ferdy.broadcast("profile.list", {
+            "data": ferdy.profiles.get_entries_data_copy()
+        })
+
+        return True
+
+    # role
+
+    if name == "role.create":
+        user.require_permission("role.create")
+        ferdy.roles.create()
+
+        ferdy.broadcast("role.list", {
+            "data": ferdy.roles.get_entries_data_copy()
+        })
+
+        return True
+
+    # todo remove role from all users before deleting
+    if name == "role.delete":
+        user.require_permission("role.delete")
+        role_id = content["id"]
+        role = ferdy.roles.find_single(id=role_id, raise_missing=True)
+        role.delete()
+
+        ferdy.broadcast("role.list", {
+            "data": ferdy.roles.get_entries_data_copy()
+        })
+
+        return True
+
+    if name == "role.list":
+        return "role.list", {
+            "data": ferdy.roles.get_entries_data_copy()
+        }
+
+    if name == "role.update":
+        user.require_permission("role.update")
+        role_id = content["id"]
+        updated_data = content["updated_data"]
+        role = ferdy.roles.find_single(id=role_id, raise_missing=True)
+
+        for key, value in updated_data.items():
+            if role[key] == value:
+                Log.debug(f"Data is the same, not updating, {key=}, {value=}")
+            else:
+                role[key] = value
+
+        ferdy.broadcast("role.list", {
+            "data": ferdy.roles.get_entries_data_copy()
+        })
+
+        return True
+
+    # room
+
+    if name == "room.data":
+        raise PacketNotImplemented
+
+    if name == "room.join":
+        raise PacketNotImplemented
+
+    if name == "room.leave":
+        raise PacketNotImplemented
+
+    if name == "room.list":
+        raise PacketNotImplemented
+
+    # smoel
+
+    if name == "smoel.comment":
+        user.require_permission("smoel.comment")
+
+        raise PacketNotImplemented
+
+    if name == "smoel.generate_missing":
+        user.require_permission("database")
 
         Log.debug("Generating missing Smoelen entries for existing image files")
 
@@ -117,193 +304,16 @@ def _handle_packet_actually(
 
         return True
 
-    if name == "database.write":
-        # force write every database to disk (save everything in memory)
-
-        user.has_permission("database", raise_if_not=True)
-
-        Log.debug("Writing ALL databases in memory to disk")
-        ferdy.polls.write_to_disk()
-        ferdy.profiles.write_to_disk()
-        ferdy.roles.write_to_disk()
-        ferdy.smoelen.write_to_disk()
-        Log.debug("Written all databases in memory to disk")
-
-        return True
-
-    # permission
-
-    if name == "permission.list":
-        return "permission.list", {
-            "data": ferdy.get_permissions()
-        }
-
-    # poll
-
-    if name == "poll.create":
-        user.has_permission("poll.create", raise_if_not=True)
-        allow_multiple_choices = content["allow_multiple_choices"]
-        body = content["body"]
-        title = content["title"]
-
-        ferdy.polls.create(
-            allow_multiple_choices=allow_multiple_choices,
-            body=body,
-            title=title,
-        )
-
-        ferdy.broadcast("poll.list", {
-            "data": ferdy.polls.get_entries_data_copy()
-        })
-
-        return True
-
-    if name == "poll.list":
-        return "poll.list", {
-            "data": ferdy.polls.get_entries_data_copy()
-        }
-
-    # profile
-
-    if name == "profile.approval":
-        user.has_permission("profile.approval", raise_if_not=True)
-        profile_id = content["id"]
-        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
-
-        approved = content["approved"]
-        profile["is_approved"] = approved
-        profile["pending_approval"] = False
-
-        ferdy.broadcast("profile.list", {
-            "data": ferdy.profiles.get_entries_data_copy()
-        })
-
-        return True
-
-    if name == "profile.data":
-        raise PacketNotImplemented
-
-    if name == "profile.delete":
-        user.has_permission("profile.delete", raise_if_not=True)
-        profile_id = content["id"]
-        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
-
-        # log out user that is logged in using the specified profile
-        if profile["is_online"]:
-            for online_user in ferdy.get_users_copy():
-                online_profile: Profile = online_user.get_profile()
-                if not online_profile:
-                    continue
-
-                if online_profile["id"] == profile["id"]:
-                    ferdy.handle_log_out(online_user, broadcast=False)
-
-        profile.delete()
-
-        ferdy.broadcast("profile.list", {
-            "data": ferdy.profiles.get_entries_data_copy()
-        })
-
-        return True
-
-    if name == "profile.list":
-        return "profile.list", {
-            "data": ferdy.profiles.get_entries_data_copy(),
-        }
-
-    if name == "profile.update":
-        # todo make db entry method for updating
-        user.has_permission("profile.update", raise_if_not=True)
-        updated_data = content["updated_data"]
-        profile_id = content["id"]
-        profile = ferdy.profiles.find_single(id=profile_id, raise_missing=True)
-
-        for key, value in updated_data.items():
-            # only update date if necessary
-            if profile[key] == value:
-                Log.debug(f"Data is the same, not updating, {key=}, {value=}")
-            else:
-                profile[key] = value
-
-        ferdy.broadcast("profile.list", {
-            "data": ferdy.profiles.get_entries_data_copy()
-        })
-
-        return True
-
-    # role
-
-    if name == "role.create":
-        user.has_permission("role.create", raise_if_not=True)
-        ferdy.roles.create()
-
-        ferdy.broadcast("role.list", {
-            "data": ferdy.roles.get_entries_data_copy()
-        })
-
-        return True
-
-    # todo remove role from all users before deleting
-    if name == "role.delete":
-        user.has_permission("role.delete", raise_if_not=True)
-        role_id = content["id"]
-        role = ferdy.roles.find_single(id=role_id, raise_missing=True)
-        role.delete()
-
-        ferdy.broadcast("role.list", {
-            "data": ferdy.roles.get_entries_data_copy()
-        })
-
-        return True
-
-    if name == "role.list":
-        return "role.list", {
-            "data": ferdy.roles.get_entries_data_copy()
-        }
-
-    if name == "role.update":
-        user.has_permission("role.update", raise_if_not=True)
-        role_id = content["id"]
-        updated_data = content["updated_data"]
-        role = ferdy.roles.find_single(id=role_id, raise_missing=True)
-
-        for key, value in updated_data.items():
-            if role[key] == value:
-                Log.debug(f"Data is the same, not updating, {key=}, {value=}")
-            else:
-                role[key] = value
-
-        ferdy.broadcast("role.list", {
-            "data": ferdy.roles.get_entries_data_copy()
-        })
-
-        return True
-
-    # room
-
-    if name == "room.data":
-        raise PacketNotImplemented
-
-    if name == "room.join":
-        raise PacketNotImplemented
-
-    if name == "room.leave":
-        raise PacketNotImplemented
-
-    if name == "room.list":
-        raise PacketNotImplemented
-
-    # smoel
-
     if name == "smoel.list":
-        user.has_permission("smoel.list", raise_if_not=True)
+        # todo check if user is approved instead of permission check
+        user.require_permission("smoel.list")
 
         return "smoel.list", {
             "data": ferdy.smoelen.get_entries_data_copy()
         }
 
     if name == "smoel.vote":
-        user.has_permission("smoel.vote", raise_if_not=True)
+        user.require_permission("smoel.vote")
 
         smoel_id = content["id"]
         is_like = content["is_like"]

@@ -114,13 +114,13 @@ class DatabaseEntry(ABC):
                 if self[key] != value:
                     return False
 
-        Log.debug(f"Entry matched with kwargs: {self}")
+        Log.debug(f"Entry match: {self}")
         return True
 
     def trigger_db_write(self):
         """
         Tell this entry's db to write to disk, (should be) called when data is
-        updated
+        updated by
         """
 
         self._parent_database.write_to_disk()

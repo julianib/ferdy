@@ -25,31 +25,29 @@ class User:
 
         # raise UserNotLoggedIn
 
-    def has_permission(self, permission: str, raise_if_not: bool) -> bool:
-        Log.debug(f"Checking if user has role with permission: {permission}")
+    def require_permission(self, permission: str) -> True:
+        """
+        Requires that the user has given permission, or admin bypass.
+        Raises UserUnauthorized if not.
+        """
+        Log.debug(f"Requiring user permission: '{permission}'")
 
         if not self.is_logged_in():
-            if raise_if_not:
-                raise UserUnauthorized
-
-            return False
+            raise UserUnauthorized
 
         role_ids = self.get_profile()["role_ids"]
 
         for role_id in role_ids:
             role = self.ferdy.roles.find_single(id=role_id)
             if "administrator" in role["permissions"]:
-                Log.debug("User has administrator bypass permission")
+                Log.debug("User has role with administrator bypass permission")
                 return True
 
             if permission in role["permissions"]:
-                Log.debug(f"User has permission {permission}")
+                Log.debug(f"User has role with permission '{permission}'")
                 return True
 
-        if raise_if_not:
-            raise UserUnauthorized
-
-        return False
+        raise UserUnauthorized
 
     def is_logged_in(self) -> bool:
         if self._profile:
