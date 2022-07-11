@@ -1,7 +1,8 @@
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
-import { Tab, Tabs } from "@mui/material";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import { Link } from "react-router-dom";
 import useTabsValue from "../hooks/useTabsValue";
 import onTabFocus from "../utils/onTabFocus";

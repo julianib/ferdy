@@ -1,4 +1,5 @@
-import { Alert, Snackbar } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import useToast from "../hooks/useToast";
 
 export default function Toast() {

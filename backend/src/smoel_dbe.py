@@ -13,99 +13,63 @@ class Smoel(DatabaseEntry):
     @staticmethod
     def get_default_data() -> dict:
         return {
-            "comments": [],  # a "comment" has author_id and text
+            "comments": [],  # {author_id, text}
             "image_filename": "<image_filename>",
             "name": "<name>",
-            "votes": []  # a "vote" is either a like or dislike
+            "ratings": []  # {stars=1-5, profile_id}
         }
 
     @staticmethod
     def get_keys_to_filter() -> list:
         return []
 
-    def add_vote(self, profile_id: int, is_like: bool):
-        if type(profile_id) != int or type(is_like) != bool:
-            raise ValueError("argument types must be int and bool")
+    def add_rating(self, profile, stars: int):
+        """
+        Add a rating cast by a specific profile to this smoel
+        """
 
-        vote = {
-            "is_like": is_like,
-            "profile_id": profile_id
+        if type(stars) != int or stars < 1 or stars > 5:
+            raise ValueError(f"'stars' must be [1-5], {stars=}")
+
+        rating = {
+            "profile_id": profile["id"],
+            "stars": stars
         }
-        self["votes"].append(vote)
+        self["ratings"].append(rating)
         self.trigger_db_write()  # .append() does not trigger db write
 
-        Log.debug(f"Added vote: {vote}")
+        Log.debug(f"Added rating: {rating}")
 
-    def get_dislike_count(self):
-        count = 0
-        for vote in self["votes"]:
-            if not vote["is_like"]:
-                count += 1
-
-        return count
-
-    def get_like_count(self):
-        count = 0
-        for vote in self["votes"]:
-            if vote["is_like"]:
-                count += 1
-
-        return count
-
-    def get_vote_of_user(self, user) -> Optional[bool]:
+    def get_rating_of_profile(self, profile) -> Optional[int]:
         """
-        Returns True if liked, False if disliked, and None if no vote cast
+        Returns 1-5 if profile has rated, and None if not
         """
 
-        if not user.is_logged_in():
-            raise UserNotLoggedIn
-
-        profile_id = user.get_profile()["id"]
-
-        for vote in self["votes"]:
-            if vote["profile_id"] != profile_id:
+        for rating in self["rating"]:
+            if rating["profile_id"] != profile["id"]:
                 continue
 
-            # profile id matches
-            is_like = vote["is_like"]
-            return is_like
+            return rating["stars"]
 
         # user has not cast a vote
         return None
 
-    def get_votes_count(self):
-        return len(self["votes"])
+    def get_ratings_count(self):
+        return len(self["ratings"])
 
-    def remove_vote(self, profile_id: int):
-        for vote in self["votes"]:
-            if vote["profile_id"] == profile_id:
-                Log.debug(f"Removing vote: {vote}")
-                self["votes"].remove(vote)
-                self.trigger_db_write()  # .remove() does not trigger db write
-                return
+    def remove_rating(self, profile):
+        """
+        Remove any rating made by profile, if any has been made.
+        """
 
-        Log.debug(f"Profile ID {profile_id} did not vote for {self}")
+        for rating in self["ratings"]:
+            if rating["profile_id"] != profile["id"]:
+                continue
 
-    def remove_vote_of_user(self, user):
-        Log.debug(f"Removing vote of user {user} from {self}")
+            Log.debug(f"Removing rating: {rating}")
+            self["ratings"].remove(rating)
+            self.trigger_db_write()  # .remove() does not trigger db write
+            return
 
-        if not user.is_logged_in():
-            raise UserNotLoggedIn
+        Log.debug(f"Profile {profile} did not rate {self}")
 
-        profile_id = user.get_profile()["id"]
-        self.remove_vote(profile_id)
-
-    def set_vote_of_user(self, user, is_like: bool):
-        Log.debug(f"Setting vote of {user} for {self} to {is_like=}")
-
-        if not user.is_logged_in():
-            raise UserNotLoggedIn
-
-        if type(is_like) is not bool:
-            raise ValueError("is_like must be a boolean value, "
-                             f"not {type(is_like)}")
-
-        self.remove_vote_of_user(user)
-
-        profile_id = user.get_profile()["id"]
-        self.add_vote(profile_id, is_like)

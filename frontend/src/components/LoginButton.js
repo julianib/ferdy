@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import GoogleLogin from "react-google-login";
 import sendPacket from "../utils/sendPacket";
 
@@ -14,10 +14,14 @@ export default function LoginButton() {
 
   function onGoogleLoginSuccess(res) {
     console.debug("Google log in OK, sending JWT");
-    sendPacket("user.log_in", {
-      fake: false,
-      jwt: res.tokenId,
-    }, true);
+    sendPacket(
+      "user.log_in",
+      {
+        fake: false,
+        jwt: res.tokenId,
+      },
+      true
+    );
   }
 
   return (

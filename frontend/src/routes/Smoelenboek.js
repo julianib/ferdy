@@ -1,8 +1,11 @@
-import { Button, Grid, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
 import usePacket from "../hooks/usePacket";
 import Smoel from "../components/Smoel";
+import { getLaplaceScore } from "../utils/laplace";
 
 export default function Smoelenboek() {
   const [smoelen, setSmoelen] = useState([]);
@@ -20,22 +23,18 @@ export default function Smoelenboek() {
   }
 
   function sortByLaplace(a, b) {
-    // sort based on votes. if equal votes, sort based on name
-    // return -1 if a before b, 1 if a after b, 0 if a === b
+    // sort based on rating. if equal rating, sort based on name
+    // return -1 if a BEFORE b, 1 if a AFTER b, 0 if a === b
     // source: https://en.wikipedia.org/wiki/Rule_of_succession
 
-    const aLikeCount = a.votes.filter((vote) => vote.is_like).length;
-    const aVoteCount = a.votes.length;
-    const aLaplaceRating = (aLikeCount + 1) / (aVoteCount + 2);
-    const bLikeCount = b.votes.filter((vote) => vote.is_like).length;
-    const bVoteCount = b.votes.length;
-    const bLaplaceRating = (bLikeCount + 1) / (bVoteCount + 2);
+    const aScore = getLaplaceScore(a);
+    const bScore = getLaplaceScore(b);
 
-    if (aLaplaceRating > bLaplaceRating) return -1; // sort a before b
-    if (aLaplaceRating < bLaplaceRating) return 1; // sort a after b
+    if (aScore > bScore) return -1; // sort a before b
+    if (aScore < bScore) return 1; // sort a after b
 
     // if tied: sort alphabetically: "abc" before "xyz"
-    return a.name.localeCompare(b.name);
+    return sortByName(a, b);
   }
 
   function sortByName(a, b) {
@@ -43,7 +42,7 @@ export default function Smoelenboek() {
   }
 
   usePacket("smoel.list", (content) => {
-    setSmoelen(content.data);
+    setSmoelen(content.data.sort(sortByLaplace));
   });
 
   useEffect(() => {

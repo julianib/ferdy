@@ -1,5 +1,6 @@
 import NoAccountsIcon from "@mui/icons-material/NoAccounts";
-import { IconButton, Tooltip } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import useProfile from "../hooks/useProfile";
 import ProfileAvatar from "./ProfileAvatar";
 

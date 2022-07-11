@@ -1,4 +1,7 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import usePacket from "../hooks/usePacket";
 import sendPacket from "../utils/sendPacket";

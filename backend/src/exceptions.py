@@ -16,6 +16,10 @@ class EntryMissing(BasePacketError):
     error = "entry_missing"
 
 
+class InvalidContent(BasePacketError):
+    error = "invalid_content"
+
+
 class InvalidJWT(BasePacketError):
     error = "invalid_jwt"
 

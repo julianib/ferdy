@@ -1,5 +1,7 @@
 import PeopleIcon from "@mui/icons-material/People";
-import { Badge, IconButton, Tooltip } from "@mui/material";
+import Badge from "@mui/material/Badge";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import useOnlineUsers from "../hooks/useOnlineUsers";
 
 export default function OnlineUsersIconButton() {

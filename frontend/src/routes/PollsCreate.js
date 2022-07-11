@@ -1,12 +1,10 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import sendPacket from "../utils/sendPacket";
 

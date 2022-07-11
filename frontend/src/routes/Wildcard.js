@@ -1,4 +1,5 @@
-import { Button, Box } from "@mui/material";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 
 export default function Wildcard() {

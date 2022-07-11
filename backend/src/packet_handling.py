@@ -24,7 +24,7 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
             ferdy, user, name, content)
 
     except BasePacketError as ex:
-        Log.debug(f"Packet handling error caught: {ex.error}")
+        Log.debug(f"Caught error on packet handling: {ex.error}")
         response_packet = error_packet(ex.error, name, content)
 
     except Exception as ex:
@@ -312,24 +312,26 @@ def _handle_packet_actually(
             "data": ferdy.smoelen.get_entries_data_copy()
         }
 
-    if name == "smoel.vote":
-        user.require_permission("smoel.vote")
+    if name == "smoel.rate":
+        user.require_permission("smoel.rate")
 
         smoel_id = content["id"]
-        is_like = content["is_like"]
-
+        stars = content["stars"]
         smoel = ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
 
-        prior_vote = smoel.get_vote_of_user(user)
-        if prior_vote is not None:
-            if is_like == prior_vote:
-                # user has liked/disliked already, remove it
-                smoel.remove_vote_of_user(user)
-                return "smoel.list", {
-                    "data": ferdy.smoelen.get_entries_data_copy()
-                }
+        if stars and (type(stars) != int or stars < 1 or stars > 5):
+            raise InvalidContent
 
-        smoel.set_vote_of_user(user, is_like)
+        profile = user.get_profile()
+
+        # whether the user is rating or not, remove any prior rating first
+        smoel.remove_rating(profile)
+
+        if stars:
+            smoel.add_rating(profile, stars)  # then add the (new) rating
+
+        return True
+
         return "smoel.list", {
             "data": ferdy.smoelen.get_entries_data_copy()
         }

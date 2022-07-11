@@ -1,69 +1,56 @@
-import { Paper, Button, Typography } from "@mui/material";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Rating from "@mui/material/Rating";
 import { BACKEND } from "../utils/backend";
-import useProfile from "../hooks/useProfile";
 import sendPacket from "../utils/sendPacket";
+import { getTotalStars, getLaplaceScore } from "../utils/laplace";
+import useProfile from "../hooks/useProfile";
+import { useState } from "react";
 
 export default function Smoel({ smoel }) {
   const { profile } = useProfile();
+  const [stars, setStars] = useState(() => getYourRating());
 
-  function getDislikeCount() {
-    return smoel.votes.filter((vote) => !vote.is_like).length;
-  }
-
-  function getLikeCount() {
-    return smoel.votes.filter((vote) => vote.is_like).length;
-  }
-
-  function getLikePercentage() {
-    const voteCount = getVoteCount();
-    if (voteCount === 0) {
-      return 0;
+  function getAverageRating() {
+    const ratingsCount = getRatingsCount();
+    if (!ratingsCount) {
+      return;
     }
 
-    const ratio = getLikeCount() / voteCount;
-    return Math.round(ratio * 100);
+    const totalStars = getTotalStars(smoel);
+
+    // round to 1 decimal
+    const rounded = Math.round((totalStars / ratingsCount) * 10) / 10;
+    return rounded;
   }
 
-  function getVoteCount() {
-    return smoel.votes.length;
+  function getRatingsCount() {
+    return smoel.ratings.length;
   }
 
-  function hasDisliked() {
-    if (!profile) {
-      return false;
+  function getRatingsDescription() {
+    // ratings count is > 0
+    if (getRatingsCount()) {
+      return `${getAverageRating()}/5⭐ (${getRatingsCount()})`;
     }
 
-    if (
-      smoel.votes.find(
-        (vote) => !vote.is_like && vote.profile_id === profile.id
-      )
-    ) {
-      return true;
-    }
-
-    return false;
+    return "Unrated";
   }
 
-  function hasLiked() {
-    if (!profile) {
-      return false;
-    }
+  function getYourRating() {
+    const rating = smoel.ratings.find(
+      (smoel) => smoel.profile_id === profile.id
+    );
 
-    if (
-      smoel.votes.find((vote) => vote.is_like && vote.profile_id === profile.id)
-    ) {
-      return true;
-    }
-
-    return false;
+    // return null if no rating is found (instead of undefined)
+    return rating?.stars || null;
   }
 
-  function onClickVote(is_like) {
-    sendPacket("smoel.vote", {
+  function onChangeRating(_event, newValue) {
+    setStars(newValue);
+    sendPacket("smoel.rate", {
       id: smoel.id,
-      is_like,
+      stars: newValue,
     });
   }
 
@@ -71,33 +58,15 @@ export default function Smoel({ smoel }) {
     <Paper sx={{ p: 1 }} variant="outlined">
       <Typography variant="h5">{smoel.name}</Typography>
       <div sx={{ width: "100%" }}>
-        {/* todo fix humongous big image ??????????? */}
         <img
           width="100%"
           src={`${BACKEND}/smoelen/${smoel.image_filename}`}
           alt={smoel.name}
         />
       </div>
-      <Button
-        variant={hasLiked() ? "contained" : "outlined"}
-        color="success"
-        startIcon={<ThumbUpIcon />}
-        onClick={() => onClickVote(true)}
-      >
-        {getLikeCount()}
-      </Button>
-      <Button
-        variant={hasDisliked() ? "contained" : "outlined"}
-        color="error"
-        startIcon={<ThumbDownIcon />}
-        onClick={() => onClickVote(false)}
-      >
-        {getDislikeCount()}
-      </Button>
-      <Typography>{`${getLikePercentage()}%`}</Typography>
-      <Typography>{`RoS: ${Math.round(
-        ((getLikeCount() + 1) / (getVoteCount() + 2)) * 100
-      )}`}</Typography>
+      <Rating size="large" value={stars} onChange={onChangeRating} />
+      <Typography>{getRatingsDescription()}</Typography>
+      <Typography>{`LS: ${getLaplaceScore(smoel, true)}`}</Typography>
     </Paper>
   );
 }

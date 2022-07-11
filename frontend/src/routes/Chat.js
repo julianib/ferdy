@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export default function Chat() {
-  return <Typography>Chat</Typography>
-};
+  return <Typography>Chat</Typography>;
+}

@@ -1,4 +1,6 @@
-import { Box, Button, TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import { useState } from "react";
 import sendPacket from "../utils/sendPacket";
 
@@ -10,10 +12,14 @@ export default function FakeLoginForm() {
   }
 
   function onClickLogin() {
-    sendPacket("user.log_in", {
-      fake: true,
-      google_id: googleId,
-    }, true);
+    sendPacket(
+      "user.log_in",
+      {
+        fake: true,
+        google_id: googleId,
+      },
+      true
+    );
   }
 
   return (

@@ -1,5 +1,5 @@
 import ViewKanbanOutlinedIcon from "@mui/icons-material/ViewKanbanOutlined";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 export default function TrelloIconButton() {
   return (

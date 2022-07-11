@@ -1,4 +1,4 @@
-import { Avatar } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import { BACKEND } from "../utils/backend";
 
 export default function ProfileAvatar({ profile }) {

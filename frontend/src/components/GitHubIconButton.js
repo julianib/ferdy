@@ -1,5 +1,5 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 export default function GitHubIconButton() {
   return (

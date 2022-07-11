@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography"
 import { Route, Routes } from "react-router-dom";
 import useOnlineUsers from "./hooks/useOnlineUsers";
 import usePacket from "./hooks/usePacket";

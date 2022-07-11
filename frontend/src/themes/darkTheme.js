@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
 
 // https://bareynol.github.io/mui-theme-creator
 

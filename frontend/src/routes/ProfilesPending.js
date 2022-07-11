@@ -1,17 +1,15 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import DoneIcon from "@mui/icons-material/Done";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Grid,
-  List,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Grid from "@mui/material/Grid";
+import List from "@mui/material/List";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
 import usePacket from "../hooks/usePacket";

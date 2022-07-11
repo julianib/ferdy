@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
-import { Tab, Tabs } from "@mui/material";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import { Link } from "react-router-dom";
 import useTabsValue from "../hooks/useTabsValue";
 import onTabFocus from "../utils/onTabFocus";
