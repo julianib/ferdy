@@ -42,6 +42,7 @@ export default function Smoelenboek() {
   }
 
   usePacket("smoel.list", (content) => {
+    // todo select sorting method with radio buttons
     setSmoelen(content.data.sort(sortByLaplace));
   });
 

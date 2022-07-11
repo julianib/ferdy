@@ -8,6 +8,7 @@ import useProfile from "../hooks/useProfile";
 import { useState } from "react";
 
 export default function Smoel({ smoel }) {
+  // todo add favorite buttnn to find specific items back quickly in special tab
   const { profile } = useProfile();
   const [stars, setStars] = useState(() => getYourRating());
 
@@ -31,7 +32,7 @@ export default function Smoel({ smoel }) {
   function getRatingsDescription() {
     // ratings count is > 0
     if (getRatingsCount()) {
-      return `${getAverageRating()}/5⭐ (${getRatingsCount()})`;
+      return `${getAverageRating()}/5⭐ (${getRatingsCount()} ratings)`;
     }
 
     return "Unrated";

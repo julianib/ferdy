@@ -330,8 +330,6 @@ def _handle_packet_actually(
         if stars:
             smoel.add_rating(profile, stars)  # then add the (new) rating
 
-        return True
-
         return "smoel.list", {
             "data": ferdy.smoelen.get_entries_data_copy()
         }
