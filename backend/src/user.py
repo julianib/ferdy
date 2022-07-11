@@ -26,7 +26,7 @@ class User:
         # raise UserNotLoggedIn
 
     def has_permission(self, permission: str, raise_if_not: bool) -> bool:
-        Log.debug(f"Checking if user has permission: {permission}")
+        Log.debug(f"Checking if user has role with permission: {permission}")
 
         if not self.is_logged_in():
             if raise_if_not:

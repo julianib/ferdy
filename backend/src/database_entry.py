@@ -128,6 +128,7 @@ class DatabaseEntry(ABC):
     @staticmethod
     @abstractmethod
     def get_default_data() -> dict:
+        # todo add REQUIRED properties: ("key": None), such as "name" for Roles
         """
         Get the (JSON-compatible) default data key/values of this entry type
         """

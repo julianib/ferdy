@@ -125,7 +125,7 @@ class Database(ABC):
     def find_many(self, raise_found=False, raise_missing=False, **kwargs) \
             -> List[DatabaseEntry]:
 
-        Log.debug(f"Finding entries in DB {self}, {raise_found=}, "
+        Log.debug(f"Finding many entries in {self}, {raise_found=}, "
                   f"{raise_missing=}, {kwargs=}")
 
         if not kwargs:
@@ -152,7 +152,7 @@ class Database(ABC):
     def find_single(self, raise_found=False, raise_missing=False, **kwargs) \
             -> DatabaseEntry:
 
-        Log.debug(f"Finding entry in DB {self}, {raise_found=}, "
+        Log.debug(f"Finding single entry in {self}, {raise_found=}, "
                   f"{raise_missing=}, {kwargs=}")
 
         if not kwargs:

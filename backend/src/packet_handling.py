@@ -302,6 +302,28 @@ def _handle_packet_actually(
             "data": ferdy.smoelen.get_entries_data_copy()
         }
 
+    if name == "smoel.vote":
+        user.has_permission("smoel.vote", raise_if_not=True)
+
+        smoel_id = content["id"]
+        is_like = content["is_like"]
+
+        smoel = ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
+
+        prior_vote = smoel.get_vote_of_user(user)
+        if prior_vote is not None:
+            if is_like == prior_vote:
+                # user has liked/disliked already, remove it
+                smoel.remove_vote_of_user(user)
+                return "smoel.list", {
+                    "data": ferdy.smoelen.get_entries_data_copy()
+                }
+
+        smoel.set_vote_of_user(user, is_like)
+        return "smoel.list", {
+            "data": ferdy.smoelen.get_entries_data_copy()
+        }
+
     # song
 
     if name == "song.play":
