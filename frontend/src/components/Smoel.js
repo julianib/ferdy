@@ -7,7 +7,7 @@ import { getTotalStars, getLaplaceScore } from "../utils/laplace";
 import useProfile from "../hooks/useProfile";
 import { useState } from "react";
 
-export default function Smoel({ smoel }) {
+export default function Smoel({ smoel, onClickSmoel }) {
   // todo add favorite buttnn to find specific items back quickly in special tab
   const { profile } = useProfile();
   const [stars, setStars] = useState(() => getYourRating());
@@ -58,13 +58,13 @@ export default function Smoel({ smoel }) {
   return (
     <Paper sx={{ p: 1 }} variant="outlined">
       <Typography variant="h5">{smoel.name}</Typography>
-      <div sx={{ width: "100%" }}>
-        <img
-          width="100%"
-          src={`${BACKEND}/smoelen/${smoel.image_filename}`}
-          alt={smoel.name}
-        />
-      </div>
+      <img
+        style={{ cursor: "pointer" }}
+        width="100%"
+        src={`${BACKEND}/smoelen/${smoel.image_filename}`}
+        alt={smoel.name}
+        onClick={() => onClickSmoel(smoel)}
+      />
       <Rating size="large" value={stars} onChange={onChangeRating} />
       <Typography>{getRatingsDescription()}</Typography>
       <Typography>{`LS: ${getLaplaceScore(smoel, true)}`}</Typography>

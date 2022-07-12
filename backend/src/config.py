@@ -45,3 +45,7 @@ LOG_SOCKETIO = False
 CONTENT_KEYS_TO_ABBREVIATE = []
 SOUND_LEVEL = None  # falsy to disable
 TRACEBACK_LIMIT = None  # falsy to disable
+
+
+# smoelenboek
+SMOEL_MAX_COMMENT_LENGTH = 420

@@ -13,7 +13,7 @@ class Smoel(DatabaseEntry):
     @staticmethod
     def get_default_data() -> dict:
         return {
-            "comments": [],  # {author_id, text}
+            "comments": [],  # {profile_id, text}
             "image_filename": "<image_filename>",
             "name": "<name>",
             "ratings": []  # {stars=1-5, profile_id}
@@ -23,13 +23,32 @@ class Smoel(DatabaseEntry):
     def get_keys_to_filter() -> list:
         return []
 
+    def add_comment(self, profile, text: str):
+        """
+        Add a comment authored by a specific profile
+        """
+
+        if not text or type(text) != str or len(text) > SMOEL_MAX_COMMENT_LENGTH:
+            raise ValueError(f"invalid 'text' argument: {text=}")
+
+        # todo MAYBE make database for smoel comments? sort by posted_unix ??
+        comment = {
+            "posted_unix": int(time.time()),
+            "profile_id": profile["id"],
+            "text": text
+        }
+        self["comments"].append(comment)
+        self.trigger_db_write()  # append doesnt update db
+
+        Log.debug(f"Added comment: {comment}")
+
     def add_rating(self, profile, stars: int):
         """
         Add a rating cast by a specific profile to this smoel
         """
 
         if type(stars) != int or stars < 1 or stars > 5:
-            raise ValueError(f"'stars' must be [1-5], {stars=}")
+            raise ValueError(f"invalid 'stars' argument: {stars=}")
 
         rating = {
             "profile_id": profile["id"],

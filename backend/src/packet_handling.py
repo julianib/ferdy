@@ -24,7 +24,7 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
             ferdy, user, name, content)
 
     except BasePacketError as ex:
-        Log.debug(f"Caught error on packet handling: {ex.error}")
+        Log.debug(f"Caught error on packet handling: {type(ex.error).__name__}")
         response_packet = error_packet(ex.error, name, content)
 
     except Exception as ex:
@@ -258,7 +258,21 @@ def _handle_packet_actually(
     if name == "smoel.comment":
         user.require_permission("smoel.comment")
 
-        raise PacketNotImplemented
+        smoel_id = content["smoel_id"]
+        text = content["text"]
+
+        if not text or type(text) != str \
+                or len(text) > SMOEL_MAX_COMMENT_LENGTH:
+            raise InvalidContent
+
+        profile = user.get_profile()
+
+        smoel = ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
+        smoel.add_comment(profile, text)
+
+        return "smoel.list", {
+            "data": ferdy.smoelen.get_entries_data_copy()
+        }
 
     if name == "smoel.generate_missing":
         user.require_permission("database")

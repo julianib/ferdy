@@ -5,10 +5,16 @@ import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
 import usePacket from "../hooks/usePacket";
 import Smoel from "../components/Smoel";
+import SmoelPreview from "../components/SmoelPreview";
 import { getLaplaceScore } from "../utils/laplace";
 
 export default function Smoelenboek() {
   const [smoelen, setSmoelen] = useState([]);
+  const [selectedSmoel, setSelectedSmoel] = useState();
+
+  function onClickSmoel(smoel) {
+    setSelectedSmoel(smoel);
+  }
 
   function onClickSortByLaplace() {
     const newSmoelen = smoelen.slice();
@@ -44,6 +50,13 @@ export default function Smoelenboek() {
   usePacket("smoel.list", (content) => {
     // todo select sorting method with radio buttons
     setSmoelen(content.data.sort(sortByLaplace));
+    setSelectedSmoel((oldSelectedSmoel) => {
+      console.log("received sm list, selected:", oldSelectedSmoel);
+      if (!oldSelectedSmoel) return;
+      console.log("Updating selected smoel");
+
+      return content.data.find((smoel) => oldSelectedSmoel.id === smoel.id);
+    });
   });
 
   useEffect(() => {
@@ -60,6 +73,7 @@ export default function Smoelenboek() {
       >
         Generate missing data
       </Button>
+
       <Button
         variant="outlined"
         onClick={() => {
@@ -68,17 +82,22 @@ export default function Smoelenboek() {
       >
         Refresh
       </Button>
+
       <Button variant="outlined" onClick={onClickSortByLaplace}>
         Sort by rating
       </Button>
+
       <Button variant="outlined" onClick={onClickSortByName}>
         Sort by name
       </Button>
+
+      {selectedSmoel && <SmoelPreview smoel={selectedSmoel} />}
+
       <Grid container sx={{ mt: 0 }} spacing={1}>
         {smoelen.length ? (
           smoelen.map((smoel) => (
             <Grid item xs={3} key={smoel.id}>
-              <Smoel smoel={smoel} />
+              <Smoel smoel={smoel} onClickSmoel={onClickSmoel} />
             </Grid>
           ))
         ) : (
