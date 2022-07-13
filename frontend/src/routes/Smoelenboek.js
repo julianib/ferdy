@@ -9,15 +9,22 @@ import SmoelPreview from "../components/SmoelPreview";
 import { getLaplaceScore } from "../utils/laplace";
 
 export default function Smoelenboek() {
-  const [smoelen, setSmoelen] = useState([]);
   const [selectedSmoel, setSelectedSmoel] = useState();
+  const [smoelen, setSmoelen] = useState([]);
+  const [smoelComments, setSmoelComments] = useState([]);
+  const [smoelRatings, setSmoelRatings] = useState([]);
 
   function onClickSmoel(smoel) {
     setSelectedSmoel(smoel);
   }
 
   function onClickSortByLaplace() {
-    const newSmoelen = smoelen.slice();
+    const test = smoelen.slice();
+
+    smoelRatings.forEach((rating) => {
+      const smoelId = rating.smoel_id
+      newSmoelen.find((smoel) => smoel.id === smoelId)
+    })
     newSmoelen.sort(sortByLaplace);
     setSmoelen(newSmoelen);
   }
@@ -59,8 +66,13 @@ export default function Smoelenboek() {
     });
   });
 
+  usePacket("smoel.ratings.list", (content) => {
+    setSmoelRatings(content.data);
+  });
+
   useEffect(() => {
     sendPacket("smoel.list");
+    sendPacket("smoel.ratings.list");
   }, []);
 
   return (
@@ -78,6 +90,8 @@ export default function Smoelenboek() {
         variant="outlined"
         onClick={() => {
           sendPacket("smoel.list");
+          sendPacket("smoel.comments.list");
+          sendPacket("smoel.ratings.list");
         }}
       >
         Refresh

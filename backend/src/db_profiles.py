@@ -1,6 +1,6 @@
 from convenience import *
 from database import Database
-from profile_dbe import Profile
+from dbe_profile import Profile
 
 
 class Profiles(Database):

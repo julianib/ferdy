@@ -1,5 +1,5 @@
 from convenience import *
-from profile_dbe import Profile
+from dbe_profile import Profile
 from user import User
 import verify_jwt
 from packet_sending import send_packet
@@ -24,7 +24,8 @@ def handle_packet(ferdy, user, name, content, packet_id) -> None:
             ferdy, user, name, content)
 
     except BasePacketError as ex:
-        Log.debug(f"Caught error on packet handling: {type(ex.error).__name__}")
+        Log.debug(
+            f"Caught error on packet handling: {type(ex.error).__name__}")
         response_packet = error_packet(ex.error, name, content)
 
     except Exception as ex:
@@ -204,7 +205,7 @@ def _handle_packet_actually(
         return True
 
     # todo remove role from all users before deleting
-    if name == "role.delete":
+    if name == "role.delete":  # DELETE /roles/id
         user.require_permission("role.delete")
         role_id = content["id"]
         role = ferdy.roles.find_single(id=role_id, raise_missing=True)
@@ -216,12 +217,12 @@ def _handle_packet_actually(
 
         return True
 
-    if name == "role.list":
+    if name == "role.list":  # GET /roles
         return "role.list", {
             "data": ferdy.roles.get_entries_data_copy()
         }
 
-    if name == "role.update":
+    if name == "role.update":  # POST /roles/
         user.require_permission("role.update")
         role_id = content["id"]
         updated_data = content["updated_data"]
@@ -267,11 +268,32 @@ def _handle_packet_actually(
 
         profile = user.get_profile()
 
-        smoel = ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
-        smoel.add_comment(profile, text)
+        # make sure smoel exists
+        ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
+
+        # create a comment
+        ferdy.smoel_comments.create(
+            profile_id=profile["id"], smoel_id=smoel_id, text=text)
 
         return "smoel.list", {
             "data": ferdy.smoelen.get_entries_data_copy()
+        }
+
+    if name == "smoel.comments.list":
+        if not content:
+            # get all comments
+            return "smoel.comments.list", {
+                "data": ferdy.smoel_comments.get_entries_data_copy()
+            }
+
+        # get comments of specific smoel
+        smoel_id = content["smoel_id"]
+        comments = ferdy.smoel_comments.find_many(smoel_id=smoel_id)
+        comments_data = [comment.get_data_copy() for comment in comments]
+
+        return "smoel.comments.list", {
+            "data": comments_data,
+            "smoel_id": smoel_id
         }
 
     if name == "smoel.generate_missing":
@@ -331,21 +353,33 @@ def _handle_packet_actually(
 
         smoel_id = content["id"]
         stars = content["stars"]
-        smoel = ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
 
         if stars and (type(stars) != int or stars < 1 or stars > 5):
             raise InvalidContent
 
         profile = user.get_profile()
 
+        # make sure smoel exists
+        ferdy.smoelen.find_single(id=smoel_id, raise_missing=True)
+
         # whether the user is rating or not, remove any prior rating first
-        smoel.remove_rating(profile)
+        previous_rating = ferdy.smoel_ratings.find_single(
+            smoel_id=smoel_id, profile_id=profile["id"])
+        if previous_rating:
+            previous_rating.delete()
 
         if stars:
-            smoel.add_rating(profile, stars)  # then add the (new) rating
+            # then create a rating entry
+            ferdy.smoel_ratings.create(
+                profile_id=profile["id"], smoel_id=smoel_id, stars=stars)
 
         return "smoel.list", {
             "data": ferdy.smoelen.get_entries_data_copy()
+        }
+
+    if name == "smoel.ratings.list":
+        return "smoel.ratings.list", {
+            "data": ferdy.smoel_ratings.get_entries_data_copy()
         }
 
     # song
@@ -384,7 +418,7 @@ def _handle_packet_actually(
                 # profile creation makes sure google_id is not taken
                 profile = ferdy.profiles.create(google_id=google_id)
                 profile["name"] = f"New profile #{profile['id']}"
-            
+
         else:
             jwt = content["jwt"]
             google_data = verify_jwt.verify(jwt, raise_if_invalid=True)

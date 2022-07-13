@@ -1,5 +1,5 @@
 from database import Database
-from role_dbe import Role
+from dbe_role import Role
 from convenience import *
 
 

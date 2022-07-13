@@ -1,5 +1,5 @@
 from convenience import *
-from profile_dbe import Profile
+from dbe_profile import Profile
 
 
 class User:

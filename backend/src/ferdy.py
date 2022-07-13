@@ -1,12 +1,15 @@
 from convenience import *
-from polls_db import Polls
-from profile_dbe import Profile
 from user import User
-from profiles_db import Profiles
-from roles_db import Roles
-from smoelen_db import Smoelen
 from packet_handling import handle_packet
 from packet_sending import send_packet
+
+from db_polls import Polls
+from dbe_profile import Profile
+from db_profiles import Profiles
+from db_roles import Roles
+from db_smoelen import Smoelen
+from db_smoel_comments import SmoelComments
+from db_smoel_ratings import SmoelRatings
 
 
 class Ferdy:
@@ -16,9 +19,12 @@ class Ferdy:
         self._next_packet_id = 1
         self._users = []
 
+        # init databases:
         self.polls = Polls()
         self.profiles = Profiles()
         self.roles = Roles()
+        self.smoel_comments = SmoelComments()
+        self.smoel_ratings = SmoelRatings()
         self.smoelen = Smoelen()
 
     def create_user_from_sid(self, sid) -> User:

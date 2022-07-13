@@ -1,5 +1,5 @@
 from database import Database
-from poll_dbe import Poll
+from dbe_poll import Poll
 from convenience import *
 
 

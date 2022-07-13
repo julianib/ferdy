@@ -2,11 +2,12 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import sendPacket from "../utils/sendPacket";
 
 export default function SmoelComments({ smoel }) {
   const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
 
   function onSubmitComment(event) {
     event.preventDefault();
@@ -16,6 +17,18 @@ export default function SmoelComments({ smoel }) {
     });
     setCommentText("");
   }
+
+  usePacket("smoel.comments.list", (content) => {
+    if (content.smoel_id === smoel.id) {
+      setComments(content.data);
+    }
+  });
+
+  useEffect(() => {
+    sendPacket("smoel.comments.list", {
+      smoel_id: smoel.id,
+    });
+  });
 
   return (
     <>
@@ -32,7 +45,7 @@ export default function SmoelComments({ smoel }) {
           </Button>
         </form>
       </Paper>
-      {smoel.comments.map((comment, i) => (
+      {comments.map((comment, i) => (
         <Typography key={i}>
           {comment.profile_id}: {comment.text}
         </Typography>

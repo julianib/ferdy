@@ -1,5 +1,5 @@
 from database import Database
-from smoel_dbe import Smoel
+from dbe_smoel import Smoel
 from convenience import *
 
 
